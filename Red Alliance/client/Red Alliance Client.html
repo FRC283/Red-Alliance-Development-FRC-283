@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<title>RED ALLIANCE CLIENT</title>
+		<u>Red Alliance Data Submission</u>
+		
 	</head>
 	<body>
 		<br>
@@ -42,48 +44,63 @@
 		
 		<script>
 			//TODO
-			//Downloads on submit
+			/*
+				List of Team Names for a Competition so people cant misstype
+				Tab or Arrow Keys for advancing to next variable
+				Auto download on submit
+				No submission on blank form
+			*/
+			//Explanation of how it works:
+			/*
+				When the 'Finish' button is called, the generateMatchSheet() or generatePitSheet() function is called, respectively.
+				Those functions grab all the forms, put them in a file, then puts a link to download that file
+				
+			*/
+		
 			function generateMatchSheet()
 			{
-				var form = document.getElementsByClassName("matchForm");
+				var form = document.getElementsByClassName("matchForm"); //Grab the matchForm DOM
 				//CES - Comma encoding system:
 					//Change all commas to '@?$COMMA$?@' on this end
 					//On the master end, transform them back
-				var formText = "";
-				var formHeader = "";
-				for (i = 0; i < form.length; i++)
+				var formText = ""; //Part of the CSV file that holds the data
+				var formHeader = ""; //Part of the CSV file that holds the various 'variables' or headers
+				for (i = 0; i < form.length; i++) //For each variable in the form
 				{
-					console.log("form[" + i + "]: " + form[i].value + " type:" + form[i].type);
-					if (form[i].type == "radio")
+					console.log("form[" + i + "]: " + form[i].value + " type:" + form[i].type); //Print out the value, name and type of this variable
+					if (form[i].type == "radio") //If the type is radio
 					{
 						var options = document.getElementsByName(form[i].name); //Get all elements with the chosen name
-						for (w = 0; w < options.length; w++) //Look for the one with checked=true
+						for (w = 0; w < options.length; w++) //For each button in this set
 						{
 							console.log("Looking at radio button " + (w + 1) + " of " + options.length);
-							if (options[w].checked == true)
+							if (options[w].checked == true) //Look for the one with checked=true
 							{
 								formText = formText + options[w].value + ((i < form.length - 1) ? "," : ""); //No need to replace commas because we're not that dumb
+								//^ Adds the radio button value onto the CSV file
 							}
 						}
 					}
 					else
 					{
 						formText = formText + form[i].value.replace(/(,)+/g, '@?$COMMA$?@') + ((i < form.length - 1) ? "," : ""); //Replace commas with the code, then Separate values with commas
+						//^ Adds this data onto the next part of the csv file
 					}
 					formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
 					
 				}
-				formText = formText + "\r\n"; //Proper escaping
-				formHeader = formHeader + "\r\n"; //Proper escaping
+				formText = formText + "\r\n"; //Proper escaping - creates new line on the file
+				formHeader = formHeader + "\r\n"; //Proper escaping - creates new line on the file
 				console.log("The form contained the text: " + formText);
 				
 				//Encode into a file, then put that file as the download link
-				var file = new Blob([formHeader + formText], {type: "text/plain"});
-				document.getElementById("matchLink").href = window.URL.createObjectURL(file);
-				var idNum = Math.floor(Math.random() * 10000);
+				var file = new Blob([formHeader + formText], {type: "text/plain"}); //Creates a 'file' blob that contain the text encoded
+				document.getElementById("matchLink").href = window.URL.createObjectURL(file); //Associates a temporary url with the file to allow download
+				var idNum = Math.floor(Math.random() * 10000); //Assigns a random ID to the file for tracking purposes
 				document.getElementById("matchLink").download = "matchData" + idNum + ".csv";
 				document.getElementById("matchLink").innerHTML = "Download Match Data " + idNum;
 				document.getElementById("matchLink").style.display = 'block';
+				//^ Above: set proper page elements to allow download
 			}
 			
 			
