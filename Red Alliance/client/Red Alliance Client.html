@@ -1,45 +1,45 @@
 <html>
 	<head>
 		<title>RED ALLIANCE CLIENT</title>
-		<u>Red Alliance Data Submission</u>
+		<link rel="stylesheet" type="text/css" href="../css/client_style.css">
 		
 	</head>
 	<body>
-		<br>
+		<header>
+			<div id="logo">FRC Team 283 - RED ALLIANCE</div>
+		</header>
 		<div class="tab">
-			<button class="tablinks" onClick="switchTab(matchForm)">Match Form</button>
-			<button class="tablinks" onClick="switchTab(pitForm)">Pit Form</button>
+			<button class="tablinks tab-selected" onClick="switchTab(matchForm)" id="matchTab">Match Form</button>
+			<button class="tablinks" onClick="switchTab(pitForm)" id="pitTab">Pit Form</button>
 		</div>
 		
-		<div id="matchForm" class="tabContent" style="display:block">
-			<form id='matchData' name='matchData' onSubmit='return false;'>
-				<fieldset>
-					<legend>Match Scout Data</legend>
+		<div class="form-container">
+			<div id="matchForm" class="tabContent" style="display:block">
+				<form id='matchData' name='matchData' onSubmit='return false;'>
+					<fieldset>
 					Match Number: <input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required><br>
 					Team Name: <input type='text' name='Team Name' class="matchForm"><br>
 					Team Number: <input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number" required><br>
 					<input type="radio" name="Color" class="matchForm" value="Red" required> Red<br>
 	 	 			<input type="radio" name="Color" value="Blue" required> Blue<br>
-					<button onClick='generateMatchSheet();'>Finish</button>
+					<button onClick='generateMatchSheet();' class="form-submit">Finish</button>
 					<a onClick="document.getElementById('matchData').reset();" download="matchData.csv" id="matchLink" href="" style="display: none">Download Match Data</a>
-				</fieldset>
-			</form>
-			<br>
-			<br>
-			</div>
-		
-		<div id="pitForm" class="tabContent" style="display:none">
-			<form id='pitData' name='pitData' onSubmit='return false;'>
-				<fieldset>
-					<legend>Pit Scout Data</legend>
+					</fieldset>
+				</form>
+				</div>
+			
+			<div id="pitForm" class="tabContent" style="display:none">
+				<form id='pitData' name='pitData' onSubmit='return false;'>
+					<fieldset>
 					Image of Robot: <input id='jpgU' type='file' ></input><br>
 					Team Number: <input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required><br>
 					Drivetrain: <input name="Drivetrain" type="text" class="pitForm" required><br>
-					<button onClick="generatePitSheet(jpgU)">Finish</button>
+					<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button>
 					<br>
 					<a onClick="document.getElementById('pitData').reset();" download="pitData.csv" id="pitLink" href="" style="display: none">Download Pit Data</a>
-				</fieldset>
-			</form>
+					</fieldset>
+				</form>
+			</div>
 		</div>
 		
 		<script>
@@ -156,6 +156,18 @@
 			
 			function switchTab(identifier)
 			{
+				if (identifier.id.toString() == "matchForm")
+		        {
+		            document.getElementById("matchTab").classList.add("tab-selected");
+		            document.getElementById("pitTab").classList.remove("tab-selected");
+		        }
+		        else if (identifier.id.toString() == "pitForm")
+		        {
+		            document.getElementById("pitTab").classList.add("tab-selected");
+		            document.getElementById("matchTab").classList.remove("tab-selected");
+		        }
+
+
 			    //Hide tab content
 			    var tabcontent = document.getElementsByClassName("tabcontent");
 			    for (i = 0; i < tabcontent.length; i++) 
