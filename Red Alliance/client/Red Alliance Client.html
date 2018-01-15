@@ -17,13 +17,41 @@
 			<div id="matchForm" class="tabContent" style="display:block">
 				<form id='matchData' name='matchData' onSubmit='return false;'>
 					<fieldset>
-					Match Number: <input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required><br>
-					Team Name: <input type='text' name='Team Name' class="matchForm"><br>
-					Team Number: <input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number" required><br>
-					<input type="radio" name="Color" class="matchForm" value="Red" required> Red<br>
-	 	 			<input type="radio" name="Color" value="Blue" required> Blue<br>
-					<button onClick='generateMatchSheet();' class="form-submit">Finish</button>
-					<a onClick="document.getElementById('matchData').reset();" download="matchData.csv" id="matchLink" href="" style="display: none">Download Match Data</a>
+						Match Number: <input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required><br>
+						Team Name: <input type='text' name='Team Name' class="matchForm"><br>
+						Team Number: <input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number" required><br>
+						<input type="radio" name="Color" class="matchForm" value="Red" required> Red<br>
+		 	 			<input type="radio" name="Color" value="Blue" required> Blue<br>
+		 	 			
+		 	 			<div class="autoTeleop-container">
+			 	 			<div class="tab">
+								<button type=button class="tablinks tab-selected" onClick="switchTab(autoForm)" id="autoTab">Auto Form</button>
+								<button type=button class="tablinks" onClick="switchTab(teleopForm)" id="teleopTab">Teleop Form</button>
+							</div>
+						
+							<div id="autoForm" class="tabContent" style="display:block">
+				 	 			Crosses Baseline Successfully?
+				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required><br>
+				 	 			Cubes Put in Scale: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Auto)" required><br>
+				 	 			Cubes Put in Vault/Exchange Zone: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Auto)" required><br>
+			 	 				Overview/Comments
+			 	 			</div>
+							
+							<div id="teleopForm" class="tabContent" style="display:none">
+				 	 			Cubes Put in Switch (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Teleop)" required><br>
+				 	 			Cubes Put in Scale (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Teleop)" required><br>
+				 	 			Cubes Put in Vault/Exchange Zone (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Teleop)" required><br>
+				 	 			Primary Source of Cubes: (Platform, Enemy Platform, Portal, Power Cube Zone)
+				 	 			Robot Attempts to Block Enemy Scoring:
+				 	 			Robot Physically Lifts Successfully:
+				 	 				Another Robot Hangs off of This One:
+				 	 			Primary Strategy/Cycle:
+				 	 			Overview/Comments: <input name="Overview" type="text" class="matchForm" required><br>
+							</div>
+						</div>
+		 	 			
+						<button onClick='generateMatchSheet();' class="form-submit">Finish</button>
+						<a onClick="document.getElementById('matchData').reset();" download="matchData.csv" id="matchLink" href="" style="display: none">Download Match Data</a>
 					</fieldset>
 				</form>
 				</div>
@@ -31,12 +59,29 @@
 			<div id="pitForm" class="tabContent" style="display:none">
 				<form id='pitData' name='pitData' onSubmit='return false;'>
 					<fieldset>
-					Image of Robot: <input id='jpgU' type='file' ></input><br>
-					Team Number: <input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required><br>
-					Drivetrain: <input name="Drivetrain" type="text" class="pitForm" required><br>
-					<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button>
-					<br>
-					<a onClick="document.getElementById('pitData').reset();" download="pitData.csv" id="pitLink" href="" style="display: none">Download Pit Data</a>
+						Image of Robot: <input id='jpgU' type='file' ></input><br>
+						Team Name: 
+						Team Number: <input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required><br>
+						Drivetrain: <input name="Drivetrain" type="text" class="pitForm" required><br>
+						//^Checkboxes
+						//Number of motors
+						//Style of Drivetrain
+						//Wheels
+						//Additional (option) 
+						Robot Can Lift: <input name="Lift?" type="checkbox" class="pitForm" required>
+							Lift Clearance from Ground:
+						Robot Allows Another Robot To Lift: (Number 0-2)
+						Weight (we can block light robots, including ambiguity/unknown, make it a slider):
+						Automatically Adjusts for Field Side:
+						Puts Cube on Switch in Auto:
+						Puts Cube on Scale in Auto:
+						Primary Source of Cubes:
+						Primary Teleop Strategy: <input name="Primary Strategy" type="text" class="pitForm" required><br>
+						//Switch, scale, vault, lift, defense
+						Overview/Comments: <input name="Overview" type="text" class="pitForm" required><br>
+						<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button><br>
+						
+						<a onClick="document.getElementById('pitData').reset();" download="pitData.csv" id="pitLink" href="" style="display: none">Download Pit Data</a>
 					</fieldset>
 				</form>
 			</div>
@@ -49,6 +94,7 @@
 				Tab or Arrow Keys for advancing to next variable
 				Auto download on submit
 				No submission on blank form
+				Remove download link on click
 			*/
 			//Explanation of how it works:
 			/*
@@ -56,7 +102,13 @@
 				Those functions grab all the forms, put them in a file, then puts a link to download that file
 				
 			*/
-		
+			document.addEventListener("keydown", arrowMove, false);
+			
+			function arrowMove(e) //e = keydown event
+			{
+				document.getElementById()
+			}
+			
 			function generateMatchSheet()
 			{
 				var form = document.getElementsByClassName("matchForm"); //Grab the matchForm DOM
@@ -159,24 +211,31 @@
 				if (identifier.id.toString() == "matchForm")
 		        {
 		            document.getElementById("matchTab").classList.add("tab-selected");
+		            document.getElementById("matchForm").style.display = "block";
 		            document.getElementById("pitTab").classList.remove("tab-selected");
+		            document.getElementById("pitForm").style.display = "none";
 		        }
 		        else if (identifier.id.toString() == "pitForm")
 		        {
 		            document.getElementById("pitTab").classList.add("tab-selected");
+		            document.getElementById("pitForm").style.display = "block";
 		            document.getElementById("matchTab").classList.remove("tab-selected");
+		            document.getElementById("matchForm").style.display = "none";
 		        }
-
-
-			    //Hide tab content
-			    var tabcontent = document.getElementsByClassName("tabcontent");
-			    for (i = 0; i < tabcontent.length; i++) 
-			    {
-			        tabcontent[i].style.display = "none";
-			    }
-
-			    //Show the tab that was clicked on
-			    identifier.style.display = "block";		
+				if (identifier.id.toString() == "autoForm")
+		        {
+		            document.getElementById("autoTab").classList.add("tab-selected");
+		            document.getElementById("autoForm").style.display = "block";
+		            document.getElementById("teleopTab").classList.remove("tab-selected");
+		            document.getElementById("teleopForm").style.display = "none";
+		        }
+		        else if (identifier.id.toString() == "teleopForm")
+		        {
+		            document.getElementById("teleopTab").classList.add("tab-selected");
+		            document.getElementById("teleopForm").style.display = "block";
+		            document.getElementById("autoTab").classList.remove("tab-selected");
+		            document.getElementById("autoForm").style.display = "none";
+		        } 
 			}
 		</script>	
 	</body>
