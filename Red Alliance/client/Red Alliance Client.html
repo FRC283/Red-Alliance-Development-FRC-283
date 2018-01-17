@@ -20,8 +20,8 @@
 						Match Number: <input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required><br>
 						Team Name: <input type='text' name='Team Name' class="matchForm"><br>
 						Team Number: <input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number" required><br>
-						<input type="radio" name="Color" class="matchForm" value="Red" required> Red<br>
-		 	 			<input type="radio" name="Color" value="Blue" required> Blue<br>
+						<input type="radio" name="Color" class="matchForm" value="Red" required>Red<br>
+		 	 			<input type="radio" name="Color" value="Blue" required>Blue<br>
 		 	 			
 		 	 			<div class="autoTeleop-container">
 			 	 			<div class="tab">
@@ -30,22 +30,34 @@
 							</div>
 						
 							<div id="autoForm" class="tabContent" style="display:block">
-				 	 			Crosses Baseline Successfully?
+				 	 			Crosses Baseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform"><br>
 				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required><br>
 				 	 			Cubes Put in Scale: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Auto)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Auto)" required><br>
-			 	 				Overview/Comments
+			 	 				Overview/Comments: <input type="text" name="Overview (Auto)" class="matchForm">
 			 	 			</div>
 							
 							<div id="teleopForm" class="tabContent" style="display:none">
 				 	 			Cubes Put in Switch (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Teleop)" required><br>
 				 	 			Cubes Put in Scale (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Teleop)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Teleop)" required><br>
-				 	 			Primary Source of Cubes: (Platform, Enemy Platform, Portal, Power Cube Zone)
-				 	 			Robot Attempts to Block Enemy Scoring:
-				 	 			Robot Physically Lifts Successfully:
-				 	 				Another Robot Hangs off of This One:
+				 	 			Primary Source of Cubes: 
+				 	 				<div>
+										<input type="radio" name="Actual Cube Source" class="matchForm" value="Allied Platform" required>Allied Platform<br>
+ 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Enemy Platform" required>Enemy Platform<br>
+ 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Portal" required>Portal<br>
+ 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Power Cube Zone" required>Power Cube Zone<br>
+ 	 								</div>
+				 	 			Robot Attempts to Block Enemy Scoring: <input type="checkbox" name="Tries to Block Scoring" class="matchform"><br>
+				 	 			Robot Physically Lifts Successfully: <input name="Lift (Teleop)" type="checkbox" class="matchForm" required><br>
+				 	 				Another Robot Hangs off of This One: <input name="Ally Hangs from Robot (Teleop)" type="checkbox" class="matchForm" required><br>
 				 	 			Primary Strategy/Cycle:
+				 	 				<div>
+				 	 					<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
+ 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
+ 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
+ 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Lift Reliably" required>Lift Reliably<br>
+				 	 				</div>
 				 	 			Overview/Comments: <input name="Overview" type="text" class="matchForm" required><br>
 							</div>
 						</div>
@@ -59,25 +71,38 @@
 			<div id="pitForm" class="tabContent" style="display:none">
 				<form id='pitData' name='pitData' onSubmit='return false;'>
 					<fieldset>
-						Image of Robot: <input id='jpgU' type='file' ></input><br>
-						Team Name: 
+						Image of Robot: <input id='jpgU' type='file'></input><br>
+						Team Name: <input type='text' name='Team Name' class="pitForm"><br>
 						Team Number: <input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required><br>
-						Drivetrain: <input name="Drivetrain" type="text" class="pitForm" required><br>
-						//^Checkboxes
-						//Number of motors
-						//Style of Drivetrain
-						//Wheels
-						//Additional (option) 
-						Robot Can Lift: <input name="Lift?" type="checkbox" class="pitForm" required>
-							Lift Clearance from Ground:
-						Robot Allows Another Robot To Lift: (Number 0-2)
-						Weight (we can block light robots, including ambiguity/unknown, make it a slider):
+						Drivetrain: 
+						<div>
+							Type of Motors:
+							Number of Motors:
+							Type of Wheels:
+							Style of Drivetrain:
+							Overview/Comments:
+						</div>
+						Robot Can Lift: <input name="Theoretically Lifts" type="checkbox" class="pitForm" required><br>
+							Lift Clearance from Ground (12 inches minimum): <input name="Theoretical Lift Height" type="number" step="0.5" min="12" max="999" class="pitForm" required><br>
+							Robot Allows the Following Number of Robots to Lift off it: <input name="Theoretical Number of allies Allies Hang from Robot" type="number" step="1" min="0" max="2" class="matchForm" required><br>
+						Weight (Set to 0 if unknown): <input id="Robot Weight" name="Robot Weight" type="range" class="pitForm" min="0" max="120" value="50" onInput="updateWeight()"> <span id="weightValue">120</span> <br>
 						Automatically Adjusts for Field Side:
 						Puts Cube on Switch in Auto:
 						Puts Cube on Scale in Auto:
-						Primary Source of Cubes:
-						Primary Teleop Strategy: <input name="Primary Strategy" type="text" class="pitForm" required><br>
-						//Switch, scale, vault, lift, defense
+						Primary Teleop Strategy:
+		 	 				<div>
+		 	 					<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
+ 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
+ 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
+ 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Lift Reliably" required>Lift Reliably<br>
+		 	 				</div>
+		 	 			Primary Source of Cubes:
+		 	 				<div>
+								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Allied Platform" required>Allied Platform<br>
+								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Enemy Platform" required>Enemy Platform<br>
+								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Portal" required>Portal<br>
+								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Power Cube Zone" required>Power Cube Zone<br>
+							</div>
 						Overview/Comments: <input name="Overview" type="text" class="pitForm" required><br>
 						<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button><br>
 						
@@ -103,6 +128,11 @@
 				
 			*/
 			document.addEventListener("keydown", arrowMove, false);
+			
+			function updateWeight()
+			{
+				document.getElementById("weightValue").innerHTML = document.getElementById("Robot Weight").value;	
+			}
 			
 			function arrowMove(e) //e = keydown event
 			{
