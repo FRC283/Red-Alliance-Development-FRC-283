@@ -30,7 +30,7 @@
 							</div>
 						
 							<div id="autoForm" class="tabContent" style="display:block">
-				 	 			Crosses Baseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform"><br>
+				 	 			Crosses <u>B</u>aseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform" accesskey="B"><br>
 				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required><br>
 				 	 			Cubes Put in Scale: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Auto)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Auto)" required><br>
@@ -84,16 +84,16 @@
 						</div>
 						Robot Can Lift: <input name="Theoretically Lifts" type="checkbox" class="pitForm" required><br>
 							Lift Clearance from Ground (12 inches minimum): <input name="Theoretical Lift Height" type="number" step="0.5" min="12" max="999" class="pitForm" required><br>
-							Robot Allows the Following Number of Robots to Lift off it: <input name="Theoretical Number of allies Allies Hang from Robot" type="number" step="1" min="0" max="2" class="matchForm" required><br>
+							Robot Allows the Following Number of Robots to Lift off it: <input name="Theoretical Number of allies that Hang from Robot" type="number" step="1" min="0" max="2" class="matchForm" required><br>
 						Weight (Set to 0 if unknown): <input id="Robot Weight" name="Robot Weight" type="range" class="pitForm" min="0" max="120" value="50" onInput="updateWeight()"> <span id="weightValue">120</span> <br>
-						Automatically Adjusts for Field Side:
-						Puts Cube on Switch in Auto:
-						Puts Cube on Scale in Auto:
+						Automatically Adjusts for Field Side: <input name="Side Adjustment" type="checkbox" class="pitForm"><br>
+						Puts Cube on Switch in Auto: <input name="Cube Placed on Switch in Auto" type="checkbox" class="pitForm"><br>
+						Puts Cube on Scale in Auto: <input name="Cube Placed on Scale in Auto" type="checkbox" class="pitForm"><br>
 						Primary Teleop Strategy:
 		 	 				<div>
-		 	 					<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
- 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
- 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
+		 	 					<input type="checkbox" name="Theoretical Teleop Strategy" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
+ 								<input type="checkbox" name="Theoretical Teleop Strategy"  type="number" min="0" max="20" class="pitForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
+ 								<input type="checkbox" name="Theoretical Teleop Strategy"  type="number" min="0" max="99" class="pitForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
  								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Lift Reliably" required>Lift Reliably<br>
 		 	 				</div>
 		 	 			Primary Source of Cubes:
@@ -136,7 +136,9 @@
 			
 			function arrowMove(e) //e = keydown event
 			{
-				document.getElementById()
+				console.log(document.activeElement.name);
+				console.log(e.keyCode + " detected");
+				console.log(document.activeElement.nextSibling.nextSibling.nextSibling.name);
 			}
 			
 			function generateMatchSheet()
