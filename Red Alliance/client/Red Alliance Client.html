@@ -6,11 +6,12 @@
 	</head>
 	<body>
 		<header>
-			<div id="logo">FRC Team 283 - RED ALLIANCE</div>
+			<div id="logo">FRC Team 
+			283 - RED ALLIANCE</div>
 		</header>
 		<div class="tab">
-			<button class="tablinks tab-selected" onClick="switchTab(matchForm)" id="matchTab">Match Form</button>
-			<button class="tablinks" onClick="switchTab(pitForm)" id="pitTab">Pit Form</button>
+			<button class="tablinks tab-selected" onClick="switchTab('matchForm')" id="matchTab">Match Form</button>
+			<button class="tablinks" onClick="switchTab('pitForm')" id="pitTab">Pit Form</button>
 		</div>
 		
 		<div class="form-container">
@@ -23,15 +24,15 @@
 						<input type="radio" name="Color" class="matchForm" value="Red" required>Red<br>
 		 	 			<input type="radio" name="Color" value="Blue" required>Blue<br>
 		 	 			
-		 	 			<div class="autoTeleop-container">
+		 	 			<div class="match-container">
 			 	 			<div class="tab">
-								<button type=button class="tablinks tab-selected" onClick="switchTab(autoForm)" id="autoTab">Auto Form</button>
-								<button type=button class="tablinks" onClick="switchTab(teleopForm)" id="teleopTab">Teleop Form</button>
+								<button type=button class="tablinks tab-selected" onClick="switchTab('autoForm')" id="autoTab">Auto Form</button>
+								<button type=button class="tablinks" onClick="switchTab('teleopForm')" id="teleopTab">Teleop Form</button>
 							</div>
 						
 							<div id="autoForm" class="tabContent" style="display:block">
-				 	 			Crosses <u>B</u>aseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform" accesskey="B" onfocus="changeDisplay(this)"><br>
-				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required><br>
+				 	 			Crosses Baseline Successfully? <input type="checkbox" name="Crosses Baseline (Auto)" class="matchform" accesskey='b'> [B] <br>
+				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required accesskey='q'> [Q]<br>
 				 	 			Cubes Put in Scale: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Auto)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Auto)" required><br>
 			 	 				Overview/Comments: <input type="text" name="Overview (Auto)" class="matchForm">
@@ -41,23 +42,23 @@
 				 	 			Cubes Put in Switch (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Teleop)" required><br>
 				 	 			Cubes Put in Scale (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Teleop)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone (fraction): <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Teleop)" required><br>
-				 	 			Primary Source of Cubes: 
-				 	 				<div>
-										<input type="radio" name="Actual Cube Source" class="matchForm" value="Allied Platform" required>Allied Platform<br>
- 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Enemy Platform" required>Enemy Platform<br>
- 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Portal" required>Portal<br>
- 	 									<input type="radio" name="Actual Cube Source" class="matchForm" value="Power Cube Zone" required>Power Cube Zone<br>
- 	 								</div>
-				 	 			Robot Attempts to Block Enemy Scoring: <input type="checkbox" name="Tries to Block Scoring" class="matchform"><br>
+				 	 			Primary Source of Cubes:
+				 	 				<fieldset class="matchForm" name="Cube Source (Teleop)">
+										<input type="radio" class="matchForm" value="Allied Platform" required>Allied Platform<br>
+	 									<input type="radio" class="matchForm" value="Enemy Platform" required>Enemy Platform<br>
+	 									<input type="radio" class="matchForm" value="Portal" required>Portal<br>
+	 									<input type="radio" class="matchForm" value="Power Cube Zone" required>Power Cube Zone<br>
+	 								</fieldset>
+				 	 			<label for="blockScoring">Robot Attempts to Block Enemy Scoring:</label><input type="checkbox" name="Tries to Block Scoring" class="matchform" id="blockScoring"><br>
 				 	 			Robot Physically Lifts Successfully: <input name="Lift (Teleop)" type="checkbox" class="matchForm" required><br>
 				 	 				Another Robot Hangs off of This One: <input name="Ally Hangs from Robot (Teleop)" type="checkbox" class="matchForm" required><br>
 				 	 			Primary Strategy/Cycle:
-				 	 				<div>
-				 	 					<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
- 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
- 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
- 	 									<input type="checkbox" name="Actual Teleop Strategy" class="matchForm" value="Lift Reliably" required>Lift Reliably<br>
-				 	 				</div>
+				 	 				<fieldset class="matchform" name="Actual Teleop Strategy (Teleop)">
+				 	 					<input type="checkbox" class="matchForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
+ 	 									<input type="checkbox" class="matchForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
+ 	 									<input type="checkbox" class="matchForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
+ 	 									<input type="checkbox" class="matchForm" value="Lift Reliably" required>Lift Reliably<br>
+				 	 				</fieldset>
 				 	 			Overview/Comments: <input name="Overview" type="text" class="matchForm" required><br>
 							</div>
 						</div>
@@ -75,34 +76,34 @@
 						Team Name: <input type='text' name='Team Name' class="pitForm"><br>
 						Team Number: <input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required><br>
 						Drivetrain: 
-						<div>
+						<fieldset>
 							Type of Motors:
 							Number of Motors:
 							Type of Wheels:
 							Style of Drivetrain:
 							Overview/Comments:
-						</div>
+						</fieldset>
 						Robot Can Lift: <input name="Theoretically Lifts" type="checkbox" class="pitForm" required><br>
 							Lift Clearance from Ground (12 inches minimum): <input name="Theoretical Lift Height" type="number" step="0.5" min="12" max="999" class="pitForm" required><br>
 							Robot Allows the Following Number of Robots to Lift off it: <input name="Theoretical Number of allies that Hang from Robot" type="number" step="1" min="0" max="2" class="matchForm" required><br>
-						Weight (Set to 0 if unknown): <input id="Robot Weight" name="Robot Weight" type="range" class="pitForm" min="0" max="120" value="50" onInput="updateWeight()"> <span id="weightValue">120</span> <br>
+						Weight (Set to 0 if unknown): <input id="Robot Weight" name="Robot Weight" type="range" class="pitForm" min="0" max="120" value="120" onInput="updateWeight()" accesskey='w'> <span id="weightValue">120</span> [W] <br>
 						Automatically Adjusts for Field Side: <input name="Side Adjustment" type="checkbox" class="pitForm"><br>
 						Puts Cube on Switch in Auto: <input name="Cube Placed on Switch in Auto" type="checkbox" class="pitForm"><br>
 						Puts Cube on Scale in Auto: <input name="Cube Placed on Scale in Auto" type="checkbox" class="pitForm"><br>
 						Primary Teleop Strategy:
-		 	 				<div>
-		 	 					<input type="checkbox" name="Theoretical Teleop Strategy" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
- 								<input type="checkbox" name="Theoretical Teleop Strategy"  type="number" min="0" max="20" class="pitForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
- 								<input type="checkbox" name="Theoretical Teleop Strategy"  type="number" min="0" max="99" class="pitForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
- 								<input type="checkbox" name="Theoretical Teleop Strategy" class="pitForm" value="Lift Reliably" required>Lift Reliably<br>
-		 	 				</div>
+		 	 				<fieldset name="Theoretical Teleop Strategy (Pit)" class="pitForm">
+		 	 					<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Switch" required>Put Cubes on Switch<br>
+ 								<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Scale" required>Put Cubes on Scale<br>
+ 								<input type="checkbox" type="number" min="0" max="99" class="pitForm" value="Provide Cubes to Vault" required>Provide Cubes to Vault<br>
+ 								<input type="checkbox" class="pitForm" value="Lift Reliably" required>Lift Reliably<br>
+		 	 				</fieldset>
 		 	 			Primary Source of Cubes:
-		 	 				<div>
+		 	 				<fieldset name="Theoretical Cube Source (Pit)" class="pitForm">
 								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Allied Platform" required>Allied Platform<br>
 								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Enemy Platform" required>Enemy Platform<br>
 								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Portal" required>Portal<br>
 								<input type="radio" name="Theoretical Cube Source" class="pitForm" value="Power Cube Zone" required>Power Cube Zone<br>
-							</div>
+							</fieldset>
 						Overview/Comments: <input name="Overview" type="text" class="pitForm" required><br>
 						<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button><br>
 						
@@ -126,18 +127,13 @@
 				When the 'Finish' button is called, the generateMatchSheet() or generatePitSheet() function is called, respectively.
 				Those functions grab all the forms, put them in a file, then puts a link to download that file
 			*/
-			document.addEventListener("keydown", arrowMove, false);
+			document.addEventListener("keydown", hotKey, false);
+			document.addEventListener("keyup", releaseHotKey, false);
+			var altEnabled = false; //If the alt key is being held down, its true.
 			
 			function updateWeight()
 			{
 				document.getElementById("weightValue").innerHTML = document.getElementById("Robot Weight").value;	
-			}
-			
-			function arrowMove(e) //e = keydown event
-			{
-				//console.log(document.activeElement.name);
-				//console.log(e.keyCode + " detected");
-				//console.log(document.activeElement.nextSibling.nextSibling.nextSibling.name);
 			}
 			
 			function generateMatchSheet()
@@ -157,19 +153,28 @@
 						for (w = 0; w < options.length; w++) //For each button in this set
 						{
 							console.log("Looking at radio button " + (w + 1) + " of " + options.length);
+							console.log("Radio button " + (w + 1) + " is " + (options[w].checked ? "checked" : "unchecked"));
 							if (options[w].checked == true) //Look for the one with checked=true
 							{
+								console.log("INSIDE IF radio button " + (w + 1) + " is " + (options[w].checked ? "checked" : "unchecked"));
 								formText = formText + options[w].value + ((i < form.length - 1) ? "," : ""); //No need to replace commas because we're not that dumb
 								//^ Adds the radio button value onto the CSV file
 							}
 						}
 					}
-					else
+					else if (form[i].tagName.toLowerCase() != "fieldset")
 					{
 						formText = formText + form[i].value.replace(/(,)+/g, '@?$COMMA$?@') + ((i < form.length - 1) ? "," : ""); //Replace commas with the code, then Separate values with commas
 						//^ Adds this data onto the next part of the csv file
 					}
-					formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
+					
+					if (form[i].type != "radio")
+					{
+
+						formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
+						
+					}
+					
 					
 				}
 				formText = formText + "\r\n"; //Proper escaping - creates new line on the file
@@ -214,12 +219,16 @@
 								}
 							}
 						}
-						else
+						else if (form[i].tagName.toLowerCase() != "fieldset")
 						{
 							formText = formText + form[i].value.replace(/[,]+/g, '@?$COMMA$?@') + ((i < form.length - 1) ? "," : ""); //Replace commas with the code, then Separate values with commas
 						}
-						formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
 						
+						if (form[i].type != "radio")
+						{
+							formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
+						}
+					
 					}
 					formText = formText + "\r\n"; //Proper escaping
 					formHeader = formHeader + "\r\n"; //Proper escaping
@@ -237,47 +246,72 @@
 				fr.readAsDataURL(file);	//Read the file
 			}
 			
-			function changeDisplay(element) //Changes the display when the passed element comes into focus
+			function hotKey(e) //e = keydown event
 			{
-				console.log(element.id + "'s Parent's ID is " + element.parentElement.id);
-				while (!(element.parentElement.id == "pitForm" || element.parentElement.id == "matchForm" || element.parentElement.id == "autoForm" || element.parentElement.id == "teleopForm"))
+				console.log("keydown: " + e.keyCode);
+				if (e.keyCode == 18) //If the key was alt
 				{
-					console.log(element.id + "'s Parent's ID is " + element.parentElement.id);
-					element = element.parentElement;
+					e.preventDefault(); //Safety's sake
+					altEnabled = true; //Alt is pressed
 				}
-				switchTab(element.parentElement);
+				if (altEnabled == true) //Then if alt is held
+				{
+					switch (e.keyCode) //Do something depending on the letter pressed
+					{
+						case 66: //B
+							switchTab('autoForm');
+						break;
+						case 81: //Q
+							switchTab('autoForm');
+						break;
+						case 87: //W
+							switchTab('pitForm');
+						break;
+					}
+				}
+			}
+			
+			function releaseHotKey(e)
+			{
+				console.log("keyup: " + e.keyCode);
+				if (e.keyCode == 18)
+				{
+					altEnabled = false;	
+				}
 			}
 			
 			function switchTab(identifier) //Based on the pressed button, changes the display
 			{
 				console.log("switchTab called");
-				if (identifier.id.toString() == "matchForm")
+				if (identifier == "matchForm")
 		        {
 		            document.getElementById("matchTab").classList.add("tab-selected");
 		            document.getElementById("matchForm").style.display = "block";
 		            document.getElementById("pitTab").classList.remove("tab-selected");
 		            document.getElementById("pitForm").style.display = "none";
 		        }
-		        else if (identifier.id.toString() == "pitForm")
+		        else if (identifier == "pitForm")
 		        {
 		            document.getElementById("pitTab").classList.add("tab-selected");
 		            document.getElementById("pitForm").style.display = "block";
 		            document.getElementById("matchTab").classList.remove("tab-selected");
 		            document.getElementById("matchForm").style.display = "none";
 		        }
-				if (identifier.id.toString() == "autoForm")
+				if (identifier == "autoForm")
 		        {
 		            document.getElementById("autoTab").classList.add("tab-selected");
 		            document.getElementById("autoForm").style.display = "block";
 		            document.getElementById("teleopTab").classList.remove("tab-selected");
 		            document.getElementById("teleopForm").style.display = "none";
+		            switchTab('matchForm');
 		        }
-		        else if (identifier.id.toString() == "teleopForm")
+		        else if (identifier == "teleopForm")
 		        {
 		            document.getElementById("teleopTab").classList.add("tab-selected");
 		            document.getElementById("teleopForm").style.display = "block";
 		            document.getElementById("autoTab").classList.remove("tab-selected");
 		            document.getElementById("autoForm").style.display = "none";
+		            switchTab('matchForm');
 		        } 
 			}
 		</script>	
