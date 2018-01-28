@@ -36,7 +36,7 @@ header
     margin: 0 auto;
 }
 
-.tablinks
+.tab .tablinks
 {
     font-size: 1.25em;
     margin: 0;
@@ -47,7 +47,7 @@ header
     padding: 10px;
 }
 
-.tab-selected
+.tab .tab-selected
 {
     background: white;
     font-weight: bold;
@@ -57,10 +57,42 @@ header
 {
     width: 80%;
     margin: 0 auto;
+    magin-bottom: 10px;
     background: white;
     border-radius: 15px;
     padding: 10px 0;
     color: black;
+}
+
+.tab-match-container .tablinks
+{
+    font-size: 1.25em;
+    margin: 0;
+    margin-right: 5px;
+    border: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 10px;
+    background: lightgrey;
+    border: 2px solid #900;
+    border-bottom: none;
+}
+
+.tab-match-container .tab-selected
+{
+    background: #900;
+    font-weight: bold;
+    color: white;
+}
+
+.match-container
+{
+	padding: 20px;
+	margin: 0 auto;
+	width: 90%;
+	border-radius: 10px;
+	background: #ececec;
+	border: 2px solid #900;
 }
 
 #matchForm, #pitForm
@@ -74,9 +106,43 @@ form
     margin-bottom: 0;
 }
 
+input 
+{
+	display: inline-block;
+	margin: 15px auto;	
+}
+
+input[type=radio], input[type=checkbox]
+{
+	display: block;
+	margin: 0 auto;
+}
+
+span
+{
+	color: blue;
+}
+
+.hotkey
+{
+	color: green;	
+}
+
+.hotkey::after
+{
+	content: "\A";
+	white-space: pre;
+}
+
 form h2
 {
     margin-bottom: 10px;
+}
+
+textarea 
+{
+	width: 80%;
+	height: 15em;
 }
 
 fieldset
@@ -94,6 +160,7 @@ form fieldset > *
 
 .form-submit
 {
+	margin-top: 10px;
     padding: 10px 20px;
     color: white;
     background: #900;
