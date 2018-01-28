@@ -14,7 +14,7 @@
 		</div>
 		
 		<div class="form-container">
-			<div id="matchForm" class="tabContent" style="display:block">
+			<div id="matchForm" class="tabContent" style="z-index:1000;">
 				<form id='matchData' name='matchData' onSubmit='return false;'>
 					<fieldset>
 						Match Number: <input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required><br>
@@ -68,7 +68,7 @@
 				</form>
 				</div>
 			
-			<div id="pitForm" class="tabContent" style="display:none">
+			<div id="pitForm" class="tabContent" style="z-index:-1000;">
 				<form id='pitData' name='pitData' onSubmit='return false;'>
 					<fieldset>
 						Image of Robot: <input id='jpgU' type='file'></input><br>
@@ -254,16 +254,16 @@
 				if (identifier.id.toString() == "matchForm")
 		        {
 		            document.getElementById("matchTab").classList.add("tab-selected");
-		            document.getElementById("matchForm").style.display = "block";
+		            document.getElementById("matchForm").style.zIndex = 1000;
 		            document.getElementById("pitTab").classList.remove("tab-selected");
-		            document.getElementById("pitForm").style.display = "none";
+		            document.getElementById("pitForm").style.zIndex = -1000;
 		        }
 		        else if (identifier.id.toString() == "pitForm")
 		        {
 		            document.getElementById("pitTab").classList.add("tab-selected");
-		            document.getElementById("pitForm").style.display = "block";
+		            document.getElementById("pitForm").style.zIndex = 1000;
 		            document.getElementById("matchTab").classList.remove("tab-selected");
-		            document.getElementById("matchForm").style.display = "none";
+		            document.getElementById("matchForm").style.zIndex = -1000;
 		        }
 				if (identifier.id.toString() == "autoForm")
 		        {
