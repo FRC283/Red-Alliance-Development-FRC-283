@@ -30,7 +30,7 @@
 							</div>
 						
 							<div id="autoForm" class="tabContent" style="display:block">
-				 	 			Crosses <u>B</u>aseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform" accesskey="B"><br>
+				 	 			Crosses <u>B</u>aseline Successfully? <input type="checkbox" name="Crosses Baseline" class="matchform" accesskey="B" onfocus="changeDisplay(this)"><br>
 				 	 			Cubes Put in Switch: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Switch (Auto)" required><br>
 				 	 			Cubes Put in Scale: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Scale (Auto)" required><br>
 				 	 			Cubes Put in Vault/Exchange Zone: <input type="number" step="1" min="0" max="9999" class='matchForm' name="Cubes in Vault/Exchange (Auto)" required><br>
@@ -125,7 +125,6 @@
 			/*
 				When the 'Finish' button is called, the generateMatchSheet() or generatePitSheet() function is called, respectively.
 				Those functions grab all the forms, put them in a file, then puts a link to download that file
-				
 			*/
 			document.addEventListener("keydown", arrowMove, false);
 			
@@ -136,9 +135,9 @@
 			
 			function arrowMove(e) //e = keydown event
 			{
-				console.log(document.activeElement.name);
-				console.log(e.keyCode + " detected");
-				console.log(document.activeElement.nextSibling.nextSibling.nextSibling.name);
+				//console.log(document.activeElement.name);
+				//console.log(e.keyCode + " detected");
+				//console.log(document.activeElement.nextSibling.nextSibling.nextSibling.name);
 			}
 			
 			function generateMatchSheet()
@@ -238,8 +237,20 @@
 				fr.readAsDataURL(file);	//Read the file
 			}
 			
-			function switchTab(identifier)
+			function changeDisplay(element) //Changes the display when the passed element comes into focus
 			{
+				console.log(element.id + "'s Parent's ID is " + element.parentElement.id);
+				while (!(element.parentElement.id == "pitForm" || element.parentElement.id == "matchForm" || element.parentElement.id == "autoForm" || element.parentElement.id == "teleopForm"))
+				{
+					console.log(element.id + "'s Parent's ID is " + element.parentElement.id);
+					element = element.parentElement;
+				}
+				switchTab(element.parentElement);
+			}
+			
+			function switchTab(identifier) //Based on the pressed button, changes the display
+			{
+				console.log("switchTab called");
 				if (identifier.id.toString() == "matchForm")
 		        {
 		            document.getElementById("matchTab").classList.add("tab-selected");
