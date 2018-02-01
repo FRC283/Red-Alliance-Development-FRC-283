@@ -5,7 +5,6 @@ h1, h2, h3, h4
 
 body, html
 {
-    margin: 0;
     height: 100%;
     background: #ececec;;
     color: white;
@@ -101,6 +100,7 @@ header
     text-align: center;
 }
 
+
 form
 {
     font-size: 1.2em;
@@ -109,15 +109,15 @@ form
 
 input 
 {
-	display: inline-block;
-	margin: 15px auto;	
+	margin: 15 px auto;
+	margin-bottom: 15px;	
 }
 
-input[type=radio], input[type=checkbox]
+/*input[type=radio], input[type=checkbox]
 {
-	display: block;
+	margin-bottom: 15px;
 	margin: 0 auto;
-}
+}*/
 
 span
 {
@@ -126,7 +126,11 @@ span
 
 .hotkey
 {
-	color: green;	
+	color: #900;
+	border: 1px solid #900;
+	border-radius: 7px;
+	padding: 3px;
+	opacity: 0.2;
 }
 
 .hotkey::after
