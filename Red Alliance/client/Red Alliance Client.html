@@ -139,71 +139,77 @@
 			<form id='pitData' name='pitData' onSubmit='return false;'>
 				<label>Image of Robot:</label>
 				<input id='jpgU' type='file'></input>
-				
+				<br>
 				<label>Team Name:</label>
 				<input type='text' name='Team Name' class="pitForm">
-				
+				<br>
 				<label>Team Number:</label>
 				<input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required>
-				
+				<br>
 				<fieldset>
 					<label>Drivetrain:</label>
-					<span>Type of Motors:</span>
-					<span>Number of Motors:</span>
-					<span>Type of Wheels:</span>
-					<span>Style of Drivetrain:</span>
-					<span>Overview/Comments:</span>
+					<span>Type of Motors: <input type='text' name='Motor Type' class="pitForm" required></span>
+					<br>
+					<span>Number of Motors: <input type='text' name='Motor Number' class="pitForm" required></span>
+					<br>
+					<span>Type of Wheels: <input type='text' name='Wheel Type' class="pitForm" required></span>
+					<br>
+					<span>Style of Drivetrain: <input type='text' name='Drivetrain Style' class="pitForm" required></span>
+					<br>
+					<span>Overview/Comments: <input type='text' name='Comments' class="pitForm" required></span>
 				</fieldset>
-
+				<br>
 				<label>Robot Can Lift:</label>
 				<input name="Theoretically Lifts (Pit)" type="checkbox" class="pitForm">
-				
+				<br>
 				<label>Lift Clearance from Ground (12 inches minimum):</label>
 				<input name="Theoretical Lift Height (Pit)" type="number" step="0.5" min="12" max="999" class="pitForm" required> 
-				
+				<br>
 				<label>Robot Allows the Following Number of Robots to Lift off it:</label>
 				<input name="Theoretical Number of allies that Hang from Robot (Pit)" type="number" step="1" min="0" max="2" class="pitForm" required>
-				
+				<br>
 				<label>Weight (Set to 0 if unknown):</label>
 				<input id="Robot Weight" name="Robot Weight" type="range" class="pitForm" min="0" max="120" value="120" onInput="updateWeight()">
 				<span id="weightValue">120</span> 
-				
+				<br>
 				<label>Automatically Adjusts for Field Side:</label>
 				<input name="Auto Side Adjustment (Pit)" type="checkbox" class="pitForm">
-				
+				<br>
 				<label>Puts Cube on Switch in Auto:</label>
 				<input name="Theoretical Switch Cubes in Auto (Pit)" type="checkbox" class="pitForm"> 
-				
+				<br>
 				<label>Puts Cube on Scale in Auto:</label>
 				<input name="Theoretical Scale Cubes in Auto (Pit)" type="checkbox" class="pitForm">
-
+				<br>
 				<fieldset name="Theoretical Teleop Strategy (Pit)" class="pitForm">
 					<label>Primary Teleop Strategy:</label> 
 					<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Switch">
 					<span>PutCubes on Switch</span> 
 					<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Scale">
 					<span>Put Cubes on Scale</span> 
+					<br>
 					<input type="checkbox" type="number" min="0" max="99" class="pitForm" value="Provide Cubes to Vault">
 					<span>Provide Cubes to Vault</span>
 					<input type="checkbox" class="pitForm" value="Lift Reliably">
 					<span>Lift Reliably</span>
 				</fieldset>
-
+				<br>
 				<fieldset name="Theoretical Cube Source (Pit)" class="pitForm">
 					<label>Primary Source of Cubes:</label>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Allied Platform">
 					 <span>Allied Platform</span>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Enemy Platform">
 					 <span>EnemyPlatform</span>
+					 <br>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Portal" required>
 					 <span>Portal</span>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Power Cube Zone" required>
 					 <span>Power Cube Zone</span>
 				</fieldset>
-
+				<br>
 				<label>Overview/Comments:</label>
 				<textarea name="Overview" class="pitForm" required placeholder="Put your comments here."></textarea>
-
+				<br>
 				<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button>
 				<a onClick="document.getElementById('pitData').reset(); this.style.display = 'none';" download="pitData.csv" id="pitLink" href="" style="display: none">Download Pit Data</a>
 			</form>
@@ -220,10 +226,10 @@
 		 */
 		document.addEventListener("keydown", hotKey, false);
 		document.addEventListener("keyup", releaseHotKey, false);
-		var inputsMatch = document.getElementsByTagName('input');
-		var inputsPit = document.getElementsByTagName('input');
+		var inputsMatch = document.getElementById('matchData').getElementsByTagName('input');
+		var inputsPit = document.getElementById('pitData').getElementsByTagName('input');
 		var altEnabled = false; //If the alt key is being held down, its true.
-		var formComplete = true; //If any required fields are incomplete gets set to false
+		var formComplete = true;//If any required fields are incomplete gets set to false
 		
 		for (i = 0; i < inputsMatch.length; i++)
 		{
@@ -233,7 +239,7 @@
 		
 		for (i = 0; i < inputsMatch.length; i++)
 		{
-			console.log("registering event listeners for pit")
+			//console.log("registering event listeners for pit")
 			inputsPit[i].oninvalid = completePitForm;
 		}
 		
@@ -289,48 +295,49 @@
 			{
 				type : "text/plain"
 			}); //Creates a 'file' blob that contain the text encoded
-			console.log(formComplete)
+			console.log("Form Complete: " + formComplete);
 			document.getElementById("matchLink").href = window.URL
 					.createObjectURL(file); //Associates a temporary url with the file to allow download
 			var idNum = Math.floor(Math.random() * 10000); //Assigns a random ID to the file for tracking purpose
 
 			document.getElementById("matchLink").download = "matchData" + idNum + ".csv";
 			document.getElementById("matchLink").innerHTML = "Download Match Data " + idNum;
-			if (formComplete == true)
-			{
-				document.getElementById("matchLink").style.display = 'block';
+			
+			
+			document.getElementById("matchLink").style.display = 'block';
 				//^ Above: set proper page elements to allow download	
-			}
 		}
 
 		function generatePitSheet(element)
 		{
 			var file = element.files[0];//Grab the one and only image allowed;
 			var fileUploaded = false;
-			console.log(element.files[0]);
+			//console.log(element.files[0]);
 			if (file != null)
 			{
-				console.log("image is uploaded");
+				//console.log("image is uploaded");
 				fileUploaded = true;
 			}
 			var fr = new FileReader(); //Generate a file reader
-			fr.onloadend = function() //Executes when file is read
+			/*fr.onloadend = function() //Executes when file is read
 			{
 				//CES - Comma encoding system:
 				//Change all commas to '@?$COMMA$?@' on this end
 				//On the master end, transform them back
+			*/
+				console.log(fileUploaded)
 				if (fileUploaded == true)
 				{
-					fr.readAsDataURL(file);
+					var fileURL = fr.readAsDataURL(file);
+					fr.resujl
+					writePitDownload(fileURL);
 				}
 				else
 				{
-					var donwloadableData = writePitDownload(fr.result.replace(
-							/[,]+/g, '@?$COMMA$?@')
-							+ ","); //For pit data, this is always the first column, take out the comma	
-					console.log(donwloadableData);
+					writePitDownload("");
 				}
-			}
+				//}
+			//}
 
 		}
 
@@ -338,18 +345,18 @@
 		{
 			formText = imageResult;
 			formHeader = "Robot Image,";
-			var form = document.getElementsByClassName("pitForm");
+			var form = document.getElementById("pitData").getElementsByTagName('input');
 			for (i = 0; i < form.length; i++)
 			{
-				console.log("form[" + i + "]: " + form[i].value + " type:"
-						+ form[i].type);
+				//console.log("form[" + i + "]: " + form[i].value + " type:"
+				//		+ form[i].type);
 				if (form[i].type == "radio")
 				{
 					var options = document.getElementsByName(form[i].name); //Get all elements with the chosen name
 					for (w = 0; w < options.length; w++) //Look for the one with checked=true
 					{
-						console.log("Looking at radio button " + (w + 1)
-								+ " of " + options.length);
+						//console.log("Looking at radio button " + (w + 1)
+						//		+ " of " + options.length);
 						if (options[w].checked == true)
 						{
 							formText = formText + options[w].value
@@ -392,7 +399,7 @@
 
 		function hotKey(e) //e = keydown event
 		{
-			console.log("keydown: " + e.keyCode);
+			//console.log("keydown: " + e.keyCode);
 			if (e.keyCode == 18) //If the key was alt
 			{
 				e.preventDefault(); //Safety's sake
@@ -401,7 +408,7 @@
 			if (altEnabled == true) //Then if alt is held
 			{
 				e.preventDefault(); //Safety's sake
-				console.log("Detected keycode: " + e.keyCode);
+				//console.log("Detected keycode: " + e.keyCode);
 				switch (e.keyCode)
 				//Do something depending on the letter pressed
 				{
@@ -468,7 +475,7 @@
 
 		function releaseHotKey(e)
 		{
-			console.log("keyup: " + e.keyCode);
+			//console.log("keyup: " + e.keyCode);
 			if (e.keyCode == 18)
 			{
 				altEnabled = false;
@@ -477,7 +484,7 @@
 
 		function switchTab(identifier) //Based on the pressed button, changes the display
 		{
-			console.log("switchTab called");
+			//console.log("switchTab called");
 			if (identifier == "matchForm")
 			{
 				document.getElementById("matchTab").classList
@@ -519,7 +526,7 @@
 
 		function completeMatchForm()
 		{
-			console.log("form incomplete");
+			console.log("form incomplete, hiding link");
 			formComplete = false;
 			document.getElementById("matchLink").style.display = "none";
 		}
