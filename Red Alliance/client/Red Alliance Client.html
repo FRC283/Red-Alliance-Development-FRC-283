@@ -21,10 +21,10 @@
 					<input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required>
 					<span class='hotkey'>~</span> 
 	
+					<div class="error" id="numberErrorMatch"></div>
 					<label>Team Number:</label>
 					<input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number Match" required accesskey="2">
 					<span class='hotkey'>2</span>
-					<div class="error" id="numberErrorMatch"></div>
 										
 					<label>Team Name:</label>
 					<input type='text' name='Team Name' class="matchForm" accesskey="1" required>
@@ -146,9 +146,10 @@
 				<label>Team Name:</label>
 				<input type='text' name='Team Name' class="pitForm" required>
 				<br>
+				<div id="numberErrorPit" class="error"></div>
 				<label>Team Number:</label>
 				<input type="number" step="1" min="1" max="9999" class='pitForm' name="Team Number" id="teamNum" required>
-				<div id="numberErrorPit" class="error"></div>
+				
 				<br>
 				<fieldset>
 					<label>Drivetrain:</label>
@@ -239,7 +240,6 @@
 
 	<script>
 		/*-----------------------TODO
-			List of Team Names for a Competition so people cant misstype
 			Auto download on submit - update:cant
 			Make Checkbox work like Radio
 			Alt-C hotkey for checkboxes won't let you cursor through the selections with the arrowkeys
