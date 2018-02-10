@@ -139,6 +139,12 @@ span
 	white-space: pre;
 }
 
+.error
+{
+	color: red;
+	
+}
+
 form h2
 {
     margin-bottom: 10px;
