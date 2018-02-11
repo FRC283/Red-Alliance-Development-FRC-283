@@ -22,14 +22,15 @@
 					<label>Match Number:</label> 
 					<input autofocus type="number" step="1" min="0" max="9999" name='Match Number' class="matchForm" required>
 					<span class='hotkey'>~</span> 
-					
-					<label>Team Name:</label>
-					<input type='text' name='Team Name' class="matchForm" accesskey="1">
-					<span class='hotkey'>1</span>
-					
+	
+					<div class="error" id="numberErrorMatch"></div>
 					<label>Team Number:</label>
-					<input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number" required accesskey="2">
+					<input type="number" step="1" min="1" max="9999" class='matchForm' name="Team Number Match" required accesskey="2">
 					<span class='hotkey'>2</span>
+										
+					<label>Team Name:</label>
+					<input type='text' name='Team Name' class="matchForm" accesskey="1" required>
+					<span class='hotkey'>1</span>
 						
 					<fieldset class='matchForm' name='Color'>
 						<label>Team Color:</label> <span class='hotkey'>3</span>
@@ -129,6 +130,7 @@
 						<textarea name="Overview (Teleop)" class="matchForm" placeholder="Put your comments here."></textarea>
 					</div>
 				</div>
+				<br>
 				<button onClick='generateMatchSheet();' class="form-submit">Finish</button>
 				<a onClick="document.getElementById('matchData').reset(); this.style.display = 'none';" download="matchData.csv" id="matchLink" href="" style="display: none">Download Match Data</a>
 			</form>
@@ -139,6 +141,7 @@
 
 		<div id="pitForm" class="tabContent" style="display: none">
 			<form id='pitData' name='pitData' onSubmit='return false;'>
+			<br>
 				<label>Image of Robot:</label>
 				<input id='jpgU' type='file'></input>
 				<br>
@@ -146,10 +149,12 @@
 				<input type='text' name='Team Name' class="pitForm">
 				<br>
 				<label>Team Number:</label>
-				<input type="number" step="1" min="1" max="9999" class='pitform' name="Team Number" required>
+				<input type="number" step="1" min="1" max="9999" class='pitForm' name="Team Number" id="teamNum" required>
+				<br>
 				<br>
 				<fieldset>
 					<label>Drivetrain:</label>
+					<br>
 					<span>Type of Motors: <input type='text' name='Motor Type' class="pitForm" required></span>
 					<br>
 					<span>Number of Motors: <input type='text' name='Motor Number' class="pitForm" required></span>
@@ -159,6 +164,7 @@
 					<span>Style of Drivetrain: <input type='text' name='Drivetrain Style' class="pitForm" required></span>
 					<br>
 					<span>Overview/Comments: <input type='text' name='Comments' class="pitForm" required></span>
+					<input type='text' name='Overview/Comments' class="pitForm">
 				</fieldset>
 				<br>
 				<label>Robot Can Lift:</label>
@@ -185,31 +191,40 @@
 				<br>
 				<fieldset name="Theoretical Teleop Strategy (Pit)" class="pitForm">
 					<label>Primary Teleop Strategy:</label> 
+					<br>
 					<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Switch">
-					<span>PutCubes on Switch</span> 
+					<span>Put Cubes on Switch</span>
+					<br>
 					<input type="checkbox" type="number" min="0" max="20" class="pitForm" value="Put Cubes on Scale">
 					<span>Put Cubes on Scale</span> 
 					<br>
 					<input type="checkbox" type="number" min="0" max="99" class="pitForm" value="Provide Cubes to Vault">
 					<span>Provide Cubes to Vault</span>
+					<br>
 					<input type="checkbox" class="pitForm" value="Lift Reliably">
 					<span>Lift Reliably</span>
+					<br>
 				</fieldset>
 				<br>
 				<fieldset name="Theoretical Cube Source (Pit)" class="pitForm">
 					<label>Primary Source of Cubes:</label>
+					<br>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Allied Platform">
 					 <span>Allied Platform</span>
+					 <br>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Enemy Platform">
 					 <span>EnemyPlatform</span>
 					 <br>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Portal" required>
 					 <span>Portal</span>
+					 <br>
 					 <input type="radio" name="Theoretical Cube Source (Pit)" class="pitForm" value="Power Cube Zone" required>
 					 <span>Power Cube Zone</span>
+					 <br>
 				</fieldset>
 				<br>
 				<label>Overview/Comments:</label>
+				<br>
 				<textarea name="Overview" class="pitForm" required placeholder="Put your comments here."></textarea>
 				<br>
 				<button onClick="generatePitSheet(jpgU)" class="form-submit">Finish</button>
@@ -221,7 +236,6 @@
 
 	<script>
 		/*-----------------------TODO
-			List of Team Names for a Competition so people cant misstype
 			Auto download on submit - update:cant
 			Make Checkbox work like Radio
 			Alt-C hotkey for checkboxes won't let you cursor through the selections with the arrowkeys
@@ -232,6 +246,7 @@
 		var inputsPit = document.getElementById('pitData').getElementsByTagName('input');
 		var altEnabled = false; //If the alt key is being held down, its true.
 		var formComplete = true;//If any required fields are incomplete gets set to false
+		var teamNumbers = ["125","263","281","283","342","343","900","1051","1287","1319","1369","1398"];
 		
 		for (i = 0; i < inputsMatch.length; i++)
 		{
@@ -308,6 +323,12 @@
 			
 			document.getElementById("matchLink").style.display = 'block';
 				//^ Above: set proper page elements to allow download	
+				}
+			else
+			{
+				var errorBlock = document.getElementById("numberErrorMatch");
+				errorBlock.innerHTML += "Invalid Team Number";
+			}
 		}
 
 		function generatePitSheet(element)
@@ -333,6 +354,9 @@
 					var fileURL = fr.readAsDataURL(file);
 					fr.resujl
 					writePitDownload(fileURL);
+				}else{
+					var downloadableData = writePitDownload(null); //For pit data, this is always the first column, take out the comma	
+					console.log(downloadableData);
 				}
 				else
 				{
@@ -340,7 +364,11 @@
 				}
 				//}
 			//}
-
+			else
+			{
+				var errorBlock = document.getElementById("numberErrorPit");
+				errorBlock.innerHTML += "Invalid Team Number";
+			}
 		}
 
 		function writePitDownload(imageResult)//if the image exits imageResult then it equals fr.result, else it equals a blank string
