@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<title>CLIENT - RED ALLIANCE</title>
+		<link rel="stylesheet" type="text/css" href="../css/client_style.css">
+	</head>
+	<body>
+		<header>
+			<div id="logo">FRC Team 283 - RED ALLIANCE</div>
+		</header>
+	</body>
+	<script>
+		function render() //Calling this takes the configFile and generates an HTML form based on it
+		{
+			var configObject = JSON.parse(configString); //Parses the configString into an object
+			for (i = 0; i <= configObject.length; i++) //For each top level division (Match, Pit)
+			{
+				console.log(configObject[i].name);
+			}
+		}
+		var configString = ""; //Paste your configuration file contents here
+	</script>
+</html>
