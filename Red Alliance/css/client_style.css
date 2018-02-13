@@ -124,6 +124,12 @@ span
 	color: blue;
 }
 
+.textField
+{
+	height: 100px;
+	width: 200px;
+}
+
 .hotkey
 {
 	color: #900;
