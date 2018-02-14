@@ -25,23 +25,24 @@
 			switch (input.type) //Rendering depends on type of input
 			{
 				case "number":
-					var inputObj = document.createElement("input");
-					htmlParent.appendChild(inputObj);
-					inputObj.id = htmlParent.id + "." + input.name;
-					inputObj.min = input.details.min;
-					inputObj.max = input.details.max;
-					inputObj.step = input.details.step;
-					inputObj.accesskey = input.hotkey;
-					inputObj.value = input.value;
-					if (input.details.slider == true)
+					var inputObj = document.createElement("input"); //Creating a new input tag object
+					htmlParent.appendChild(inputObj); //Add the new object to the Parent
+					inputObj.id = htmlParent.id + "." + input.name; //Create id for the obj
+					inputObj.min = input.details.min; //Create a minimum value property
+					inputObj.max = input.details.max; //Create a maximum value property
+					inputObj.step = input.details.step; //Create a step property
+					inputObj.accesskey = input.hotkey; //Create a accesskey property
+					inputObj.value = input.value; //Create a starting value property
+					if (input.details.slider == true) //determine if the number type input is meant to be a slider
 					{
-						inputObj.type = "range";
+						inputObj.type = "range"; //Set the input type to range
 						var sliderValueObj = document.createElement("span"); //Span that contains the current value of the slider
-						htmlParent.appendChild(sliderValueObj);
-						sliderValueObj.id = inputObj.id + ".SliderValue";
-						sliderValueObj.value = input.value;
-						sliderValueObj.innerHTML = input.value;
-						inputObj.oninput = function updateValue()
+						htmlParent.appendChild(sliderValueObj); //Add the new slider input object to the Parent
+						sliderValueObj.id = inputObj.id + ".SliderValue";//Give slider object an id
+						sliderValueObj.value = input.value; //Give slider object starting value
+						sliderValueObj.innerHTML = input.value; //Put the start slider value in the html
+						console.log("Initial Slider Value: " + sliderValueObj.value)
+						inputObj.oninput = function updateValue() //When the slider value is changed, update
 						{
 							this.nextElementSibling.innerHTML = this.nextElementSibling.value; //Make sure that no element is defined between the range and its number label
 							console.log("Slider Value: " + this.nextElementSibling.value);
@@ -105,7 +106,8 @@
 				case "radio":
 					var fieldsetObj = document.createElement("fieldset");
 					htmlParent.appendChild(fieldsetObj);
-					if(input.hotkey != null){
+					if(input.hotkey != null)
+					{
 						var hotkeyObj = document.createElement("span");
 						htmlParent.appendChild(hotkeyObj);
 						hotkeyObj.className = "hotkey";
@@ -116,6 +118,7 @@
 						var tempInputObj = document.createElement("input");
 						fieldsetObj.appendChild(tempInputObj);
 						tempInputObj.type = input.type;
+						tempInputObj.name = input.name;
 						tempInputObj.value = input.details.options[h];
 						var tempSpanObj = document.createElement("span");
 						fieldsetObj.appendChild(tempSpanObj);
@@ -126,6 +129,10 @@
 				break;
 			}
 		}
+		/* Validation Function
+		 * Data for Submission creation function
+		 * Function to allow submission of Data
+		 */
 
 		
 		function renderLevel(htmlParent, level) //Iterates through the given level, creating <div>'s as necesary as well as <input>'s. Recursively calls itself on non-terminating elements
