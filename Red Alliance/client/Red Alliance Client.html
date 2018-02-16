@@ -50,8 +50,9 @@
 					}
 					else
 					{
-						inputObj.type = "number";
+						inputObj.type = "number"; //If not a slider just make a number input field
 					}
+					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
 					{
 						var hotkeyObj = document.createElement("span");
@@ -60,8 +61,8 @@
 						hotkeyObj.innerHTML = input.hotkey;
 					}
 				break;
-				case "text":
-					if(input.details.paragraph != true)
+				case "text": //Runs if the input is meant to be a text input
+					if(input.details.paragraph != true) //If Json contains paragraph in its details creates a text area, else create a normal input
 					{
 						var inputObj = document.createElement("input");
 					}
@@ -69,10 +70,11 @@
 					{
 						var inputObj = document.createElement("textarea");
 					}
-					htmlParent.appendChild(inputObj);
-					inputObj.id = htmlParent.id + "." + input.name;
-					inputObj.value = input.value;
-					inputObj.innerHTML = input.value;
+					htmlParent.appendChild(inputObj); //Add element to the end of htmlParent
+					inputObj.id = htmlParent.id + "." + input.name; //Give element object an id
+					inputObj.value = input.value; //If json contains a starting value give element Object the starting value
+					inputObj.innerHTML = input.value; //Put starting value into the html
+					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
 					{
 						var hotkeyObj = document.createElement("span");
@@ -81,10 +83,11 @@
 						hotkeyObj.innerHTML = input.hotkey;
 					}
 				break;
-				case "checkbox":
-					var fieldsetObj = document.createElement("fieldset");
-					htmlParent.appendChild(fieldsetObj);
+				case "checkbox": //Runs if element is a checkbox
+					var fieldsetObj = document.createElement("fieldset"); //Create a fieldset to contain checkboxes
+					htmlParent.appendChild(fieldsetObj); //Add fieldset to htmlParent
 					console.log(input.hotkey);
+					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
 					{
 						var hotkeyObj = document.createElement("span");
@@ -92,20 +95,23 @@
 						hotkeyObj.className = "hotkey";
 						hotkeyObj.innerHTML = input.hotkey;
 					}
+					/*For each checkbox option, make a new input to type checkbox and add starting values and add the element to htmlParent*/
 					for(var h = 0;h < input.details.options.length; h++)
 					{
-						var tempInputObj = document.createElement("input");
-						fieldsetObj.appendChild(tempInputObj);
-						tempInputObj.type = input.type;
-						tempInputObj.value = input.details.options[h];
+						var tempInputObj = document.createElement("input"); //Create new input
+						fieldsetObj.appendChild(tempInputObj); //Add input to the fieldset defined earlier checkboxes
+						tempInputObj.type = input.type; //Make input of type checkbox
+						tempInputObj.value = input.details.options[h]; //Set the value for each checkbox
+						/*Put each checkbox in a span element*/
 						var tempSpanObj = document.createElement("span");
 						fieldsetObj.appendChild(tempSpanObj);
 						tempSpanObj.innerHTML = input.details.options[h];
 					}
 				break;
-				case "radio":
-					var fieldsetObj = document.createElement("fieldset");
-					htmlParent.appendChild(fieldsetObj);
+				case "radio": //Runs if element is of type Radio
+					var fieldsetObj = document.createElement("fieldset"); //Create a fieldset that contains all the radio options
+					htmlParent.appendChild(fieldsetObj); //Add element to the end of htmlParent
+					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
 					{
 						var hotkeyObj = document.createElement("span");
@@ -113,13 +119,15 @@
 						hotkeyObj.className = "hotkey";
 						hotkeyObj.innerHTML = input.hotkey;
 					}
+					 /*For each radio option, make a new input*/
 					for(var h = 0;h < input.details.options.length; h++)
 					{
-						var tempInputObj = document.createElement("input");
-						fieldsetObj.appendChild(tempInputObj);
-						tempInputObj.type = input.type;
-						tempInputObj.name = input.name;
-						tempInputObj.value = input.details.options[h];
+						var tempInputObj = document.createElement("input"); //Create input element
+						fieldsetObj.appendChild(tempInputObj); //Add element to fieldset
+						tempInputObj.type = input.type; //Set input of type radio
+						tempInputObj.name = input.name; //Give input name
+						tempInputObj.value = input.details.options[h]; //Give each radio its value
+						/*Put each checkbox in a span element*/
 						var tempSpanObj = document.createElement("span");
 						fieldsetObj.appendChild(tempSpanObj);
 						tempSpanObj.innerHTML = input.details.options[h];
