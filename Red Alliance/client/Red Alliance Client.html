@@ -10,21 +10,50 @@
 	</body>
 	<script>
 		//---TODO---
-		//*Change all hotkeys to uppercase
-		//*Finish input type cases
 		//*Why don't slider values update on slide
 		//*Allow default values for checkboxes and radios
+		//*Finish collectData functions for checkbox and radio
+		//*Finish writeData function by grabbing configValues by id and comparing them to fieldsets
+		
 		
 		//---FUNCTION DEFINITIONS---
+		function writeData()
+		{
+			//Iterates through an array of fieldsets
+			//Each of those fieldsets has a data-type attribute that determins what kind of input is within
+			//We use that data-type variable to determine how we handle the data within
+			//Each fieldset has a unique id assigned to it
+			//Each of these id's corresponds to an id within an associated id in the json
+			//We set the generated value of that fieldset to the .value attribute of that json input
+			var fieldsets = htmlParent.children.fieldset;
+			for (var i = 0; fieldsets.length; i++)
+			{
+				//Search for corresponding config value
+				if (/* configValue[...] == fieldsets[i].id */)
+				{
+				 //configValue[...].id = eval(fieldsets[i].getAttribute("data-collect"));
+				}
+			}
+		}
+		
 		function renderInput(htmlParent, input) //Takes the passed input object and renders it in html as a child of the given parent
 		{
 			console.log("	Rendering input with name: " + input.name);
+			idIndex++;
+			input.id = idIndex;
 			var labelObj = document.createElement("label"); //Current label being rendered
 			labelObj.innerHTML = input.name + ":"; //Insert label header
 			htmlParent.appendChild(labelObj); //Add label
+			var fieldsetObj = document.createElement("fieldset"); //Create a fieldset to contain checkboxes
+			var dataCollect; //Function that will grab the data from this fieldset
+			htmlParent.appendChild(fieldsetObj); //Add fieldset to htmlParent
 			switch (input.type) //Rendering depends on type of input
 			{
 				case "number":
+					dataCollect = function()
+					{
+						return input.value;
+					}
 					var inputObj = document.createElement("input"); //Creating a new input tag object
 					htmlParent.appendChild(inputObj); //Add the new object to the Parent
 					inputObj.id = htmlParent.id + "." + input.name; //Create id for the obj
@@ -42,7 +71,7 @@
 						sliderValueObj.value = input.value; //Give slider object starting value
 						sliderValueObj.innerHTML = input.value; //Put the start slider value in the html
 						console.log("Initial Slider Value: " + sliderValueObj.value)
-						inputObj.oninput = function updateValue() //When the slider value is changed, update
+						inputObj.oninput = function() //When the slider value is changed, update
 						{
 							this.nextElementSibling.innerHTML = this.nextElementSibling.value; //Make sure that no element is defined between the range and its number label
 							console.log("Slider Value: " + this.nextElementSibling.value);
@@ -62,6 +91,11 @@
 					}
 				break;
 				case "text": //Runs if the input is meant to be a text input
+					dataCollect = function()
+					{
+						return input.value;
+					}
+				
 					if(input.details.paragraph != true) //If Json contains paragraph in its details creates a text area, else create a normal input
 					{
 						var inputObj = document.createElement("input");
@@ -84,8 +118,12 @@
 					}
 				break;
 				case "checkbox": //Runs if element is a checkbox
-					var fieldsetObj = document.createElement("fieldset"); //Create a fieldset to contain checkboxes
-					htmlParent.appendChild(fieldsetObj); //Add fieldset to htmlParent
+					
+					dataCollect = function ()
+					{
+						
+					}
+				
 					console.log(input.hotkey);
 					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
@@ -109,8 +147,11 @@
 					}
 				break;
 				case "radio": //Runs if element is of type Radio
-					var fieldsetObj = document.createElement("fieldset"); //Create a fieldset that contains all the radio options
-					htmlParent.appendChild(fieldsetObj); //Add element to the end of htmlParent
+				
+					dataCollect = function() 
+					{
+						
+					}
 					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
 					{
@@ -136,6 +177,8 @@
 				case "file":
 				break;
 			}
+			
+			fieldsetObj.setAttribute("data-collect", String(dataCollect)); //Whatever we defined dataCollect as, is now the collection function for this fieldset
 		}
 		/* Validation Function
 		 * Data for Submission creation function
@@ -169,6 +212,8 @@
 		}
 		
 		//---GLOBAL VARIABLES---
+		var idIndex = 0;
+		
 		var configFile = [
 			{
 				"name":"Match",
