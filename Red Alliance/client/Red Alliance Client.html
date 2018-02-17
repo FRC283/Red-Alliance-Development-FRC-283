@@ -25,22 +25,17 @@
 			//Each fieldset has a unique id assigned to it
 			//Each of these id's corresponds to an id within an associated id in the json
 			//We set the generated value of that fieldset to the .value attribute of that json input
-			var fieldsets = htmlParent.children.fieldset;
-			for (var i = 0; fieldsets.length; i++)
+			for ()
 			{
-				//Search for corresponding config value
-				if (/* configValue[...] == fieldsets[i].id */)
-				{
-				 //configValue[...].id = eval(fieldsets[i].getAttribute("data-collect"));
-				}
+				
 			}
 		}
 		
 		function renderInput(htmlParent, input) //Takes the passed input object and renders it in html as a child of the given parent
 		{
 			console.log("	Rendering input with name: " + input.name);
-			idIndex++;
-			input.id = idIndex;
+			input.id = idIndex; //Assign the current index to this input
+			idIndex++; //Up the index
 			var labelObj = document.createElement("label"); //Current label being rendered
 			labelObj.innerHTML = input.name + ":"; //Insert label header
 			htmlParent.appendChild(labelObj); //Add label
@@ -55,7 +50,7 @@
 						return input.value;
 					}
 					var inputObj = document.createElement("input"); //Creating a new input tag object
-					htmlParent.appendChild(inputObj); //Add the new object to the Parent
+					fieldsetObj.appendChild(inputObj); //Add the new object to the Parent
 					inputObj.id = htmlParent.id + "." + input.name; //Create id for the obj
 					inputObj.min = input.details.min; //Create a minimum value property
 					inputObj.max = input.details.max; //Create a maximum value property
@@ -104,7 +99,7 @@
 					{
 						var inputObj = document.createElement("textarea");
 					}
-					htmlParent.appendChild(inputObj); //Add element to the end of htmlParent
+					fieldsetObj.appendChild(inputObj); //Add element to the end of htmlParent
 					inputObj.id = htmlParent.id + "." + input.name; //Give element object an id
 					inputObj.value = input.value; //If json contains a starting value give element Object the starting value
 					inputObj.innerHTML = input.value; //Put starting value into the html
@@ -177,8 +172,8 @@
 				case "file":
 				break;
 			}
-			
 			fieldsetObj.setAttribute("data-collect", String(dataCollect)); //Whatever we defined dataCollect as, is now the collection function for this fieldset
+			inputList.push(fieldsetObj); //Append this json input representation onto the list of such inputs
 		}
 		/* Validation Function
 		 * Data for Submission creation function
@@ -213,6 +208,7 @@
 		
 		//---GLOBAL VARIABLES---
 		var idIndex = 0;
+		var inputList = []; //Contains all inputs found within the configuration file
 		
 		var configFile = [
 			{
