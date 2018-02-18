@@ -19,16 +19,23 @@
 		//---FUNCTION DEFINITIONS---
 		function writeData()
 		{
-			//Iterates through an array of fieldsets
+			//Each fieldset has a unique id assigned to it
 			//Each of those fieldsets has a data-type attribute that determins what kind of input is within
 			//We use that data-type variable to determine how we handle the data within
-			//Each fieldset has a unique id assigned to it
 			//Each of these id's corresponds to an id within an associated id in the json
 			//We set the generated value of that fieldset to the .value attribute of that json input
-			for ()
+			for (var j = 0; j < inputList.length; j++)
 			{
-				
+				for (var n = 0; n < fieldsetList.length; n++)
+				{
+					if (inputList[j].id == fieldsetList[n])
+					{
+						//input fieldset value into 2D first row and inputList eval value into second row; both of the same column index
+						inputList[j].value = eval(fieldsetList[n].getAttribute("data-collect"));
+					}
+				}
 			}
+			console.log("inputList: " + stringify(inputList));
 		}
 		
 		function renderInput(htmlParent, input) //Takes the passed input object and renders it in html as a child of the given parent
@@ -40,16 +47,16 @@
 			labelObj.innerHTML = input.name + ":"; //Insert label header
 			htmlParent.appendChild(labelObj); //Add label
 			var fieldsetObj = document.createElement("fieldset"); //Create a fieldset to contain checkboxes
-			var dataCollect; //Function that will grab the data from this fieldset
+			var dataCollectFunction; //Function that will grab the data from this fieldset
 			htmlParent.appendChild(fieldsetObj); //Add fieldset to htmlParent
 			switch (input.type) //Rendering depends on type of input
 			{
 				case "number":
-					dataCollect = function()
-					{
-						return input.value;
-					}
 					var inputObj = document.createElement("input"); //Creating a new input tag object
+					dataCollectFunction = function()
+					{
+						return this.children[0].value; //Number fieldsets only have one child
+					}
 					fieldsetObj.appendChild(inputObj); //Add the new object to the Parent
 					inputObj.id = htmlParent.id + "." + input.name; //Create id for the obj
 					inputObj.min = input.details.min; //Create a minimum value property
@@ -74,7 +81,7 @@
 					}
 					else
 					{
-						inputObj.type = "number"; //If not a slider just make a number input field
+						inputObj.type = input.type; //If not a slider just make a number input field
 					}
 					/*Create a span that shows the hotkey for the input field*/
 					if(input.hotkey != null)
@@ -86,9 +93,9 @@
 					}
 				break;
 				case "text": //Runs if the input is meant to be a text input
-					dataCollect = function()
+					dataCollectFunction = function()
 					{
-						return input.value;
+						return this.children[0].value;
 					}
 				
 					if(input.details.paragraph != true) //If Json contains paragraph in its details creates a text area, else create a normal input
@@ -113,10 +120,20 @@
 					}
 				break;
 				case "checkbox": //Runs if element is a checkbox
-					
-					dataCollect = function ()
+					dataCollectFunction = function ()
 					{
-						
+						var collectedValue = ""; //Creates a string to returned
+						for (var i = 0; i < input.children.length; i++) // Iterate through the input children
+						{
+							if(input.children[i].type == "checkbox") //Check to make sure the child is not the span label element
+							{
+								if(input.children[i].checked == true) //Check if the checkbox is checked
+								{
+									collectedValue.append(input.children[i].value + ", "); //Add the value
+								}
+							}
+						}
+						return collectedValue.substring(0, collectedValue.length - 2); //Take the comma and space off the end of collectedValue and return it
 					}
 				
 					console.log(input.hotkey);
@@ -129,12 +146,27 @@
 						hotkeyObj.innerHTML = input.hotkey;
 					}
 					/*For each checkbox option, make a new input to type checkbox and add starting values and add the element to htmlParent*/
-					for(var h = 0;h < input.details.options.length; h++)
+					for (var h = 0; h < input.details.options.length; h++)
 					{
 						var tempInputObj = document.createElement("input"); //Create new input
 						fieldsetObj.appendChild(tempInputObj); //Add input to the fieldset defined earlier checkboxes
 						tempInputObj.type = input.type; //Make input of type checkbox
-						tempInputObj.value = input.details.options[h]; //Set the value for each checkbox
+						if (input.details.options[h] != "") //If the options are blank, the input name is supposed to be the checkbox name
+						{
+							tempInputObj.value = input.details.options[h]; //Set the value for each checkbox to the details options array values. Value is not whether or not it is checked
+						}
+						else
+						{
+							tempInputObj.value = input.name; //If its a blank details.options array, then the name of the input is the name of this object
+						}
+						if (input.value == "") //If no default value is given, then it is unchecked
+						{
+							tempInputObj.checked = false; 
+						}
+						else
+						{
+							tempInputObj.checked = input.value.includes(input.details.options[h]); //Else check through each of the input options and see if it matches the selected default input value
+						}
 						/*Put each checkbox in a span element*/
 						var tempSpanObj = document.createElement("span");
 						fieldsetObj.appendChild(tempSpanObj);
@@ -142,27 +174,46 @@
 					}
 				break;
 				case "radio": //Runs if element is of type Radio
-				
-					dataCollect = function() 
+					dataCollectFunction = function ()
 					{
-						
+					/*Same as checkbox except checking for radio instead of checkbox*/
+						var collectedValue = "";
+						for (var i = 0; i < input.children.length; i++)
+						{
+							if(input.children[i].type == "radio")
+							{
+								if(input.children[i].checked == true)
+								{
+									collectedValue.append(input.children[i].value);
+								}
+							}
+						}
+						return collectedValue;
 					}
 					/*Create a span that shows the hotkey for the input field*/
-					if(input.hotkey != null)
+					if (input.hotkey != null)
 					{
 						var hotkeyObj = document.createElement("span");
 						htmlParent.appendChild(hotkeyObj);
 						hotkeyObj.className = "hotkey";
 						hotkeyObj.innerHTML = input.hotkey;
 					}
-					 /*For each radio option, make a new input*/
-					for(var h = 0;h < input.details.options.length; h++)
+					/*For each radio option, make a new input*/
+					for (var h = 0;h < input.details.options.length; h++)
 					{
 						var tempInputObj = document.createElement("input"); //Create input element
 						fieldsetObj.appendChild(tempInputObj); //Add element to fieldset
 						tempInputObj.type = input.type; //Set input of type radio
-						tempInputObj.name = input.name; //Give input name
-						tempInputObj.value = input.details.options[h]; //Give each radio its value
+						tempInputObj.name = input.name; //Give input name. All radios in this set have the same name
+						if (input.value == "") //If no default value is given, then it is unchecked
+						{
+							tempInputObj.checked = false; 
+						}
+						else
+						{
+							tempInputObj.checked = input.value.includes(input.details.options[h]); //Else check through each of the input options and see if it matches the selected default input value
+						}
+						//tempInputObj.value = input.details.options[h]; //Give each radio its value
 						/*Put each checkbox in a span element*/
 						var tempSpanObj = document.createElement("span");
 						fieldsetObj.appendChild(tempSpanObj);
@@ -170,10 +221,34 @@
 					}
 				break;
 				case "file":
+					var inputObj = document.createElement("input");
+					fieldsetObj.append(inputObj);
+					inputObj.type = input.type;
+					inputObj.name = input.name;
+					inputObj.id = input.name;
+					dataCollectFunction = function ()
+					{
+						var fr = new FileReader();
+						var result;
+						fr.onload = function()
+						{
+							result = fr.result;
+						}
+						if(this.children[0].value != null) //Data collection fieldsets only have one child
+						{
+							fr.readAsDataUrl(this.children[0].value);
+						}
+						else
+						{
+							result = "No Image";
+						}
+						return result;
+					}
 				break;
 			}
-			fieldsetObj.setAttribute("data-collect", String(dataCollect)); //Whatever we defined dataCollect as, is now the collection function for this fieldset
-			inputList.push(fieldsetObj); //Append this json input representation onto the list of such inputs
+			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //Whatever we defined dataCollect as, is now the collection function for this fieldset
+			fieldsetList.push(fieldsetObj); //Append the fieldset input onto the list of fieldsets of such inputs
+			inputList.push(input) //Append this json input representation onto the list of such inputs
 		}
 		/* Validation Function
 		 * Data for Submission creation function
@@ -209,425 +284,426 @@
 		//---GLOBAL VARIABLES---
 		var idIndex = 0;
 		var inputList = []; //Contains all inputs found within the configuration file
+		var fieldsetList = []; //Contains all the fieldsets of inputs
 		
 		var configFile = [
-			{
-				"name":"Match",
-				"terminal":false,
-				"tabs":
-				[
-					{
-						"name":"Main",
-						"terminal":true,
-						"inputs":
-						[
-							{
-								"name":"Match Number",
-								"type":"text",
-								"value":"",
-								"required":true,
-								"hotkey":"~",
-								"details":
-								{
-									"paragraph":false
-								}
-							},
-							{
-								"name":"Team Number",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"1",
-								"details":
-								{
-									"min":1,
-									"max":9999,
-									"step":1,
-									"slider":false,
-									"fraction":false
-								}
-							},
-							{
-								"name":"Team Name",
-								"type":"text",
-								"value":"",
-								"required":true,
-								"hotkey":"2",
-								"details":
-								{
-									"paragraph":false
-								}
-							}
-						]
-					},
-					{
-						"name":"Auto",
-						"terminal":true,
-						"inputs":
-						[
-							{
-								"name":"Crosses Baseline Successfully",
-								"type":"checkbox",
-								"value":"",
-								"required":false,
-								"hotkey":"4",
-								"details":
-								{
-									"options":[""]
-								}
-							},
-							{
-								"name":"Cubes Put In Switch",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"5",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Cubes Put In Scale",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"Q",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Cubes Put In Vault/Exchange Zone",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"W",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Comments/Overview",
-								"type":"text",
-								"value":"",
-								"required":true,
-								"hotkey":"E",
-								"details":
-								{
-									"paragraph":true
-								}
-							}
-						]
-					},
-					{
-						"name":"Teleop",
-						"terminal":true,
-						"inputs":
-						[
-							{
-								"name":"Cubes Put In Switch",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"R",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Cubes Put In Scale",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"A",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Cubes Put In Vault/Exchange Zone",
-								"type":"number",
-								"value":"",
-								"required":true,
-								"hotkey":"5",
-								"details":
-								{
-									"min":0,
-									"max":999,
-									"step":1,
-									"slider":false,
-									"fraction":true
-								}
-							},
-							{
-								"name":"Primary Source of Cubes",
-								"type":"radio",
-								"value":"",
-								"required":true,
-								"hotkey":"D",
-								"details":
-								{
-									"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
-								}
-							},
-							{
-								"name":"Attempts to Block Enemy Scoring",
-								"type":"checkbox",
-								"value":"",
-								"required":false,
-								"hotkey":"F",
-								"details":
-								{
-									"options":[""]
-								}
-							},
-							{
-								"name":"Lifts Successfully",
-								"type":"checkbox",
-								"value":"",
-								"required":false,
-								"hotkey":"Z",
-								"details":
-								{
-									"options":[""]
-								}
-							},
-							{
-								"name":"Another Robot Hangs Off of This One",
-								"type":"checkbox",
-								"value":"",
-								"required":false,
-								"hotkey":"X",
-								"details":
-								{
-									"options":[""]
-								}
-							},
-							{
-								"name":"Main Strategy",
-								"type":"checkbox",
-								"value":"",
-								"required":false,
-								"hotkey":"C",
-								"details":
-								{
-									"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
-								}
-							},
-							{
-								"name":"Comments/Overview",
-								"type":"text",
-								"value":"",
-								"required":true,
-								"hotkey":"L-Shift",
-								"details":
-								{
-									"paragraph":true
-								}
-							}
-						]
-					}
-				]
-			},
-			{
-				"name":"Pit",
-				"terminal":true,
-				"inputs":
-				[
-					{
-						"name":"Robot Image",
-						"type":"file",
-						"value":"",
-						"required":"false",
-						"hotkey":null,
-						"details":
-						{
-							"formats":[".png",".jpg"]
-						}
-					},
-					{
-						"name":"Team Number",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"min":1,
-							"max":9999,
-							"step":1,
-							"slider":false,
-							"fraction":false
-						}
-					},
-					{
-						"name":"Team Name",
-						"type":"text",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"paragraph":false
-						}
-					},
-					{
-						"name":"Type of Motors on Drivetrain",
-						"type":"text",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"paragraph":false
-						}
-					},
-					{
-						"name":"Number of Motors on Drive",
-						"type":"text",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"paragraph":false
-						}
-					},
-					{
-						"name":"Drivetrain Overview/Comments",
-						"type":"text",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"paragraph":false
-						}
-					},
-					{
-						"name":"Can Lift",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"null",
-						"details":
-						{
-							"options":[""]
-						}
-					},
-					{
-						"name":"Lift Clearance from Ground",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"min":1,
-							"max":120,
-							"step":0.5,
-							"slider":false,
-							"fraction":false
-						}
-					},
-					{
-						"name":"Weight",
-						"type":"number",
-						"value":120,
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"min":1,
-							"max":120,
-							"step":0.5,
-							"slider":true,
-							"fraction":false
-						}
-					},
-					{
-						"name":"Automatically Adjusts Side on Autonomous",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"null",
-						"details":
-						{
-							"options":[""]
-						}
-					},
-					{
-						"name":"Puts Cube on Switch in Autonomous",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"null",
-						"details":
-						{
-							"options":[""]
-						}
-					},
-					{
-						"name":"Puts Cube on Scale in Autonomous",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"null",
-						"details":
-						{
-							"options":[""]
-						}
-					},
-					{
-						"name":"Main Strategy",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"null",
-						"details":
-						{
-							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
-						}
-					},
-					{
-						"name":"Primary Source of Cubes",
-						"type":"radio",
-						"value":"",
-						"required":true,
-						"hotkey":"null",
-						"details":
-						{
-							"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
-						}
-					}
-				]
-			}	
-		]
+              	{
+            		"name":"Match",
+            		"terminal":false,
+            		"tabs":
+            		[
+            			{
+            				"name":"Main",
+            				"terminal":true,
+            				"inputs":
+            				[
+            					{
+            						"name":"Match Number",
+            						"type":"text",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"~",
+            						"details":
+            						{
+            							"paragraph":false
+            						}
+            					},
+            					{
+            						"name":"Team Number",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"1",
+            						"details":
+            						{
+            							"min":1,
+            							"max":9999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":false
+            						}
+            					},
+            					{
+            						"name":"Team Name",
+            						"type":"text",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"2",
+            						"details":
+            						{
+            							"paragraph":false
+            						}
+            					}
+            				]
+            			},
+            			{
+            				"name":"Auto",
+            				"terminal":true,
+            				"inputs":
+            				[
+            					{
+            						"name":"Crosses Baseline Successfully",
+            						"type":"checkbox",
+            						"value":"",
+            						"required":false,
+            						"hotkey":"4",
+            						"details":
+            						{
+            							"options":[""]
+            						}
+            					},
+            					{
+            						"name":"Cubes Put In Switch",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"5",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Cubes Put In Scale",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"Q",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Cubes Put In Vault/Exchange Zone",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"W",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Comments/Overview",
+            						"type":"text",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"E",
+            						"details":
+            						{
+            							"paragraph":true
+            						}
+            					}
+            				]
+            			},
+            			{
+            				"name":"Teleop",
+            				"terminal":true,
+            				"inputs":
+            				[
+            					{
+            						"name":"Cubes Put In Switch",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"R",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Cubes Put In Scale",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"A",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Cubes Put In Vault/Exchange Zone",
+            						"type":"number",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"5",
+            						"details":
+            						{
+            							"min":0,
+            							"max":999,
+            							"step":1,
+            							"slider":false,
+            							"fraction":true
+            						}
+            					},
+            					{
+            						"name":"Primary Source of Cubes",
+            						"type":"radio",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"D",
+            						"details":
+            						{
+            							"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+            						}
+            					},
+            					{
+            						"name":"Attempts to Block Enemy Scoring",
+            						"type":"checkbox",
+            						"value":"",
+            						"required":false,
+            						"hotkey":"F",
+            						"details":
+            						{
+            							"options":[""]
+            						}
+            					},
+            					{
+            						"name":"Lifts Successfully",
+            						"type":"checkbox",
+            						"value":"",
+            						"required":false,
+            						"hotkey":"Z",
+            						"details":
+            						{
+            							"options":[""]
+            						}
+            					},
+            					{
+            						"name":"Another Robot Hangs Off of This One",
+            						"type":"checkbox",
+            						"value":"",
+            						"required":false,
+            						"hotkey":"X",
+            						"details":
+            						{
+            							"options":[""]
+            						}
+            					},
+            					{
+            						"name":"Main Strategy",
+            						"type":"checkbox",
+            						"value":"",
+            						"required":false,
+            						"hotkey":"C",
+            						"details":
+            						{
+            							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
+            						}
+            					},
+            					{
+            						"name":"Comments/Overview",
+            						"type":"text",
+            						"value":"",
+            						"required":true,
+            						"hotkey":"L-Shift",
+            						"details":
+            						{
+            							"paragraph":true
+            						}
+            					}
+            				]
+            			}
+            		]
+            	},
+            	{
+            		"name":"Pit",
+            		"terminal":true,
+            		"inputs":
+            		[
+            			{
+            				"name":"Robot Image",
+            				"type":"file",
+            				"value":"",
+            				"required":"false",
+            				"hotkey":null,
+            				"details":
+            				{
+            					"formats":[".png",".jpg"]
+            				}
+            			},
+            			{
+            				"name":"Team Number",
+            				"type":"number",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"min":1,
+            					"max":9999,
+            					"step":1,
+            					"slider":false,
+            					"fraction":false
+            				}
+            			},
+            			{
+            				"name":"Team Name",
+            				"type":"text",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"paragraph":false
+            				}
+            			},
+            			{
+            				"name":"Type of Motors on Drivetrain",
+            				"type":"text",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"paragraph":false
+            				}
+            			},
+            			{
+            				"name":"Number of Motors on Drive",
+            				"type":"text",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"paragraph":false
+            				}
+            			},
+            			{
+            				"name":"Drivetrain Overview/Comments",
+            				"type":"text",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"paragraph":false
+            				}
+            			},
+            			{
+            				"name":"Can Lift",
+            				"type":"checkbox",
+            				"value":"",
+            				"required":false,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":[""]
+            				}
+            			},
+            			{
+            				"name":"Lift Clearance from Ground",
+            				"type":"number",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"min":1,
+            					"max":120,
+            					"step":0.5,
+            					"slider":false,
+            					"fraction":false
+            				}
+            			},
+            			{
+            				"name":"Weight",
+            				"type":"number",
+            				"value":120,
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"min":1,
+            					"max":120,
+            					"step":0.5,
+            					"slider":true,
+            					"fraction":false
+            				}
+            			},
+            			{
+            				"name":"Automatically Adjusts Side on Autonomous",
+            				"type":"checkbox",
+            				"value":"",
+            				"required":false,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":[""]
+            				}
+            			},
+            			{
+            				"name":"Puts Cube on Switch in Autonomous",
+            				"type":"checkbox",
+            				"value":"",
+            				"required":false,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":[""]
+            				}
+            			},
+            			{
+            				"name":"Puts Cube on Scale in Autonomous",
+            				"type":"checkbox",
+            				"value":"",
+            				"required":false,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":[""]
+            				}
+            			},
+            			{
+            				"name":"Main Strategy",
+            				"type":"checkbox",
+            				"value":"",
+            				"required":false,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
+            				}
+            			},
+            			{
+            				"name":"Primary Source of Cubes",
+            				"type":"radio",
+            				"value":"",
+            				"required":true,
+            				"hotkey":"null",
+            				"details":
+            				{
+            					"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+            				}
+            			}
+            		]
+            	}	
+            ]
 		
 		//---ONLOAD FUNCTION CALLS---
 		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent
