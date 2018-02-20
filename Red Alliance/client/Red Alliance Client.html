@@ -10,271 +10,272 @@
 	</body>
 	<script>
 		//---TODO---
-		//*Why don't slider values update on slide
 		//*Allow default values for checkboxes and radios
 		//*Finish collectData functions for checkbox and radio
 		//*Finish writeData function by grabbing configValues by id and comparing them to fieldsets
-		
+		//*Data validation function
+		//*Submission Button
+		//*Tab Partitioning
 		
 		//---FUNCTION DEFINITIONS---
+		
+		//This functions reads the "form" we've created, and stores the values in a json file
 		function writeData()
 		{
-			//Each fieldset has a unique id assigned to it
-			//Each of those fieldsets has a data-type attribute that determins what kind of input is within
-			//We use that data-type variable to determine how we handle the data within
-			//Each of these id's corresponds to an id within an associated id in the json
-			//We set the generated value of that fieldset to the .value attribute of that json input
-			for (var j = 0; j < inputList.length; j++)
+			for (var j = 0; j < inputList.length; j++) 		   //Iterate through accumulated list of json inputs
 			{
-				for (var n = 0; n < fieldsetList.length; n++)
+				for (var n = 0; n < fieldsetList.length; n++)  //Iterate through list of accumulated html fieldsets
 				{
-					if (inputList[j].id == fieldsetList[n])
+					if (inputList[j].id == fieldsetList[n])    //When the ID of a fieldset and input match
 					{
-						inputList[j].value = eval(fieldsetList[n].getAttribute("data-collect"));
+						inputList[j].value = eval(fieldsetList[n].getAttribute("data-collect")); //Store the filled-out value of the fieldset in the json input
 					}
 				}
 			}
 			console.log("inputList: " + stringify(inputList));
 		}
 		
-		function renderInput(htmlParent, input) //Takes the passed input object and renders it in html as a child of the given parent
+		//Inserts the json input object (input) as html as a child to (htmlParent)
+		function renderInput(htmlParent, input)
 		{
-			console.log("	Rendering input with name: " + input.name);
-			input.id = idIndex; //Assign the current index to this input
-			idIndex++; //Up the index
-			var labelObj = document.createElement("label"); //Current label being rendered
-			labelObj.innerHTML = input.name + ":"; //Insert label header
-			htmlParent.appendChild(labelObj); //Add label
-			var fieldsetObj = document.createElement("fieldset"); //Create a fieldset to contain checkboxes
-			var dataCollectFunction; //Function that will grab the data from this fieldset
-			htmlParent.appendChild(fieldsetObj); //Add fieldset to htmlParent
-			switch (input.type) //Rendering depends on type of input
+			//NOTE: All html objects are CAPITAL in comments, all json data is normal case
+			
+			//Explanation: 
+				//Each input is described by a json object (input)
+				//Each json input is translated into a series of html objects which are then rendered
+				//Each input is translated into a: <label> </label> <fieldset> <inputs...> </fieldset> <span>"hotkey"</span> (at the minimum)
+			
+			//-----------------------------------------------------------------ALL INPUT TYPES
+			input.id = idIndex; 								  //Assign the current index to this input
+			idIndex++; 											  //Up the index
+			var labelObj = document.createElement("label"); 	  //The LABEL is what actually names each input field
+			labelObj.innerHTML = input.name + ":"; 				  //Set LABEL name to be based on the provided json name
+			htmlParent.appendChild(labelObj); 					  //Add LABEL to given parent
+			var fieldsetObj = document.createElement("fieldset"); //This FIELDSET contains all the parts of the html INPUTS associated with this json input
+			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
+			var dataCollectFunction; 							  //This function becomes associated with this FIELDSET, and returns the accumulated data from this FIELDSET when called
+			switch (input.type) 								  //Additional rendering depends on type of input
 			{
-				case "number":
-					var inputObj = document.createElement("input"); //Creating a new input tag object
-					dataCollectFunction = function()
+				case "number":	//-----------------------------------------------NUMBER TYPE
+					var inputObj = document.createElement("input"); //Creating a new INPUT html object
+					fieldsetObj.appendChild(inputObj); 				//Add this number INPUT to the PARENT
+					dataCollectFunction = function() 				//Defines the data collection function for number
 					{
-						return this.children[0].value; //Number fieldsets only have one child
+						return this.children[0].value; 				//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
 					}
-					fieldsetObj.appendChild(inputObj); //Add the new object to the Parent
-					inputObj.id = htmlParent.id + "." + input.name; //Create id for the obj
-					inputObj.min = input.details.min; //Create a minimum value property
-					inputObj.max = input.details.max; //Create a maximum value property
-					inputObj.step = input.details.step; //Create a step property
-					inputObj.accesskey = input.hotkey; //Create a accesskey property
-					inputObj.value = input.value; //Create a starting value property
-					if (input.details.slider == true) //determine if the number type input is meant to be a slider
+					inputObj.id = htmlParent.id + "." + input.name; //Create a unique id for the number INPUT
+					inputObj.min = input.details.min; 				//Create a minimum value property based on the json data
+					inputObj.max = input.details.max; 				//Create a maximum value property based on the json data
+					inputObj.step = input.details.step; 			//Create a step property based on the json data
+					inputObj.value = input.value; 					//Create a starting value property based on the json data
+					if (input.details.slider == true) 				//If the number INPUT is supposed to be a slider:
 					{
-						inputObj.type = "range"; //Set the input type to range
-						var sliderValueObj = document.createElement("span"); //Span that contains the current value of the slider
-						htmlParent.appendChild(sliderValueObj); //Add the new slider input object to the Parent
-						sliderValueObj.id = inputObj.id + ".SliderValue";//Give slider object an id
-						sliderValueObj.value = input.value; //Give slider object starting value
-						sliderValueObj.innerHTML = input.value; //Put the start slider value in the html
-						console.log("Initial Slider Value: " + sliderValueObj.value)
-						inputObj.oninput = function() //When the slider value is changed, update
+						inputObj.type = "range"; 							 //Change the INPUT type to range
+						var sliderValueObj = document.createElement("span"); //This new SPAN object will display the current value of the slider in it
+						fieldsetObj.appendChild(sliderValueObj); 			 //Add the new SPAN to the PARENT
+						sliderValueObj.id = inputObj.id + ".SliderValue";	 //Give SPAN an id
+						sliderValueObj.innerHTML = input.value; 			 //The initial SPAN interior number is the json input default value
+						inputObj.oninput = function() 						 //Whenever the INPUT slider changes, updated the SPAN that shows the value
 						{
-							this.nextElementSibling.innerHTML = this.nextElementSibling.value; //Make sure that no element is defined between the range and its number label
-							console.log("Slider Value: " + this.nextElementSibling.value);
+							this.nextElementSibling.innerHTML = this.value;  //The value of the SPAN text becomes equal to the value of the SLIDER whenever the SLIDER becomes updated
 						}
 					}
-					else
+					else							//If the number INPUT is not slated to be a slider:
 					{
-						inputObj.type = input.type; //If not a slider just make a number input field
+						inputObj.type = "number";	//Explicitly defined the INPUT type as number
 					}
-					/*Create a span that shows the hotkey for the input field*/
-					if(input.hotkey != null)
+					if (input.hotkey != null)		//Now, regardless of the number INPUT type, a hotkey element needs to be created
 					{
-						var hotkeyObj = document.createElement("span");
-						htmlParent.appendChild(hotkeyObj);
-						hotkeyObj.className = "hotkey";
-						hotkeyObj.innerHTML = input.hotkey;
-					}
-				break;
-				case "text": //Runs if the input is meant to be a text input
-					dataCollectFunction = function()
-					{
-						return this.children[0].value;
-					}
-				
-					if(input.details.paragraph != true) //If Json contains paragraph in its details creates a text area, else create a normal input
-					{
-						var inputObj = document.createElement("input");
-					}
-					else
-					{
-						var inputObj = document.createElement("textarea");
-					}
-					fieldsetObj.appendChild(inputObj); //Add element to the end of htmlParent
-					inputObj.id = htmlParent.id + "." + input.name; //Give element object an id
-					inputObj.value = input.value; //If json contains a starting value give element Object the starting value
-					inputObj.innerHTML = input.value; //Put starting value into the html
-					/*Create a span that shows the hotkey for the input field*/
-					if(input.hotkey != null)
-					{
-						var hotkeyObj = document.createElement("span");
-						htmlParent.appendChild(hotkeyObj);
-						hotkeyObj.className = "hotkey";
-						hotkeyObj.innerHTML = input.hotkey;
+						var hotkeyObj = document.createElement("span");  //The new SPAN object contains the hotkey assigned to this INPUT
+						htmlParent.appendChild(hotkeyObj);				 //Add the new SPAN onto the PARENT
+						inputObj.accesskey = input.hotkey; 				 //Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
+						hotkeyObj.className = "hotkey";					 //Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				 //Display the json-defined hotkey inside of this SPAN
 					}
 				break;
-				case "checkbox": //Runs if element is a checkbox
-					dataCollectFunction = function ()
+				case "text": //--------------------------------------------------------TEXT TYPE
+					dataCollectFunction = function() 	 //Defines the data collection function for text
 					{
-						var collectedValue = ""; //Creates a string to returned
-						for (var i = 0; i < input.children.length; i++) // Iterate through the input children
+						return this.children[0].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
+					}
+					if (input.details.paragraph != true) //If the input was defined as a paragraph, the text INPUT is made very large (i.e. textarea type)
+					{
+						var inputObj = document.createElement("input");    //Create the input as a text INPUT if not a paragraph
+						inputObj.type = "text";							   //If non-paragraph, type must be explicitly defined
+					}
+					else												   //If it IS a paragraph type
+					{
+						var inputObj = document.createElement("textarea"); //Create the input as a TEXTAREA if it is a paragraph
+					}
+					fieldsetObj.appendChild(inputObj); 					//Add the INPUT/TEXTAREA to the FIELDSET
+					inputObj.id = htmlParent.id + "." + input.name; 	//Give INPUT/TEXTAREA an id
+					inputObj.value = input.value; 						//Assign default value to INPUT/TEXTAREA
+					inputObj.innerHTML = input.value; 					//Assign default value to INPUT/TEXTAREA (Redundant)
+					if (input.hotkey != null)							//Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
+					{
+						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
+						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						inputObj.accesskey = input.hotkey; 				//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
+						hotkeyObj.className = "hotkey";					//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
+					}
+				break;
+				case "checkbox": //---------------------------------------------------------------------------CHECKBOX TYPE
+					dataCollectFunction = function ()									   //Defines the data collection function for a checkbox
+					{
+						//---															   //A checkbox's (json) FIELDSET contains multiple checkbox INPUTS
+						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
+						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)
 						{
-							if(input.children[i].type == "checkbox") //Check to make sure the child is not the span label element
+							if(this.children[i].type == "checkbox") 					   //Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area checkbox INPUTS
 							{
-								if(input.children[i].checked == true) //Check if the checkbox is checked
+								if(input.children[i].checked == true) 					   //Check if the checkbox INPUT is checked
 								{
-									collectedValue.append(input.children[i].value + ", "); //Add the value
+									collectedValue.append(input.children[i].value + ", "); //If it is, add its value (name) to the accumulated value
 								}
 							}
 						}
-						return collectedValue.substring(0, collectedValue.length - 2); //Take the comma and space off the end of collectedValue and return it
+						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
 					}
-				
-					console.log(input.hotkey);
-					/*Create a span that shows the hotkey for the input field*/
-					if(input.hotkey != null)
+					if (input.hotkey != null)							//Now a hotkey element needs to be created
 					{
-						var hotkeyObj = document.createElement("span");
-						htmlParent.appendChild(hotkeyObj);
-						hotkeyObj.className = "hotkey";
-						hotkeyObj.innerHTML = input.hotkey;
+						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
+						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";					//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
-					/*For each checkbox option, make a new input to type checkbox and add starting values and add the element to htmlParent*/
-					for (var h = 0; h < input.details.options.length; h++)
+					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS
 					{
-						var tempInputObj = document.createElement("input"); //Create new input
-						fieldsetObj.appendChild(tempInputObj); //Add input to the fieldset defined earlier checkboxes
-						tempInputObj.type = input.type; //Make input of type checkbox
-						if (input.details.options[h] != "") //If the options are blank, the input name is supposed to be the checkbox name
+						//---														//For each checkbox defined in the details.options array:
+						var tempInputObj = document.createElement("input"); 		//Create new INPUT
+						fieldsetObj.appendChild(tempInputObj); 						//Add INPUT to the FIELDSET
+						tempInputObj.type = "checkbox"; 							//Make the INPUT type checkbox
+						if (input.details.options[h] != "") 						//If the json options for this INPUT is NOT blank: 
 						{
-							tempInputObj.value = input.details.options[h]; //Set the value for each checkbox to the details options array values. Value is not whether or not it is checked
+							tempInputObj.value = input.details.options[h]; 			//The INPUT name/value is supposed to be the checkbox json name
 						}
-						else
+						else														//If the json options for this INPUT is blank: 
 						{
-							tempInputObj.value = input.name; //If its a blank details.options array, then the name of the input is the name of this object
+							tempInputObj.value = input.name; 						//The name of the json input is the name of this html INPUT
 						}
-						if (input.value == "") //If no default value is given, then it is unchecked
+						if (input.value == "") 										//Should this checkbox INPUT be rendered as checked?
 						{
-							tempInputObj.checked = false; 
+							tempInputObj.checked = false; 							//If the given json input value is empty, it is unchecked
 						}
-						else
+						else 														//If the given json input value is NOT empty:
 						{
-							tempInputObj.checked = input.value.includes(input.details.options[h]); //Else check through each of the input options and see if it matches the selected default input value
+							//The checkbox INPUT becomes checked only if the json input value contains the options value currently being rendered
+							tempInputObj.checked = input.value.includes(input.details.options[h]);
+							//E.G.:
+								//"value":"Blue"
+								//"options":["Red","Yellow","Blue"]
+								//If we are rendering "Blue", then "Blue" is checked because "Blue" is a substring of the json "value"
 						}
-						/*Put each checkbox in a span element*/
-						var tempSpanObj = document.createElement("span");
-						fieldsetObj.appendChild(tempSpanObj);
-						tempSpanObj.innerHTML = input.details.options[h];
+						var tempSpanObj = document.createElement("span");			//Create a SPAN element to contain labels for each checkbox
+						fieldsetObj.appendChild(tempSpanObj);						//Add the SPAN to the FIELDSET
+						tempSpanObj.innerHTML = input.details.options[h]; 			//The content of the SPAN is the current index-value of the options array
+						if (h = 0)													//If this is the first checkbox INPUT rendered:
+						{
+							tempInputObj.accesskey = input.hotkey; 					//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
+						}
 					}
 				break;
-				case "radio": //Runs if element is of type Radio
-					dataCollectFunction = function ()
+				case "radio": //---------------------------------------------------------------------------RADIO TYPE
+					dataCollectFunction = function ()									   //Defines the data collection function for a radio. Very similar to checkbox's
 					{
-					/*Same as checkbox except checking for radio instead of checkbox*/
-						var collectedValue = "";
-						for (var i = 0; i < input.children.length; i++)
+						//---															   //A radio's (json) FIELDSET contains multiple checkbox INPUTS
+						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
+						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)
 						{
-							if(input.children[i].type == "radio")
+							if(this.children[i].type == "radio") 					   	   //Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
 							{
-								if(input.children[i].checked == true)
+								if(input.children[i].checked == true) 					   //Check if the radio INPUT is checked
 								{
-									collectedValue.append(input.children[i].value);
+									collectedValue.append(input.children[i].value + ", "); //If it is, add its value (name) to the accumulated value
 								}
 							}
 						}
-						return collectedValue;
+						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
 					}
-					/*Create a span that shows the hotkey for the input field*/
-					if (input.hotkey != null)
+					if (input.hotkey != null)							//Now a hotkey element needs to be created
 					{
-						var hotkeyObj = document.createElement("span");
-						htmlParent.appendChild(hotkeyObj);
-						hotkeyObj.className = "hotkey";
-						hotkeyObj.innerHTML = input.hotkey;
+						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
+						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";					//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
-					/*For each radio option, make a new input*/
-					for (var h = 0;h < input.details.options.length; h++)
+					for (var h = 0;h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS
 					{
-						var tempInputObj = document.createElement("input"); //Create input element
-						fieldsetObj.appendChild(tempInputObj); //Add element to fieldset
-						tempInputObj.type = input.type; //Set input of type radio
-						tempInputObj.name = input.name; //Give input name. All radios in this set have the same name
-						if (input.value == "") //If no default value is given, then it is unchecked
+						var tempInputObj = document.createElement("input"); 	//Create INPUT element
+						fieldsetObj.appendChild(tempInputObj); 					//Add INPUT to FIELDSET
+						tempInputObj.type = "radio"; 							//Set INPUT to type radio
+						tempInputObj.name = input.name; 						//All radio INPUTS in this FIELDSET must have the same name to work properly
+						if (input.value == "") 									//If no default value is given:
 						{
-							tempInputObj.checked = false; 
+							tempInputObj.checked = false;  						//Then this radio INPUT is unchecked
 						}
 						else
 						{
-							tempInputObj.checked = input.value.includes(input.details.options[h]); //Else check through each of the input options and see if it matches the selected default input value
+							tempInputObj.checked = input.value.includes(input.details.options[h]); 	//Else check through each of the input options and see if it matches the selected default input value
 						}
-						//tempInputObj.value = input.details.options[h]; //Give each radio its value
-						/*Put each checkbox in a span element*/
-						var tempSpanObj = document.createElement("span");
-						fieldsetObj.appendChild(tempSpanObj);
-						tempSpanObj.innerHTML = input.details.options[h];
+						var tempSpanObj = document.createElement("span");		//Create a SPAN to label this checkbox INPUT
+						fieldsetObj.appendChild(tempSpanObj);					//Add that SPAN to the fieldset
+						tempSpanObj.innerHTML = input.details.options[h];		//Set the SPAN to contain the proper label for this INPUT
 					}
 				break;
-				case "file":
-					var inputObj = document.createElement("input");
-					fieldsetObj.append(inputObj);
-					inputObj.type = input.type;
-					inputObj.name = input.name;
-					inputObj.id = input.name;
-					dataCollectFunction = function ()
+				case "file": //-----------------------------------------------FILE TYPE
+					var inputObj = document.createElement("input");		//Create INPUT object
+					fieldsetObj.append(inputObj);						//Add INPUT object to FIELDSET
+					inputObj.type = "file";								//Set INPUT type to file
+					inputObj.name = input.name;							//Set INPUT name to the json input
+					inputObj.id = htmlParent + "." + input.name;		//Set INPUT id
+					dataCollectFunction = function ()					//Defines data collection function for a file
 					{
-						var fr = new FileReader();
-						var result;
-						fr.onload = function()
+						var fr = new FileReader();						//Used to convert the submitted image into text
+						var result;										//Will be assigned to the result of conversion to text
+						fr.onload = function()							//This function will execute once the image has successfully been converted
 						{
-							result = fr.result;
+							result = fr.result;							//Assign the successful reading to the return value
 						}
-						if(this.children[0].value != null) //Data collection fieldsets only have one child
+						if (this.children[0].value != null) 			//If a file was actually submitted:
 						{
-							fr.readAsDataUrl(this.children[0].value);
+							fr.readAsDataUrl(this.children[0].value);	//Read that file as a image
 						}
 						else
 						{
-							result = "No Image";
+							result = "No Image";						//Otherwise, simply put 'no image' where the image string would go
 						}
-						return result;
+						return result; 									//Then, return the image
 					}
 				break;
 			}
-			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //Whatever we defined dataCollect as, is now the collection function for this fieldset
-			fieldsetList.push(fieldsetObj); //Append the fieldset input onto the list of fieldsets of such inputs
-			inputList.push(input) //Append this json input representation onto the list of such inputs
+			//----------------------------ALL INPUT TYPES (AGAIN)
+			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //"Assign" the data collection function to the FIELDSET
+			fieldsetList.push(fieldsetObj); 									   //Append the FIELDSET onto a cumulative list
+			inputList.push(input) 												   //Append the json input onto a cumulative list
 		}
-		/* Validation Function
-		 * Data for Submission creation function
-		 * Function to allow submission of Data
-		 */
-
 		
-		function renderLevel(htmlParent, level) //Iterates through the given level, creating <div>'s as necesary as well as <input>'s. Recursively calls itself on non-terminating elements
+		//This function breaks down the input json file into smaller levels until it identifies the inputs. It renders each level as it goes. This is where the program really begins
+		function renderLevel(htmlParent, level)
 		{
-			var currentObj; //The current DOM object being configured
-			for (var i = 0; i < level.length; i++) //For each division (Match, Pit, Auto, Teleop, Etc)
+			var currentObj; 											//Current HTML DOM element being created
+			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array
 			{
 				console.log("Creating object for: " + level[i].name)
-				currentObj = document.createElement("div");
-				currentObj.id = htmlParent.id + "." + level[i].name;
-				htmlParent.appendChild(currentObj);
-				if (level[i].terminal == false) //If not terminal, read the next level
+				currentObj = document.createElement("div");				//Create a DIV
+				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
+				currentObj.id = htmlParent.id + "." + level[i].name;	//Assign an id to the DIV based on its PARENT name as well
+				if (level[i].terminal == false) 						//If this json level is not marked as "terminal"
 				{
 					console.log("-" + level[i].name + " is not terminating.");
-					renderLevel(currentObj, level[i].tabs); //Read the next level to make its divisions
+					renderLevel(currentObj, level[i].tabs); 			//Recursively call this function to process the next array level
 				}
-				else //Otherwise, begin rendering inputs
+				else 													//If this json level is terminal, it is an "input"
 				{
 					console.log("-" + level[i].name + " is terminating.");
-					for (var j = 0; j < level[i].inputs.length; j++)
+					for (var j = 0; j < level[i].inputs.length; j++)	//For each "input" in this level
 					{
-						renderInput(currentObj, level[i].inputs[j]);
+						renderInput(currentObj, level[i].inputs[j]);	//Call render input, which will append "html input elements" (sorta) onto the "currentObj" element
 					}
 				}
 			}
@@ -282,8 +283,8 @@
 		
 		//---GLOBAL VARIABLES---
 		var idIndex = 0;
-		var inputList = []; //Contains all inputs found within the configuration file
-		var fieldsetList = []; //Contains all the fieldsets of inputs
+		var inputList = []; 	//Contains all inputs found within the configuration file
+		var fieldsetList = [];  //Contains all the fieldsets of inputs
 		
 		var configFile = [
               	{
@@ -705,6 +706,6 @@
             ]
 		
 		//---ONLOAD FUNCTION CALLS---
-		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent
+		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent. Kicks off the program.
 	</script>
 </html>
