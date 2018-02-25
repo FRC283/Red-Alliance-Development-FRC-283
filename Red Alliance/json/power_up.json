@@ -245,6 +245,7 @@
 	{
 		"name":"Pit",
 		"terminal":true,
+		"submittable":true,
 		"inputs":
 		[
 			{

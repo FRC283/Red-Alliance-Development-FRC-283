@@ -16,6 +16,9 @@
 		//*Data validation function
 		//*Submission Button
 		//*Tab Partitioning
+			//*Tab visibility function
+		//Creating a submission button
+		//Making hotkeys swap to correct tab
 		
 		//---FUNCTION DEFINITIONS---
 		
@@ -26,7 +29,7 @@
 			{
 				for (var n = 0; n < fieldsetList.length; n++)  //Iterate through list of accumulated html fieldsets
 				{
-					if (inputList[j].id == fieldsetList[n])    //When the ID of a fieldset and input match
+					if (inputList[j].id == fieldsetList[n] && inputList[j].type != "button")    //When the ID of a fieldset and input match
 					{
 						inputList[j].value = eval(fieldsetList[n].getAttribute("data-collect")); //Store the filled-out value of the fieldset in the json input
 					}
@@ -35,7 +38,7 @@
 			console.log("inputList: " + stringify(inputList));
 		}
 		
-		//Inserts the json input object (input) as html as a child to (htmlParent)
+		//Inserts the json input object (input) as html as a child to fuck(htmlParent)
 		function renderInput(htmlParent, input)
 		{
 			//NOTE: All html objects are CAPITAL in comments, all json data is normal case
@@ -54,7 +57,8 @@
 			var fieldsetObj = document.createElement("fieldset"); //This FIELDSET contains all the parts of the html INPUTS associated with this json input
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
 			var dataCollectFunction; 							  //This function becomes associated with this FIELDSET, and returns the accumulated data from this FIELDSET when called
-			switch (input.type) 								  //Additional rendering depends on type of input
+			var dataSubmissionFunction;
+			switch (input.type)								  //Additional rendering depends on type of input
 			{
 				case "number":	//-----------------------------------------------NUMBER TYPE
 					var inputObj = document.createElement("input"); //Creating a new INPUT html object
@@ -248,6 +252,15 @@
 						return result; 									//Then, return the image
 					}
 				break;
+				case "button":
+					var inputObj = document.createElement("button")
+					fieldset.append(inputObj);
+					inputObj.type = "button";
+					inputObj.id = htmlParent + "." + input.name;
+					dataSubmissionFunction = function ()
+					{
+						
+					}
 			}
 			//----------------------------ALL INPUT TYPES (AGAIN)
 			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //"Assign" the data collection function to the FIELDSET
