@@ -1,4 +1,223 @@
 <html>
+<style>
+/*
+h1, h2, h3, h4
+{
+    margin: 0;
+}
+
+body, html
+{
+    height: 100%;
+    background: #ececec;;
+    color: white;
+    font-family: Arial, Helvetica, SansSerif;
+}
+
+header
+{
+    background: #900;
+    min-height: 100px;
+    margin-bottom: 20px;
+}
+
+#logo
+{
+    text-align: center;
+    color: white;
+    font-family: Arial, Helvetica, SansSerif;
+    font-size: 1.75em;
+    font-weight: bold;
+    line-height: 100px;
+}
+
+.tab
+{
+    padding-left: 40px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.tab .tablinks
+{
+    font-size: 1.25em;
+    margin: 0;
+    margin-right: 5px;
+    border: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 10px;
+}
+
+.tab .tab-selected
+{
+    background: white;
+    font-weight: bold;
+}
+
+.form-container
+{
+    width: 80%;
+    margin: 0 auto;
+    magin-bottom: 10px;
+    background: white;
+    border-radius: 15px;
+    padding: 10px 0;
+    color: black;
+}
+
+.tab-match-container .tablinks
+{
+    font-size: 1.25em;
+    margin: 0;
+    margin-right: 5px;
+    border: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 10px;
+    background: lightgrey;
+    border: 2px solid #900;
+    border-bottom: none;
+}
+
+
+.tab-match-container .tab-selected
+{
+    background: #900;
+    font-weight: bold;
+    color: white;
+}
+
+.match-container
+{
+	padding: 20px;
+	margin: 0 auto;
+	width: 90%;
+	border-radius: 10px;
+	background: #ececec;
+	border: 2px solid #900;
+}
+
+#matchForm, #pitForm
+{
+    text-align: center;
+}
+
+
+form
+{
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+input 
+{
+	margin: 15 px auto;
+	margin-bottom: 15px;	
+}
+
+//input[type=radio], input[type=checkbox]
+//{
+	//margin-bottom: 15px;
+	//margin: 0 auto;
+//}
+
+span
+{
+	color: blue;
+}
+
+.hotkey
+{
+	color: #900;
+	border: 1px solid #900;
+	border-radius: 7px;
+	padding: 3px;
+	opacity: 0.2;
+}
+
+.hotkey::after
+{
+	content: "\A";
+	white-space: pre;
+}
+
+.error
+{
+	color: red;
+	
+}
+
+form h2
+{
+    margin-bottom: 10px;
+}
+
+textarea 
+{
+	width: 80%;
+	height: 15em;
+}
+
+fieldset
+{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+form fieldset > *
+{
+    margin: 10px;
+}
+
+.form-submit
+{
+	margin-top: 10px;
+    padding: 10px 20px;
+    color: white;
+    background: #900;
+    border: none;
+    font-size: 24px;
+    border-radius: 5px;
+}
+
+.form-submit:hover
+{
+    background: black;
+    cursor: pointer;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+//MEDIA QUERIES/DYNAMIC CSS
+@media screen and (max-width: 450px)
+{
+    .form-container
+    {
+        width: 100%;
+    }
+
+    .tab
+    {
+        width: 100%;
+        padding-left: 5px;
+        margin: 0 0 0 10px;
+    }
+}
+*/
+</style>
 <head>
 <title>RED ALLIANCE CLIENT</title>
 <link rel="stylesheet" type="text/css" href="../css/client_style.css">
@@ -91,8 +310,8 @@
 						<fieldset class="matchForm" name="Cube Source (Teleop)">
 							<label>Primary Source of Cubes:</label>
 							<span class='hotkey'>D</span>
-							<input type="radio" name="Cube Source (Teleop)" class="matchForm" value="Allied Platform" accesskey="d">
-							<span class="selectionOption" required>Allied Platform</span>
+							<input type="radio" name="Cube Source (Teleop)" class="matchForm" value="Allied Platform" accesskey="d" required>
+							<span class="selectionOption">Allied Platform</span>
 							<input type="radio" name="Cube Source (Teleop)" class="matchForm" value="Enemy Platform">
 							<span class="selectionOption">Enemy Platform</span>
 							<input type="radio" name="Cube Source (Teleop)" class="matchForm" value="Portal">
@@ -275,33 +494,51 @@
 			var formHeader = ""; //Part of the CSV file that holds the various 'variables' or headers
 			for (i = 0; i < form.length; i++) //For each variable in the form
 			{
+				console.log("Input type: " +  form[i].type)
 				if (form[i].type == "radio") //If the type is radio
 				{
-					var options = document.getElementsByName(form[i].name); //Get all elements with the chosen name
-					for (w = 0; w < options.length; w++) //For each button in this set
+					while(form[i].type == "radio")
 					{
-						if (options[w].checked == true) //Look for the one with checked=true
+					
+						if (form[i].checked == true) //Look for the one with checked=true
 						{
-							formText = formText + options[w].value + ((i < form.length - 1) ? "," : ""); //No need to replace commas because we're not that dumb
+							formText = formText + form[i].value + ((i < form.length - 1) ? "," : ""); //No need to replace commas because we're not that dumb
 							//^ Adds the radio button value onto the CSV file
 						}
+						i++;
 					}
 				}
 				else if (form[i].type == "checkbox")
 				{
+					while(form[i].type == "checkbox")
+					{
 					
+						if (form[i].checked == true) //Look for the one with checked=true
+						{
+							formHeader = formHeader + form[i].name + ((i < form.length - 1) ? ',' : "");
+							formText = formText + "Yes,";
+						}
+						else
+						{
+							formHeader = formHeader + form[i].name + ((i < form.length - 1) ? ',' : "");
+							formText = formText + "No,";
+						}
+						i++;
+					}
 				}
+					
 				else if (form[i].tagName.toLowerCase() != "fieldset")
 				{
 					formText = formText + form[i].value.replace(/(,)+/g, '@?$COMMA$?@') + ((i < form.length - 1) ? "," : ""); //Replace commas with the code, then Separate values with commas
 					//^ Adds this data onto the next part of the csv file
 				}
 
-				if (form[i].type != "radio")
+				/*if (form[i].type == "radio" && form[i-1].type != "radio")
 				{
-
+					
 					formHeader = formHeader + form[i].name + ((i < form.length - 1) ? "," : ""); //The ternary operator cuts the comma off the last line
-				}
+					
+				}*/
 				
 			}
 			formText = formText + "\r\n"; //Proper escaping - creates new line on the file
@@ -320,10 +557,11 @@
 			document.getElementById("matchLink").download = "matchData" + idNum + ".csv";
 			document.getElementById("matchLink").innerHTML = "Download Match Data " + idNum;
 			
-			
-			document.getElementById("matchLink").style.display = 'block';
+			if(formComplete == true)
+			{
+				document.getElementById("matchLink").style.display = 'block';
 				//^ Above: set proper page elements to allow download	
-				}
+			}	
 			else
 			{
 				var errorBlock = document.getElementById("numberErrorMatch");
@@ -335,7 +573,7 @@
 		{
 			var file = element.files[0];//Grab the one and only image allowed;
 			var fileUploaded = false;
-			//console.log(element.files[0]);
+			console.log(element.files[0]);
 			if (file != null)
 			{
 				//console.log("image is uploaded");
@@ -354,11 +592,13 @@
 					var fileURL = fr.readAsDataURL(file);
 					fr.resujl
 					writePitDownload(fileURL);
-				}else{
+				}
+				else
+				{
 					var downloadableData = writePitDownload(null); //For pit data, this is always the first column, take out the comma	
 					console.log(downloadableData);
 				}
-				else
+				/*else
 				{
 					writePitDownload("");
 				}
@@ -368,7 +608,7 @@
 			{
 				var errorBlock = document.getElementById("numberErrorPit");
 				errorBlock.innerHTML += "Invalid Team Number";
-			}
+			}*/
 		}
 
 		function writePitDownload(imageResult)//if the image exits imageResult then it equals fr.result, else it equals a blank string
