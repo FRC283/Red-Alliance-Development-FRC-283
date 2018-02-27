@@ -38,7 +38,7 @@
 			console.log("inputList: " + stringify(inputList));
 		}
 		
-		//Inserts the json input object (input) as html as a child to fuck(htmlParent)
+		//Inserts the json input object (input) as html as a child to (htmlParent)
 		function renderInput(htmlParent, input)
 		{
 			//NOTE: All html objects are CAPITAL in comments, all json data is normal case
@@ -178,9 +178,9 @@
 						var tempSpanObj = document.createElement("span");			//Create a SPAN element to contain labels for each checkbox
 						fieldsetObj.appendChild(tempSpanObj);						//Add the SPAN to the FIELDSET
 						tempSpanObj.innerHTML = input.details.options[h]; 			//The content of the SPAN is the current index-value of the options array
-						if (h = 0)													//If this is the first checkbox INPUT rendered:
+						if (h == 0)													//If this is the first checkbox INPUT rendered:
 						{
-							tempInputObj.accesskey = input.hotkey; 					//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
+							//tempInputObj.accesskey = input.hotkey; 					//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						}
 					}
 				break;
@@ -208,7 +208,7 @@
 						hotkeyObj.className = "hotkey";					//Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
-					for (var h = 0;h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS
+					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS
 					{
 						var tempInputObj = document.createElement("input"); 	//Create INPUT element
 						fieldsetObj.appendChild(tempInputObj); 					//Add INPUT to FIELDSET
