@@ -1,11 +1,13 @@
 [
 	{
 		"name":"Match",
+		"submittable":true,
 		"terminal":false,
 		"tabs":
 		[
 			{
 				"name":"Main",
+				"submittable":false,
 				"terminal":true,
 				"inputs":
 				[
@@ -50,6 +52,7 @@
 			},
 			{
 				"name":"Auto",
+				"submittable":false,
 				"terminal":true,
 				"inputs":
 				[
@@ -124,6 +127,7 @@
 			},
 			{
 				"name":"Teleop",
+				"submittable":false,
 				"terminal":true,
 				"inputs":
 				[
