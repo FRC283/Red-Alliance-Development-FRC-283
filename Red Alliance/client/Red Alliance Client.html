@@ -22,20 +22,25 @@
 		
 		//---FUNCTION DEFINITIONS---
 		
-		//This functions reads the "form" we've created, and stores the values in a json file
-		function writeData()
+		//This functions reads inputs from the given tab, and stores the data in the json file
+		function writeData(tabName)
 		{
+			console.log("Collecting data with an id including " + tabName);
 			for (var j = 0; j < inputList.length; j++) 		   //Iterate through accumulated list of json inputs
 			{
 				for (var n = 0; n < fieldsetList.length; n++)  //Iterate through list of accumulated html fieldsets
 				{
-					if (inputList[j].id == fieldsetList[n] && inputList[j].type != "button")    //When the ID of a fieldset and input match
+					if (inputList[j].id == fieldsetList[n].id && inputList[j].id.includes(tabName))    	 //When the ID of a fieldset and input match and this input is part of the tab we're aggregating from. Note: We could also check the fieldset ID instead of the json input ID
 					{
-						inputList[j].value = eval(fieldsetList[n].getAttribute("data-collect")); //Store the filled-out value of the fieldset in the json input
+						console.log("	Collecting the data from " + fieldsetList[n]);  				//TEMP
+						var dataCollectionFunctionString = fieldsetList[n].getAttribute("data-collect");
+						console.log("		Function String: " + dataCollectionFunctionString);
+						var data = eval(dataCollectionFunctionString);  								//Collect all the data in this fieldset as a string
+						console.log("		Returned value: " + data);									//TEMP
+						inputList[j].value = data		 												//Store the filled-out value of the fieldset in the json input
 					}
 				}
 			}
-			console.log("inputList: " + stringify(inputList));
 		}
 		
 		//Inserts the json input object (input) as html as a child to (htmlParent)
@@ -47,37 +52,35 @@
 				//Each input is described by a json object (input)
 				//Each json input is translated into a series of html objects which are then rendered
 				//Each input is translated into a: <label> </label> <fieldset> <inputs...> </fieldset> <span>"hotkey"</span> (at the minimum)
-			
 			//-----------------------------------------------------------------ALL INPUT TYPES
-			input.id = idIndex; 								  //Assign the current index to this input
-			idIndex++; 											  //Up the index
+			input.parents = htmlParent.id;						  //Each json object gets a string list of its parents
 			var labelObj = document.createElement("label"); 	  //The LABEL is what actually names each input field
 			labelObj.innerHTML = input.name + ":"; 				  //Set LABEL name to be based on the provided json name
 			htmlParent.appendChild(labelObj); 					  //Add LABEL to given parent
 			var fieldsetObj = document.createElement("fieldset"); //This FIELDSET contains all the parts of the html INPUTS associated with this json input
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
+			fieldsetObj.id = htmlParent.id + "." + input.name;	  //The FIELDSET becomes named based on parent
+			input.id = fieldsetObj.id;							  //Allows the json input to be easily correlated to it's FIELDSET counterpart by the json .id attribute
 			var dataCollectFunction; 							  //This function becomes associated with this FIELDSET, and returns the accumulated data from this FIELDSET when called
-			var dataSubmissionFunction;
-			switch (input.type)								  //Additional rendering depends on type of input
+			switch (input.type)								  	  //Additional rendering depends on type of input
 			{
 				case "number":	//-----------------------------------------------NUMBER TYPE
-					var inputObj = document.createElement("input"); //Creating a new INPUT html object
-					fieldsetObj.appendChild(inputObj); 				//Add this number INPUT to the PARENT
-					dataCollectFunction = function() 				//Defines the data collection function for number
+					var inputObj = document.createElement("input"); 			//Creating a new INPUT html object
+					fieldsetObj.appendChild(inputObj); 							//Add this number INPUT to the PARENT
+					inputObj.className = "form";								//Configures CSS to display this input correctly.
+					dataCollectFunction = function() 							//Defines the data collection function for number
 					{
-						return this.children[0].value; 				//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
+						return this.children[0].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
 					}
-					inputObj.id = htmlParent.id + "." + input.name; //Create a unique id for the number INPUT
-					inputObj.min = input.details.min; 				//Create a minimum value property based on the json data
-					inputObj.max = input.details.max; 				//Create a maximum value property based on the json data
-					inputObj.step = input.details.step; 			//Create a step property based on the json data
-					inputObj.value = input.value; 					//Create a starting value property based on the json data
-					if (input.details.slider == true) 				//If the number INPUT is supposed to be a slider:
+					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
+					inputObj.max = input.details.max; 							//Create a maximum value property based on the json data
+					inputObj.step = input.details.step; 						//Create a step property based on the json data
+					inputObj.value = input.value; 								//Create a starting value property based on the json data
+					if (input.details.slider == true) 							//If the number INPUT is supposed to be a slider:
 					{
 						inputObj.type = "range"; 							 //Change the INPUT type to range
 						var sliderValueObj = document.createElement("span"); //This new SPAN object will display the current value of the slider in it
 						fieldsetObj.appendChild(sliderValueObj); 			 //Add the new SPAN to the PARENT
-						sliderValueObj.id = inputObj.id + ".SliderValue";	 //Give SPAN an id
 						sliderValueObj.innerHTML = input.value; 			 //The initial SPAN interior number is the json input default value
 						inputObj.oninput = function() 						 //Whenever the INPUT slider changes, updated the SPAN that shows the value
 						{
@@ -106,16 +109,18 @@
 					{
 						var inputObj = document.createElement("input");    //Create the input as a text INPUT if not a paragraph
 						inputObj.type = "text";							   //If non-paragraph, type must be explicitly defined
+						inputObj.value = input.value; 					   //Assign default value to INPUT/TEXTAREA
+						inputObj.placeholder = input.value; 			   //Assign default placeholder to INPUT/TEXTAREA
 					}
 					else												   //If it IS a paragraph type
 					{
 						var inputObj = document.createElement("textarea"); //Create the input as a TEXTAREA if it is a paragraph
+						inputObj.value = input.value; 					   //Assign default value to INPUT/TEXTAREA
+						inputObj.placeholder = input.value; 			   //Assign default placeholder to INPUT/TEXTAREA
 					}
-					fieldsetObj.appendChild(inputObj); 					//Add the INPUT/TEXTAREA to the FIELDSET
-					inputObj.id = htmlParent.id + "." + input.name; 	//Give INPUT/TEXTAREA an id
-					inputObj.value = input.value; 						//Assign default value to INPUT/TEXTAREA
-					inputObj.innerHTML = input.value; 					//Assign default value to INPUT/TEXTAREA (Redundant)
-					if (input.hotkey != null)							//Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
+					fieldsetObj.appendChild(inputObj); 					   //Add the INPUT/TEXTAREA to the FIELDSET
+					inputObj.className = "form";						   //Configures CSS to display this input correctly.
+					if (input.hotkey != null)							   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
 						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
@@ -154,6 +159,7 @@
 						var tempInputObj = document.createElement("input"); 		//Create new INPUT
 						fieldsetObj.appendChild(tempInputObj); 						//Add INPUT to the FIELDSET
 						tempInputObj.type = "checkbox"; 							//Make the INPUT type checkbox
+						tempInputObj.className = "form";						   	//Configures CSS to display this input correctly.
 						if (input.details.options[h] != "") 						//If the json options for this INPUT is NOT blank: 
 						{
 							tempInputObj.value = input.details.options[h]; 			//The INPUT name/value is supposed to be the checkbox json name
@@ -214,6 +220,7 @@
 						fieldsetObj.appendChild(tempInputObj); 					//Add INPUT to FIELDSET
 						tempInputObj.type = "radio"; 							//Set INPUT to type radio
 						tempInputObj.name = input.name; 						//All radio INPUTS in this FIELDSET must have the same name to work properly
+						tempInputObj.className = "form";						//Configures CSS to display this input correctly
 						if (input.value == "") 									//If no default value is given:
 						{
 							tempInputObj.checked = false;  						//Then this radio INPUT is unchecked
@@ -232,7 +239,6 @@
 					fieldsetObj.append(inputObj);						//Add INPUT object to FIELDSET
 					inputObj.type = "file";								//Set INPUT type to file
 					inputObj.name = input.name;							//Set INPUT name to the json input
-					inputObj.id = htmlParent + "." + input.name;		//Set INPUT id
 					dataCollectFunction = function ()					//Defines data collection function for a file
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
@@ -256,7 +262,7 @@
 			//----------------------------ALL INPUT TYPES (AGAIN)
 			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //"Assign" the data collection function to the FIELDSET
 			fieldsetList.push(fieldsetObj); 									   //Append the FIELDSET onto a cumulative list
-			inputList.push(input) 												   //Append the json input onto a cumulative list
+			inputList.push(input); 												   //Append the json input onto a cumulative list
 		}
 		
 		//This function breaks down the input json file into smaller levels until it identifies the inputs. It renders each level as it goes. This is where the program really begins
@@ -282,18 +288,31 @@
 						renderInput(currentObj, level[i].inputs[j]);	//Call render input, which will append "html input elements" (sorta) onto the "currentObj" element
 					}
 				}
+				//---------------------------------------------------------------------------BUTTON CREATION
 				if (level[i].submittable == true) 						//After rendering all subinputs, create a button if this level is submittable.
 				{
-					//---												//When the button is pressed, the data from all the subelements with be collected
-					
-					//CREATE BUTTON HERE
-					
+					//---												//When the button is pressed, the data from all the subelements with be collected	
+					var buttonObj = document.createElement("button");	//Create BUTTON html object
+					currentObj.appendChild(buttonObj);					//Add the BUTTON as a subelement of whatever DIV we currently edit
+					buttonObj.innerHTML = "Submit " + level[i].name;	//Give the BUTTON a name based on json
+					buttonObj.className = "form-submit";				//Mark the BUTTON for proper css
+					buttonObj.onclick = function()						//Executes on click
+					{
+						var parentName = this.parentElement.id.slice(this.parentElement.id.lastIndexOf("."), this.parentElement.id.length); //The directly-parent level name. See below for explanation
+						//parentElement.id = ".Match.Main" (as example)
+						//.lastIndexOf - grabs the index of the last occurence of "." = 13
+						//.length = 17
+						//.slice(13, 17) = "Main"
+						//"Main" is the id of the element that DIRECTLY contains this one
+						console.log("Button pressed! Containing element is " + parentName);														//TEMP
+						writeData(parentName); 																							  		//On click, gather all data inside this section
+						console.log("Current state of the json inputs: " + JSON.stringify(inputList)); 										    //TEMP
+					}
 				}
 			}
 		}
 		
 		//---GLOBAL VARIABLES---
-		var idIndex = 0;
 		var inputList = []; 	//Contains all inputs found within the configuration file
 		var fieldsetList = [];  //Contains all the fieldsets of inputs
 		
