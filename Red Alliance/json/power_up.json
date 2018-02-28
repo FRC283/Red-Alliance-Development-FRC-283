@@ -13,7 +13,7 @@
 				[
 					{
 						"name":"Match Number",
-						"type":"text",
+						"type":"number",
 						"value":"",
 						"required":true,
 						"hotkey":"~",

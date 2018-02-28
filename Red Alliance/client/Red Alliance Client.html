@@ -10,34 +10,39 @@
 	</body>
 	<script>
 		//---TODO---
-		//*Allow default values for checkboxes and radios
-		//*Finish collectData functions for checkbox and radio
-		//*Finish writeData function by grabbing configValues by id and comparing them to fieldsets
 		//*Data validation function
-		//*Submission Button
 		//*Tab Partitioning
 			//*Tab visibility function
-		//Creating a submission button
 		//Making hotkeys swap to correct tab
+		//Make sure that collected data gets put on the correct copy of the config
+		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
+		//Get rid of dataCollectFunction in favor of direct assignment to .collect()
+		//take out fieldObjectList
 		
 		//---FUNCTION DEFINITIONS---
 		
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
-			console.log("Collecting data with an id including " + tabName);
-			for (var j = 0; j < inputList.length; j++) 		   //Iterate through accumulated list of json inputs
+			console.log("Collecting data with an id including " + tabName);									//TEMP
+			for (var j = 0; j < inputList.length; j++) 		   			//Iterate through accumulated list of json inputs
 			{
-				for (var n = 0; n < fieldsetList.length; n++)  //Iterate through list of accumulated html fieldsets
+				for (var n = 0; n < fieldsetList.length; n++)  			//Iterate through list of accumulated html fieldsets
 				{
-					if (inputList[j].id == fieldsetList[n].id && inputList[j].id.includes(tabName))    	 //When the ID of a fieldset and input match and this input is part of the tab we're aggregating from. Note: We could also check the fieldset ID instead of the json input ID
+					if (inputList[j].id == fieldsetList[n].id)    		//When the ID of a fieldset and input match
 					{
-						console.log("	Collecting the data from " + fieldsetList[n]);  				//TEMP
-						var dataCollectionFunctionString = fieldsetList[n].getAttribute("data-collect");
-						console.log("		Function String: " + dataCollectionFunctionString);
-						var data = eval(dataCollectionFunctionString);  								//Collect all the data in this fieldset as a string
-						console.log("		Returned value: " + data);									//TEMP
-						inputList[j].value = data		 												//Store the filled-out value of the fieldset in the json input
+						if (inputList[j].id.includes(tabName) == true)	//this input is part of the tab we're aggregating from. Note: We could also check the fieldset ID instead of the json input ID
+						{
+							console.log("	Collecting the data from " + fieldsetList[n].id);  				//Print the name of the question being collected
+							console.log("		Function String: " + String(fieldsetList[n].collect));		//Print the contents of the collection function
+							var data = fieldsetList[n].collect();		 	 								//Collect all the data in this fieldset as a string															//TEMP
+							console.log("		Returned value: " + data);									//Print the value returned by the collection function
+							inputList[j].value = data;		 												//Store the filled-out value of the fieldset in the json input	
+						}
+						else																				//For any inputs not in this section
+						{
+							inputList[j].value = null;														//Set the value to null
+						}
 					}
 				}
 			}
@@ -71,7 +76,7 @@
 					dataCollectFunction = function() 							//Defines the data collection function for number
 					{
 						return this.children[0].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
-					}
+					};
 					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
 					inputObj.max = input.details.max; 							//Create a maximum value property based on the json data
 					inputObj.step = input.details.step; 						//Create a step property based on the json data
@@ -101,10 +106,10 @@
 					}
 				break;
 				case "text": //--------------------------------------------------------TEXT TYPE
-					dataCollectFunction = function() 	 //Defines the data collection function for text
+					dataCollectFunction = function()	 //Defines the data collection function for text
 					{
 						return this.children[0].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
-					}
+					};
 					if (input.details.paragraph != true) //If the input was defined as a paragraph, the text INPUT is made very large (i.e. textarea type)
 					{
 						var inputObj = document.createElement("input");    //Create the input as a text INPUT if not a paragraph
@@ -130,22 +135,26 @@
 					}
 				break;
 				case "checkbox": //---------------------------------------------------------------------------CHECKBOX TYPE
-					dataCollectFunction = function ()									   //Defines the data collection function for a checkbox
+					dataCollectFunction = function()									   //Defines the data collection function for a checkbox
 					{
 						//---															   //A checkbox's (json) FIELDSET contains multiple checkbox INPUTS
 						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
-						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)
-						{
+						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)**
+						{																   //**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 							if(this.children[i].type == "checkbox") 					   //Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area checkbox INPUTS
 							{
-								if(input.children[i].checked == true) 					   //Check if the checkbox INPUT is checked
+								if(this.children[i].checked)		 					   //Check if the checkbox INPUT is checked
 								{
-									collectedValue.append(input.children[i].value + ", "); //If it is, add its value (name) to the accumulated value
+									collectedValue = collectedValue + this.children[i].value + ", "; //If it is, add its value (not what is on the label, check code) to the accumulated value
+								}
+								else
+								{
+									collectedValue = collectedValue + "~, ";							//Placeholder character for false checkboxes. Keep this until more permanent solution
 								}
 							}
 						}
 						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
-					}
+					};
 					if (input.hotkey != null)							//Now a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
@@ -153,8 +162,8 @@
 						hotkeyObj.className = "hotkey";					//Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
-					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS
-					{
+					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS**
+					{																//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						//---														//For each checkbox defined in the details.options array:
 						var tempInputObj = document.createElement("input"); 		//Create new INPUT
 						fieldsetObj.appendChild(tempInputObj); 						//Add INPUT to the FIELDSET
@@ -166,7 +175,7 @@
 						}
 						else														//If the json options for this INPUT is blank: 
 						{
-							tempInputObj.value = input.name; 						//The name of the json input is the name of this html INPUT
+							tempInputObj.value = "Yes";		 						//The name of the json input is the name of this html INPUT
 						}
 						if (input.value == "") 										//Should this checkbox INPUT be rendered as checked?
 						{
@@ -191,22 +200,22 @@
 					}
 				break;
 				case "radio": //---------------------------------------------------------------------------RADIO TYPE
-					dataCollectFunction = function ()									   //Defines the data collection function for a radio. Very similar to checkbox's
+					dataCollectFunction = function()									   		//Defines the data collection function for a radio. Very similar to checkbox's
 					{
-						//---															   //A radio's (json) FIELDSET contains multiple checkbox INPUTS
-						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
-						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)
-						{
-							if(this.children[i].type == "radio") 					   	   //Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
+						//---															   		//A radio's (json) FIELDSET contains multiple checkbox INPUTS
+						var collectedValue = ""; 										   		//This string will accumulate the names of all the checked INPUTS
+						for (var i = 0; i < this.children.length; i++)  				   		//Iterate through the FIELDSET children (a series of INPUTS)**
+						{																   		//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
+							if(this.children[i].type == "radio") 					   	   		//Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
 							{
-								if(input.children[i].checked == true) 					   //Check if the radio INPUT is checked
+								if(this.children[i].checked == true) 					   		//Check if the radio INPUT is checked
 								{
-									collectedValue.append(input.children[i].value + ", "); //If it is, add its value (name) to the accumulated value
+									collectedValue = collectedValue + this.children[i].value + ", "; //If it is, add its value (name) to the accumulated value
 								}
 							}
 						}
-						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
-					}
+						return collectedValue.substring(0, collectedValue.length - 2); 	   		//Eliminates the ", " from the very end of the accumulation variable
+					};
 					if (input.hotkey != null)							//Now a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
@@ -214,10 +223,11 @@
 						hotkeyObj.className = "hotkey";					//Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
-					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS
-					{
+					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS**
+					{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						var tempInputObj = document.createElement("input"); 	//Create INPUT element
 						fieldsetObj.appendChild(tempInputObj); 					//Add INPUT to FIELDSET
+						tempInputObj.value = input.details.options[h];			//Name the value of the radio to be one of the options
 						tempInputObj.type = "radio"; 							//Set INPUT to type radio
 						tempInputObj.name = input.name; 						//All radio INPUTS in this FIELDSET must have the same name to work properly
 						tempInputObj.className = "form";						//Configures CSS to display this input correctly
@@ -239,28 +249,31 @@
 					fieldsetObj.append(inputObj);						//Add INPUT object to FIELDSET
 					inputObj.type = "file";								//Set INPUT type to file
 					inputObj.name = input.name;							//Set INPUT name to the json input
-					dataCollectFunction = function ()					//Defines data collection function for a file
+					dataCollectFunction = function()					//Defines data collection function for a file
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
 						var result;										//Will be assigned to the result of conversion to text
 						fr.onload = function()							//This function will execute once the image has successfully been converted
 						{
-							result = fr.result;							//Assign the successful reading to the return value
+							result = fr.result;
+							console.log(result);						//Assign the successful reading to the return value
 						}
 						if (this.children[0].value != null) 			//If a file was actually submitted:
 						{
-							fr.readAsDataUrl(this.children[0].value);	//Read that file as a image
+							fr.readAsDataURL(this.children[0].files[0]);//Read that file as a image
 						}
 						else
 						{
 							result = "No Image";						//Otherwise, simply put 'no image' where the image string would go
 						}
+						
 						return result; 									//Then, return the image
-					}
+					};
 				break;
 			}
 			//----------------------------ALL INPUT TYPES (AGAIN)
-			fieldsetObj.setAttribute("data-collect", String(dataCollectFunction)); //"Assign" the data collection function to the FIELDSET
+			//fieldsetObj.setAttribute("data-collect", dataCollectFunction); 		   
+			fieldsetObj.collect = dataCollectFunction;							   //"Assign" the data collection function to the FIELDSET
 			fieldsetList.push(fieldsetObj); 									   //Append the FIELDSET onto a cumulative list
 			inputList.push(input); 												   //Append the json input onto a cumulative list
 		}
@@ -269,8 +282,8 @@
 		function renderLevel(htmlParent, level)
 		{
 			var currentObj; 											//Current HTML DOM element being created
-			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array
-			{
+			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array**
+			{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 				console.log("Creating object for: " + level[i].name)
 				currentObj = document.createElement("div");				//Create a DIV
 				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
@@ -331,7 +344,7 @@
 						[
 							{
 								"name":"Match Number",
-								"type":"text",
+								"type":"number",
 								"value":"",
 								"required":true,
 								"hotkey":"~",
