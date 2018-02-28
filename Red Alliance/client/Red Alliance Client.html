@@ -253,10 +253,11 @@
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
 						var result;										//Will be assigned to the result of conversion to text
+						var isLoadedWithCash = false;					//This variable becomes true when our dreams do
 						fr.onload = function()							//This function will execute once the image has successfully been converted
 						{
-							result = fr.result;
-							console.log(result);						//Assign the successful reading to the return value
+							result = fr.result;							//Assign the successful reading to the return value
+							console.log(result);						//Return read value
 						}
 						if (this.children[0].value != null) 			//If a file was actually submitted:
 						{
@@ -266,7 +267,6 @@
 						{
 							result = "No Image";						//Otherwise, simply put 'no image' where the image string would go
 						}
-						
 						return result; 									//Then, return the image
 					};
 				break;
@@ -285,8 +285,18 @@
 			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array**
 			{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 				console.log("Creating object for: " + level[i].name)
+				//----------------------------------------------------------------TAB BUTTON
+				tabButtonObj = document.createElement("button");		//BUTTON that switches to this tab
+				htmlParent.appendChild(tabButtonObj);					//Attach this BUTTON to it's parent
+				tabButtonObj.classList.add("tablinks");					//Styling for tab selection BUTTONS
+				tabButtonObj.classList.add("tab-selected");				//Styling for tab selection BUTTONS
+				tabButtonObj.innerHTML = level[i].name + " Form";		//BUTTON text is the tab name
+				//----------------------------------------------------------------------TAB DIV CREATION
 				currentObj = document.createElement("div");				//Create a DIV
 				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
+				currentObj.classList.add("tabContent");					//Make this division look like a tab
+				currentObj.classList.add("tab-selected");				//Mark as selected
+				currentObj.style.display = "block";						//Makes visible
 				currentObj.id = htmlParent.id + "." + level[i].name;	//Assign an id to the DIV based on its PARENT name as well
 				if (level[i].terminal == false) 						//If this json level is not marked as "terminal"
 				{
@@ -300,6 +310,15 @@
 					{
 						renderInput(currentObj, level[i].inputs[j]);	//Call render input, which will append "html input elements" (sorta) onto the "currentObj" element
 					}
+				}
+				//-------------------------------------------------------------------ADDITIONAL TAB BUTTON DEFINITION
+				tabButtonObj.onclick = function()						//When you click on a tab's selection button
+				{
+					//Hide all other tabs on this level
+					//DONT hide the buttons
+					//SHOW this tab
+					//Leave higher levels alone
+					
 				}
 				//---------------------------------------------------------------------------BUTTON CREATION
 				if (level[i].submittable == true) 						//After rendering all subinputs, create a button if this level is submittable.
