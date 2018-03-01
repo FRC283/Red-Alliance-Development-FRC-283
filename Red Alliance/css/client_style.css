@@ -5,12 +5,16 @@ h1, h2, h3, h4
 
 body, html
 {
+  margin: 0;
     height: 100%;
     background: #ececec;;
     color: black;
     font-family: Arial, Helvetica, SansSerif;
 }
 
+
+/* Styles for Header/Logo area (FRC Team 283 - RED ALLIANCE part)
+==============================================================================*/
 header
 {
     background: #900;
@@ -28,6 +32,9 @@ header
     line-height: 100px;
 }
 
+/* Tab styles
+==============================================================================*/
+
 .tab
 {
     padding-left: 40px;
@@ -35,7 +42,7 @@ header
     margin: 0 auto;
 }
 
-.tab .tablinks
+.tablinks
 {
     font-size: 1.25em;
     margin: 0;
@@ -46,24 +53,20 @@ header
     padding: 10px;
 }
 
-.tab .tab-selected
+.tab-selected
 {
     background: white;
     font-weight: bold;
 }
 
-.form-container
+.tabContent
 {
-    width: 80%;
-    margin: 0 auto;
-    magin-bottom: 10px;
-    background: white;
-    border-radius: 15px;
-    padding: 10px 0;
-    color: black;
+  text-align: center;
+  padding: 10px;
 }
 
-.tab-match-container .tablinks
+/* Kinda broke
+.tabContent .tablinks
 {
     font-size: 1.25em;
     margin: 0;
@@ -78,12 +81,29 @@ header
 }
 
 
-.tab-match-container .tab-selected
+.tabContent .tab-selected
 {
     background: #900;
     font-weight: bold;
     color: white;
 }
+*/
+
+
+/* Container styles (obsolete?)
+==============================================================================*/
+.form-container
+{
+    width: 80%;
+    margin: 0 auto;
+    magin-bottom: 10px;
+    background: white;
+    border-radius: 15px;
+    padding: 10px 0;
+    color: black;
+}
+
+
 
 .match-container
 {
@@ -100,17 +120,10 @@ header
     text-align: center;
 }
 
-
-form
-{
-    font-size: 1.2em;
-    margin-bottom: 0;
-}
-
-input 
+input
 {
 	margin: 15 px auto;
-	margin-bottom: 15px;	
+	margin-bottom: 15px;
 }
 
 /*input[type=radio], input[type=checkbox]
@@ -130,25 +143,21 @@ span
 	width: 200px;
 }
 
+/* Hotkey styles
+==============================================================================*/
 .hotkey
 {
 	color: #900;
 	border: 1px solid #900;
 	border-radius: 7px;
+  margin-left: 2.5px;
 	padding: 3px;
 	opacity: 0.2;
 }
 
 .hotkey::after
 {
-	content: "\A";
-	white-space: pre;
-}
 
-.error
-{
-	color: red;
-	
 }
 
 form h2
@@ -156,7 +165,7 @@ form h2
     margin-bottom: 10px;
 }
 
-textarea 
+textarea
 {
 	width: 80%;
 	height: 15em;
@@ -167,13 +176,10 @@ fieldset
     border: none;
     margin: 0;
     padding: 0;
+    display: inline-block;
+    width: 100%;
 }
 
-
-form fieldset > *
-{
-    margin: 10px;
-}
 
 .form-submit
 {
@@ -192,6 +198,9 @@ form fieldset > *
     cursor: pointer;
 }
 
+/* Voodoo Magic (Removes the arrows for number inputs)
+==============================================================================*/
+
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -204,18 +213,9 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-/*MEDIA QUERIES/DYNAMIC CSS*/
-@media screen and (max-width: 450px)
+/* Miscellaneous Styles
+==============================================================================*/
+.error
 {
-    .form-container
-    {
-        width: 100%;
-    }
-
-    .tab
-    {
-        width: 100%;
-        padding-left: 5px;
-        margin: 0 0 0 10px;
-    }
+	color: red;
 }
