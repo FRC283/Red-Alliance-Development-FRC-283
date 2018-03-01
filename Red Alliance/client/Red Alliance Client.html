@@ -318,7 +318,16 @@
 					//DONT hide the buttons
 					//SHOW this tab
 					//Leave higher levels alone
-					
+					for (var g = 0; g < htmlParent.children.length; g++)		//For each elemennt on this level
+					{
+						if (htmlParent.children[g].nodeName.toLowerCase == "div") 	//If that element is a DIV
+						{
+							if (htmlParent.children[g].id != currentObj.id)		//For every fellow DIV on this level... (but not the current element)
+							{
+								htmlParent.children[g].style.display = "none";	//Hide that DIV
+							}
+						}
+					}
 				}
 				//---------------------------------------------------------------------------BUTTON CREATION
 				if (level[i].submittable == true) 						//After rendering all subinputs, create a button if this level is submittable.
