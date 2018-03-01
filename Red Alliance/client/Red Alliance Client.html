@@ -1,6 +1,6 @@
 <html>
 <style>
-/*
+
 h1, h2, h3, h4
 {
     margin: 0;
@@ -216,11 +216,13 @@ input[type=number] {
         margin: 0 0 0 10px;
     }
 }
-*/
+
 </style>
 <head>
 <title>RED ALLIANCE CLIENT</title>
+<!--
 <link rel="stylesheet" type="text/css" href="../css/client_style.css">
+-->
 
 </head>
 <body>
@@ -515,12 +517,10 @@ input[type=number] {
 					
 						if (form[i].checked == true) //Look for the one with checked=true
 						{
-							formHeader = formHeader + form[i].name + ((i < form.length - 1) ? ',' : "");
 							formText = formText + "Yes,";
 						}
 						else
 						{
-							formHeader = formHeader + form[i].name + ((i < form.length - 1) ? ',' : "");
 							formText = formText + "No,";
 						}
 						i++;
