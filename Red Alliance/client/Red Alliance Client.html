@@ -18,9 +18,9 @@
 		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
 		//Get rid of dataCollectFunction in favor of direct assignment to .collect()
 		//take out fieldObjectList
-		
+
 		//---FUNCTION DEFINITIONS---
-		
+
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
@@ -37,7 +37,7 @@
 							console.log("		Function String: " + String(fieldsetList[n].collect));		//Print the contents of the collection function
 							var data = fieldsetList[n].collect();		 	 								//Collect all the data in this fieldset as a string															//TEMP
 							console.log("		Returned value: " + data);									//Print the value returned by the collection function
-							inputList[j].value = data;		 												//Store the filled-out value of the fieldset in the json input	
+							inputList[j].value = data;		 												//Store the filled-out value of the fieldset in the json input
 						}
 						else																				//For any inputs not in this section
 						{
@@ -47,13 +47,13 @@
 				}
 			}
 		}
-		
+
 		//Inserts the json input object (input) as html as a child to (htmlParent)
 		function renderInput(htmlParent, input)
 		{
 			//NOTE: All html objects are CAPITAL in comments, all json data is normal case
-			
-			//Explanation: 
+
+			//Explanation:
 				//Each input is described by a json object (input)
 				//Each json input is translated into a series of html objects which are then rendered
 				//Each input is translated into a: <label> </label> <fieldset> <inputs...> </fieldset> <span>"hotkey"</span> (at the minimum)
@@ -67,7 +67,8 @@
 			fieldsetObj.id = htmlParent.id + "." + input.name;	  //The FIELDSET becomes named based on parent
 			input.id = fieldsetObj.id;							  //Allows the json input to be easily correlated to it's FIELDSET counterpart by the json .id attribute
 			var dataCollectFunction; 							  //This function becomes associated with this FIELDSET, and returns the accumulated data from this FIELDSET when called
-			switch (input.type)								  	  //Additional rendering depends on type of input
+
+			switch (input.type)
 			{
 				case "number":	//-----------------------------------------------NUMBER TYPE
 					var inputObj = document.createElement("input"); 			//Creating a new INPUT html object
@@ -99,7 +100,7 @@
 					if (input.hotkey != null)		//Now, regardless of the number INPUT type, a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span");  //The new SPAN object contains the hotkey assigned to this INPUT
-						htmlParent.appendChild(hotkeyObj);				 //Add the new SPAN onto the PARENT
+						fieldsetObj.appendChild(hotkeyObj);				 //Add the new SPAN onto the PARENT
 						inputObj.accesskey = input.hotkey; 				 //Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						hotkeyObj.className = "hotkey";					 //Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				 //Display the json-defined hotkey inside of this SPAN
@@ -128,7 +129,7 @@
 					if (input.hotkey != null)							   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
-						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
 						inputObj.accesskey = input.hotkey; 				//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						hotkeyObj.className = "hotkey";					//Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
@@ -155,13 +156,7 @@
 						}
 						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
 					};
-					if (input.hotkey != null)							//Now a hotkey element needs to be created
-					{
-						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
-						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
-						hotkeyObj.className = "hotkey";					//Set the class for CSS
-						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
-					}
+
 					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS**
 					{																//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						//---														//For each checkbox defined in the details.options array:
@@ -169,11 +164,11 @@
 						fieldsetObj.appendChild(tempInputObj); 						//Add INPUT to the FIELDSET
 						tempInputObj.type = "checkbox"; 							//Make the INPUT type checkbox
 						tempInputObj.className = "form";						   	//Configures CSS to display this input correctly.
-						if (input.details.options[h] != "") 						//If the json options for this INPUT is NOT blank: 
+						if (input.details.options[h] != "") 						//If the json options for this INPUT is NOT blank:
 						{
 							tempInputObj.value = input.details.options[h]; 			//The INPUT name/value is supposed to be the checkbox json name
 						}
-						else														//If the json options for this INPUT is blank: 
+						else														//If the json options for this INPUT is blank:
 						{
 							tempInputObj.value = "Yes";		 						//The name of the json input is the name of this html INPUT
 						}
@@ -197,6 +192,15 @@
 						{
 							tempInputObj.accesskey = input.hotkey; 					//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						}
+
+					}
+
+					if (input.hotkey != null)							//Now a hotkey element needs to be created
+					{
+						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
+						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";					//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
 				break;
 				case "radio": //---------------------------------------------------------------------------RADIO TYPE
@@ -216,13 +220,7 @@
 						}
 						return collectedValue.substring(0, collectedValue.length - 2); 	   		//Eliminates the ", " from the very end of the accumulation variable
 					};
-					if (input.hotkey != null)							//Now a hotkey element needs to be created
-					{
-						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
-						htmlParent.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
-						hotkeyObj.className = "hotkey";					//Set the class for CSS
-						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
-					}
+
 					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS**
 					{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						var tempInputObj = document.createElement("input"); 	//Create INPUT element
@@ -242,6 +240,16 @@
 						var tempSpanObj = document.createElement("span");		//Create a SPAN to label this checkbox INPUT
 						fieldsetObj.appendChild(tempSpanObj);					//Add that SPAN to the fieldset
 						tempSpanObj.innerHTML = input.details.options[h];		//Set the SPAN to contain the proper label for this INPUT
+
+
+					}
+
+					if (input.hotkey != null)							//Now a hotkey element needs to be created
+					{
+						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
+						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";					//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
 				break;
 				case "file": //-----------------------------------------------FILE TYPE
@@ -272,12 +280,12 @@
 				break;
 			}
 			//----------------------------ALL INPUT TYPES (AGAIN)
-			//fieldsetObj.setAttribute("data-collect", dataCollectFunction); 		   
+			//fieldsetObj.setAttribute("data-collect", dataCollectFunction);
 			fieldsetObj.collect = dataCollectFunction;							   //"Assign" the data collection function to the FIELDSET
 			fieldsetList.push(fieldsetObj); 									   //Append the FIELDSET onto a cumulative list
 			inputList.push(input); 												   //Append the json input onto a cumulative list
 		}
-		
+
 		//This function breaks down the input json file into smaller levels until it identifies the inputs. It renders each level as it goes. This is where the program really begins
 		function renderLevel(htmlParent, level)
 		{
@@ -332,7 +340,7 @@
 				//---------------------------------------------------------------------------BUTTON CREATION
 				if (level[i].submittable == true) 						//After rendering all subinputs, create a button if this level is submittable.
 				{
-					//---												//When the button is pressed, the data from all the subelements with be collected	
+					//---												//When the button is pressed, the data from all the subelements with be collected
 					var buttonObj = document.createElement("button");	//Create BUTTON html object
 					currentObj.appendChild(buttonObj);					//Add the BUTTON as a subelement of whatever DIV we currently edit
 					buttonObj.innerHTML = "Submit " + level[i].name;	//Give the BUTTON a name based on json
@@ -352,11 +360,11 @@
 				}
 			}
 		}
-		
+
 		//---GLOBAL VARIABLES---
 		var inputList = []; 	//Contains all inputs found within the configuration file
 		var fieldsetList = [];  //Contains all the fieldsets of inputs
-		
+
 		var configFile = [
 			{
 				"name":"Match",
@@ -778,9 +786,9 @@
 						}
 					}
 				]
-			}	
+			}
 		]
-		
+
 		//---ONLOAD FUNCTION CALLS---
 		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent. Kicks off the program.
 	</script>
