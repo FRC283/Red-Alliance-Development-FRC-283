@@ -70,7 +70,7 @@
 
 			switch (input.type)
 			{
-				case "number":	//-----------------------------------------------NUMBER TYPE
+				case "number":	//---------------------------------------------------------NUMBER TYPE
 					var inputObj = document.createElement("input"); 			//Creating a new INPUT html object
 					fieldsetObj.appendChild(inputObj); 							//Add this number INPUT to the PARENT
 					inputObj.className = "form";								//Configures CSS to display this input correctly.
@@ -261,7 +261,7 @@
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
 						var result;										//Will be assigned to the result of conversion to text
-						var isLoadedWithCash = false;					//This variable becomes true when our dreams do
+						var isLoaded = false;							//This variable becomes true when our dreams do
 						fr.onload = function()							//This function will execute once the image has successfully been converted
 						{
 							result = fr.result;							//Assign the successful reading to the return value
@@ -296,15 +296,41 @@
 				//----------------------------------------------------------------TAB BUTTON
 				tabButtonObj = document.createElement("button");		//BUTTON that switches to this tab
 				htmlParent.appendChild(tabButtonObj);					//Attach this BUTTON to it's parent
+				tabButtonObj.id = htmlParent.id + "." + level[i].name + ".Button";
 				tabButtonObj.classList.add("tablinks");					//Styling for tab selection BUTTONS
 				tabButtonObj.classList.add("tab-selected");				//Styling for tab selection BUTTONS
 				tabButtonObj.innerHTML = level[i].name + " Form";		//BUTTON text is the tab name
+				tabButtonObj.onclick = function()											//When you click on a tab's selection button
+				{
+					for (var g = 0; g < this.parentNode.children.length; g++)				//For each element on this level (sibling)
+					{
+						if (this.parentNode.children[g].nodeName.toLowerCase() == "div") 	//If that element is a DIV
+						{
+							if (this.parentNode.children[g].id == currentObj.id)			//For every fellow DIV on this level... (but not the current element)
+							{
+								this.parentNode.children[g].style.display = "block";
+							}
+							else
+							{
+								console.log("Setting " + this.parentNode.children[g].id + " to hidden");
+								this.parentNode.children[g].style.display = "none";			//Hide that DIV
+							}
+						}
+					}
+				}
 				//----------------------------------------------------------------------TAB DIV CREATION
 				currentObj = document.createElement("div");				//Create a DIV
 				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
 				currentObj.classList.add("tabContent");					//Make this division look like a tab
-				currentObj.classList.add("tab-selected");				//Mark as selected
-				currentObj.style.display = "block";						//Makes visible
+				if (i == 0) 											//If this is the first tab in this level
+				{
+					currentObj.style.display = "block";					//Make it visible
+					currentObj.classList.add("tab-selected");			//Mark as selected
+				}	
+				else													//Otherwise
+				{
+					currentObj.style.display = "none";					//Hide it
+				}
 				currentObj.id = htmlParent.id + "." + level[i].name;	//Assign an id to the DIV based on its PARENT name as well
 				if (level[i].terminal == false) 						//If this json level is not marked as "terminal"
 				{
@@ -317,24 +343,6 @@
 					for (var j = 0; j < level[i].inputs.length; j++)	//For each "input" in this level
 					{
 						renderInput(currentObj, level[i].inputs[j]);	//Call render input, which will append "html input elements" (sorta) onto the "currentObj" element
-					}
-				}
-				//-------------------------------------------------------------------ADDITIONAL TAB BUTTON DEFINITION
-				tabButtonObj.onclick = function()						//When you click on a tab's selection button
-				{
-					//Hide all other tabs on this level
-					//DONT hide the buttons
-					//SHOW this tab
-					//Leave higher levels alone
-					for (var g = 0; g < htmlParent.children.length; g++)		//For each elemennt on this level
-					{
-						if (htmlParent.children[g].nodeName.toLowerCase == "div") 	//If that element is a DIV
-						{
-							if (htmlParent.children[g].id != currentObj.id)		//For every fellow DIV on this level... (but not the current element)
-							{
-								htmlParent.children[g].style.display = "none";	//Hide that DIV
-							}
-						}
 					}
 				}
 				//---------------------------------------------------------------------------BUTTON CREATION
