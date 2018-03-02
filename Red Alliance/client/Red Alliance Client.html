@@ -289,43 +289,52 @@
 		//This function breaks down the input json file into smaller levels until it identifies the inputs. It renders each level as it goes. This is where the program really begins
 		function renderLevel(htmlParent, level)
 		{
-			var currentObj; 											//Current HTML DOM element being created
+			//----------------------------------------------------------------------
+			var buttonContainerObj = document.createElement("div");		//Create a div that contains the tab buttons for this level
+			htmlParent.appendChild(buttonContainerObj);					//Append to parent
+			buttonContainerObj.className = "tabContainer";				//CSS
 			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array**
 			{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 				console.log("Creating object for: " + level[i].name)
 				//----------------------------------------------------------------TAB BUTTON
 				tabButtonObj = document.createElement("button");		//BUTTON that switches to this tab
-				htmlParent.appendChild(tabButtonObj);					//Attach this BUTTON to it's parent
+				buttonContainerObj.appendChild(tabButtonObj);			//Attach this BUTTON to it's parent
 				tabButtonObj.id = htmlParent.id + "." + level[i].name + ".Button";
 				tabButtonObj.classList.add("tablinks");					//Styling for tab selection BUTTONS
-				tabButtonObj.classList.add("tab-selected");				//Styling for tab selection BUTTONS
 				tabButtonObj.innerHTML = level[i].name + " Form";		//BUTTON text is the tab name
-				tabButtonObj.onclick = function()											//When you click on a tab's selection button
+				tabButtonObj.onclick = function()						//When you click on a tab's selection button
 				{
-					for (var g = 0; g < this.parentNode.children.length; g++)				//For each element on this level (sibling)
+					var siblingTabs = this.parentNode.parentNode.children;
+					for (var g = 0; g < siblingTabs.length; g++)													 //For each element on this level (sibling)
 					{
-						if (this.parentNode.children[g].nodeName.toLowerCase() == "div") 	//If that element is a DIV
+						if (siblingTabs[g].nodeName.toLowerCase() == "div" && siblingTabs[g].classList.contains("tabContent")) //If that element is a DIV and classContent (not a button container)
 						{
-							if (this.parentNode.children[g].id == currentObj.id)			//For every fellow DIV on this level... (but not the current element)
+							if (siblingTabs[g].id == this.id.replace(/.Button/, ""))	//For every fellow DIV on this level... (but not the current element) - works by taking the button ID and chopping the ".Button" part off to find it's respective tab
 							{
-								this.parentNode.children[g].style.display = "block";
+								siblingTabs[g].style.display = "block";					//Show DIV
+								siblingTabs[g].classList.add("tab-selected");			//
 							}
 							else
 							{
-								console.log("Setting " + this.parentNode.children[g].id + " to hidden");
-								this.parentNode.children[g].style.display = "none";			//Hide that DIV
+								siblingTabs[g].style.display = "none";					//Hide that DIV
+								siblingTabs[g].classList.remove("tab-selected");		//
 							}
 						}
 					}
+					for (var k = 0; k < this.parentNode.children.length; k++) 			//Iterates through fellow tab buttons
+					{
+						this.parentNode.children[k].classList.remove("tab-selected");	//Remove tab-selected from all fellow buttons
+					}
+					this.classList.add("tab-selected"); 								//Add tab-selected back to the clicked button
 				}
 				//----------------------------------------------------------------------TAB DIV CREATION
-				currentObj = document.createElement("div");				//Create a DIV
+				var currentObj = document.createElement("div");			//Create a DIV
 				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
 				currentObj.classList.add("tabContent");					//Make this division look like a tab
 				if (i == 0) 											//If this is the first tab in this level
 				{
 					currentObj.style.display = "block";					//Make it visible
-					currentObj.classList.add("tab-selected");			//Mark as selected
+					tabButtonObj.classList.add("tab-selected");				//Styling for tab selection BUTTONS
 				}	
 				else													//Otherwise
 				{

@@ -5,9 +5,10 @@ h1, h2, h3, h4
 
 body, html
 {
-  margin: 0;
+	text-align: center;
+  	margin: 0;
     height: 100%;
-    background: #ececec;;
+    background: #ececec;
     color: black;
     font-family: Arial, Helvetica, SansSerif;
 }
@@ -51,18 +52,29 @@ header
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     padding: 10px;
+    z-index: 999;
 }
 
 .tab-selected
 {
+	border: 1.5px solid #ececec;
+	border-bottom: none;
     background: white;
     font-weight: bold;
+}
+
+.tabContainer
+{
 }
 
 .tabContent
 {
   text-align: center;
   padding: 10px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  /*z-index: -1;*/
 }
 
 /* Kinda broke
