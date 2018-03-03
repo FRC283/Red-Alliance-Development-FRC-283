@@ -16,7 +16,7 @@
 						"type":"number",
 						"value":"",
 						"required":true,
-						"hotkey":"~",
+						"hotkey":"`",
 						"details":
 						{
 							"paragraph":false
@@ -257,7 +257,7 @@
 				"type":"file",
 				"value":"",
 				"required":"false",
-				"hotkey":null,
+				"hotkey":"",
 				"details":
 				{
 					"formats":[".png",".jpg"]
@@ -268,7 +268,7 @@
 				"type":"number",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"min":1,
@@ -283,7 +283,7 @@
 				"type":"text",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"paragraph":false
@@ -294,7 +294,7 @@
 				"type":"text",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"paragraph":false
@@ -305,7 +305,7 @@
 				"type":"text",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"paragraph":false
@@ -316,7 +316,7 @@
 				"type":"text",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"paragraph":false
@@ -327,7 +327,7 @@
 				"type":"checkbox",
 				"value":"",
 				"required":false,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":[""]
@@ -338,7 +338,7 @@
 				"type":"number",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"min":1,
@@ -353,7 +353,7 @@
 				"type":"number",
 				"value":120,
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"min":1,
@@ -368,7 +368,7 @@
 				"type":"checkbox",
 				"value":"",
 				"required":false,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":[""]
@@ -379,7 +379,7 @@
 				"type":"checkbox",
 				"value":"",
 				"required":false,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":[""]
@@ -390,7 +390,7 @@
 				"type":"checkbox",
 				"value":"",
 				"required":false,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":[""]
@@ -401,7 +401,7 @@
 				"type":"checkbox",
 				"value":"",
 				"required":false,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
@@ -412,7 +412,7 @@
 				"type":"radio",
 				"value":"",
 				"required":true,
-				"hotkey":"null",
+				"hotkey":"",
 				"details":
 				{
 					"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]

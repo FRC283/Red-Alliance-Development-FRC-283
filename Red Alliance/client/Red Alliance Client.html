@@ -11,13 +11,11 @@
 	<script>
 		//---TODO---
 		//*Data validation function
-		//*Tab Partitioning
-			//*Tab visibility function
-		//Making hotkeys swap to correct tab
+		//Mobile formatting
+		//Making hotkeys swap to correct tab - stop using accesskey
 		//Make sure that collected data gets put on the correct copy of the config
 		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
-		//Get rid of dataCollectFunction in favor of direct assignment to .collect()
-		//take out fieldObjectList
+		//Checkboxes/radio should have the ability to have a text input field associated with it for additional comments - in case the scenario isnt listed
 
 		//---FUNCTION DEFINITIONS---
 
@@ -66,17 +64,20 @@
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
 			fieldsetObj.id = htmlParent.id + "." + input.name;	  //The FIELDSET becomes named based on parent
 			input.id = fieldsetObj.id;							  //Allows the json input to be easily correlated to it's FIELDSET counterpart by the json .id attribute
-			var dataCollectFunction; 							  //This function becomes associated with this FIELDSET, and returns the accumulated data from this FIELDSET when called
-
+			
 			switch (input.type)
 			{
 				case "number":	//---------------------------------------------------------NUMBER TYPE
 					var inputObj = document.createElement("input"); 			//Creating a new INPUT html object
 					fieldsetObj.appendChild(inputObj); 							//Add this number INPUT to the PARENT
 					inputObj.className = "form";								//Configures CSS to display this input correctly.
-					dataCollectFunction = function() 							//Defines the data collection function for number
+					fieldsetObj.collect = function() 							//Defines the data collection function for number
 					{
 						return this.children[0].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
+					};
+					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
+					{
+						
 					};
 					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
 					inputObj.max = input.details.max; 							//Create a maximum value property based on the json data
@@ -97,19 +98,22 @@
 					{
 						inputObj.type = "number";	//Explicitly defined the INPUT type as number
 					}
-					if (input.hotkey != null)		//Now, regardless of the number INPUT type, a hotkey element needs to be created
+					if (input.hotkey != null && input.hotkey != "")		//Now, regardless of the number INPUT type, a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span");  //The new SPAN object contains the hotkey assigned to this INPUT
 						fieldsetObj.appendChild(hotkeyObj);				 //Add the new SPAN onto the PARENT
-						inputObj.accesskey = input.hotkey; 				 //Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						hotkeyObj.className = "hotkey";					 //Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				 //Display the json-defined hotkey inside of this SPAN
 					}
 				break;
 				case "text": //--------------------------------------------------------TEXT TYPE
-					dataCollectFunction = function()	 //Defines the data collection function for text
+					fieldsetObj.collect = function()	 //Defines the data collection function for text
 					{
 						return this.children[0].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
+					};
+					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
+					{
+						
 					};
 					if (input.details.paragraph != true) //If the input was defined as a paragraph, the text INPUT is made very large (i.e. textarea type)
 					{
@@ -126,17 +130,16 @@
 					}
 					fieldsetObj.appendChild(inputObj); 					   //Add the INPUT/TEXTAREA to the FIELDSET
 					inputObj.className = "form";						   //Configures CSS to display this input correctly.
-					if (input.hotkey != null)							   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
+					if (input.hotkey != null && input.hotkey != "")							   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
 						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
-						inputObj.accesskey = input.hotkey; 				//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
 						hotkeyObj.className = "hotkey";					//Set the class for CSS
 						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
 					}
 				break;
 				case "checkbox": //---------------------------------------------------------------------------CHECKBOX TYPE
-					dataCollectFunction = function()									   //Defines the data collection function for a checkbox
+					fieldsetObj.collect = function()									   //Defines the data collection function for a checkbox
 					{
 						//---															   //A checkbox's (json) FIELDSET contains multiple checkbox INPUTS
 						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
@@ -156,7 +159,10 @@
 						}
 						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
 					};
-
+					fieldsetObj.hotSelect = function()									   //Calls when the respective hotkey is pushed
+					{
+						
+					};
 					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS**
 					{																//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						//---														//For each checkbox defined in the details.options array:
@@ -188,14 +194,8 @@
 						var tempSpanObj = document.createElement("span");			//Create a SPAN element to contain labels for each checkbox
 						fieldsetObj.appendChild(tempSpanObj);						//Add the SPAN to the FIELDSET
 						tempSpanObj.innerHTML = input.details.options[h]; 			//The content of the SPAN is the current index-value of the options array
-						if (h == 0)													//If this is the first checkbox INPUT rendered:
-						{
-							tempInputObj.accesskey = input.hotkey; 					//Create a accesskey property based on the json data. The accesskey serves as a hotkey (alt + hotkey)
-						}
-
 					}
-
-					if (input.hotkey != null)							//Now a hotkey element needs to be created
+					if (input.hotkey != null && input.hotkey != "")							//Now a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
 						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
@@ -204,7 +204,7 @@
 					}
 				break;
 				case "radio": //---------------------------------------------------------------------------RADIO TYPE
-					dataCollectFunction = function()									   		//Defines the data collection function for a radio. Very similar to checkbox's
+					fieldsetObj.collect = function()									   		//Defines the data collection function for a radio. Very similar to checkbox's
 					{
 						//---															   		//A radio's (json) FIELDSET contains multiple checkbox INPUTS
 						var collectedValue = ""; 										   		//This string will accumulate the names of all the checked INPUTS
@@ -220,7 +220,10 @@
 						}
 						return collectedValue.substring(0, collectedValue.length - 2); 	   		//Eliminates the ", " from the very end of the accumulation variable
 					};
-
+					fieldsetObj.hotSelect = function()											//Calls when the respective hotkey is pushed
+					{
+						
+					};
 					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS**
 					{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
 						var tempInputObj = document.createElement("input"); 	//Create INPUT element
@@ -240,11 +243,8 @@
 						var tempSpanObj = document.createElement("span");		//Create a SPAN to label this checkbox INPUT
 						fieldsetObj.appendChild(tempSpanObj);					//Add that SPAN to the fieldset
 						tempSpanObj.innerHTML = input.details.options[h];		//Set the SPAN to contain the proper label for this INPUT
-
-
 					}
-
-					if (input.hotkey != null)							//Now a hotkey element needs to be created
+					if (input.hotkey != null && input.hotkey != "")		//Now a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
 						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
@@ -257,7 +257,7 @@
 					fieldsetObj.append(inputObj);						//Add INPUT object to FIELDSET
 					inputObj.type = "file";								//Set INPUT type to file
 					inputObj.name = input.name;							//Set INPUT name to the json input
-					dataCollectFunction = function()					//Defines data collection function for a file
+					fieldsetObj.collect = function()					//Defines data collection function for a file
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
 						var result;										//Will be assigned to the result of conversion to text
@@ -277,11 +277,13 @@
 						}
 						return result; 									//Then, return the image
 					};
+					fieldsetObj.hotSelect = function()					//Calls when the respective hotkey is pushed
+					{
+						
+					};
 				break;
 			}
 			//----------------------------ALL INPUT TYPES (AGAIN)
-			//fieldsetObj.setAttribute("data-collect", dataCollectFunction);
-			fieldsetObj.collect = dataCollectFunction;							   //"Assign" the data collection function to the FIELDSET
 			fieldsetList.push(fieldsetObj); 									   //Append the FIELDSET onto a cumulative list
 			inputList.push(input); 												   //Append the json input onto a cumulative list
 		}
@@ -341,6 +343,7 @@
 					currentObj.style.display = "none";					//Hide it
 				}
 				currentObj.id = htmlParent.id + "." + level[i].name;	//Assign an id to the DIV based on its PARENT name as well
+				level[i].id = currentObj.id;							//Save the id of this div to the json
 				if (level[i].terminal == false) 						//If this json level is not marked as "terminal"
 				{
 					console.log("-" + level[i].name + " is not terminating.");
@@ -377,12 +380,70 @@
 				}
 			}
 		}
+		
+		//Converts a given number to it's ASCII letter
+		function toASCII(number)
+		{
+			switch (number)
+			{
+				case 192:
+					return "`";
+				break;
+				case 16:
+					return "SHIFT"
+				break;
+				case 189:
+					return "-";
+				break;
+				case 187:
+					return "+";
+				break;
+				case 18:
+					return "[";
+				case 17:
+					return "CONTROL"
+				break;
+				case 186:
+					return ";";
+				break;
+				case 222:
+					return "\"";
+				break;
+				case 188:
+					return ",";
+				break;
+				case 190:
+					return ".";
+				break;
+				case 191:
+					return "/";
+				break;
+				case 220:
+					return "\\";
+				break;
+				default:
+					return String.fromCharCode(number);					    				//Returns ascii character	
+				break;
+			}
+		}
+		
+		//Triggers on hotkey presses. Calls the proper switch function for the press
+		function hotkeyManager(e)
+		{
+			for (var y = 0; y < inputList.length; y++)							 			//Iterate through all json inputs
+			{
+				if (inputList[y].hotkey.toUpperCase() == toASCII(e.keyCode).toUpperCase())	//If the hotkey matches the pressed key
+				{
+					document.getElementById(inputList[y].id).hotSelect();					//Activate the function for it's corresponding fieldset that brings that fieldset into view
+				}
+			}
+		}
 
 		//---GLOBAL VARIABLES---
 		var inputList = []; 	//Contains all inputs found within the configuration file
 		var fieldsetList = [];  //Contains all the fieldsets of inputs
 
-		var configFile = [
+		var configFile =[
 			{
 				"name":"Match",
 				"submittable":true,
@@ -400,7 +461,7 @@
 								"type":"number",
 								"value":"",
 								"required":true,
-								"hotkey":"~",
+								"hotkey":"`",
 								"details":
 								{
 									"paragraph":false
@@ -641,7 +702,7 @@
 						"type":"file",
 						"value":"",
 						"required":"false",
-						"hotkey":null,
+						"hotkey":"",
 						"details":
 						{
 							"formats":[".png",".jpg"]
@@ -652,7 +713,7 @@
 						"type":"number",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"min":1,
@@ -667,7 +728,7 @@
 						"type":"text",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"paragraph":false
@@ -678,7 +739,7 @@
 						"type":"text",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"paragraph":false
@@ -689,7 +750,7 @@
 						"type":"text",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"paragraph":false
@@ -700,7 +761,7 @@
 						"type":"text",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"paragraph":false
@@ -711,7 +772,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":[""]
@@ -722,7 +783,7 @@
 						"type":"number",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"min":1,
@@ -737,7 +798,7 @@
 						"type":"number",
 						"value":120,
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"min":1,
@@ -752,7 +813,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":[""]
@@ -763,7 +824,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":[""]
@@ -774,7 +835,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":[""]
@@ -785,7 +846,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
@@ -796,17 +857,18 @@
 						"type":"radio",
 						"value":"",
 						"required":true,
-						"hotkey":"null",
+						"hotkey":"",
 						"details":
 						{
 							"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
 						}
 					}
 				]
-			}
+			}	
 		]
 
 		//---ONLOAD FUNCTION CALLS---
+		document.addEventListener("keydown", hotkeyManager, false); //Registers hotkeyManager as an event listener
 		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent. Kicks off the program.
 	</script>
 </html>
