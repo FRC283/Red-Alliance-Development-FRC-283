@@ -1,11 +1,14 @@
 <html>
 	<head>
 		<title>RED ALLIANCE MASTER</title>
-		<u>Red Alliance Data Analysis</u>
+		<link rel="stylesheet" type="text/css" href="../css/client_style.css">
 		
 		
 	</head>
 	<body>
+		<header>
+			<div id="logo">FRC Team 283 - RED ALLIANCE - MASTER</div>
+		</header>
 		<br>
 		<br>
 		
@@ -24,21 +27,21 @@
 			 	<th onClick='sortTable(this)'>Alliance</th>
 			</tr>
 			<tr>
+			 	<td>0</td>
+			 	<td></td>
+			 	<td></td>
+			 	<td></td>
+			</tr>
+			<tr>
 			 	<td>1</td>
-			 	<td>Dan</td>
-			 	<td>283</td>
-			 	<td>Red</td>
+			 	<td></td>
+			 	<td></td>
+			 	<td></td>
 			</tr>
 			<tr>
-			 	<td>3</td>
-			 	<td>Ben</td>
-			 	<td>281</td>
-			 	<td>Blue</td>
-			</tr>
-			<tr>
-			 	<td>90</td>
-			 	<td>Tim</td>
-			 	<td>2830</td>
+			 	<td>2</td>
+			 	<td></td>
+			 	<td></td>
 			 	<td></td>
 			 </tr>
 		</table>
@@ -250,6 +253,570 @@
 				}
 			}
 			
-		};
+		}
+		function renderLevel(htmlParent, level)
+		{
+			//----------------------------------------------------------------------
+			var buttonContainerObj = document.createElement("div");		//Create a div that contains the tab buttons for this level
+			htmlParent.appendChild(buttonContainerObj);					//Append to parent
+			buttonContainerObj.className = "tabContainer";				//CSS
+			for (var i = 0; i < level.length; i++) 						//For each element in the initial json array**
+			{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
+				console.log("Creating object for: " + level[i].name)
+				//----------------------------------------------------------------TAB BUTTON
+				tabButtonObj = document.createElement("button");		//BUTTON that switches to this tab
+				buttonContainerObj.appendChild(tabButtonObj);			//Attach this BUTTON to it's parent
+				tabButtonObj.id = htmlParent.id + "." + level[i].name + ".Button";
+				tabButtonObj.classList.add("tablinks");					//Styling for tab selection BUTTONS
+				tabButtonObj.innerHTML = level[i].name + " Form";		//BUTTON text is the tab name
+				tabButtonObj.onclick = function()						//When you click on a tab's selection button
+				{
+					var siblingTabs = this.parentNode.parentNode.children;
+					for (var g = 0; g < siblingTabs.length; g++)													 //For each element on this level (sibling)
+					{
+						if (siblingTabs[g].nodeName.toLowerCase() == "div" && siblingTabs[g].classList.contains("tabContent")) //If that element is a DIV and classContent (not a button container)
+						{
+							if (siblingTabs[g].id == this.id.replace(/.Button/, ""))	//For every fellow DIV on this level... (but not the current element) - works by taking the button ID and chopping the ".Button" part off to find it's respective tab
+							{
+								siblingTabs[g].style.display = "block";					//Show DIV
+								siblingTabs[g].classList.add("tab-selected");			//
+							}
+							else
+							{
+								siblingTabs[g].style.display = "none";					//Hide that DIV
+								siblingTabs[g].classList.remove("tab-selected");		//
+							}
+						}
+					}
+					for (var k = 0; k < this.parentNode.children.length; k++) 			//Iterates through fellow tab buttons
+					{
+						this.parentNode.children[k].classList.remove("tab-selected");	//Remove tab-selected from all fellow buttons
+					}
+					this.classList.add("tab-selected"); 								//Add tab-selected back to the clicked button
+				}
+				//----------------------------------------------------------------------TAB DIV CREATION
+				var currentObj = document.createElement("div");			//Create a DIV
+				htmlParent.appendChild(currentObj);						//Attach this DIV to either a parent DIV or the top-level document
+				currentObj.classList.add("tabContent");					//Make this division look like a tab
+				if (i == 0) 											//If this is the first tab in this level
+				{
+					currentObj.style.display = "block";					//Make it visible
+					tabButtonObj.classList.add("tab-selected");				//Styling for tab selection BUTTONS
+				}	
+				else													//Otherwise
+				{
+					currentObj.style.display = "none";					//Hide it
+				}
+				currentObj.id = htmlParent.id + "." + level[i].name;	//Assign an id to the DIV based on its PARENT name as well
+				level[i].id = currentObj.id;							//Save the id of this div to the json
+				if (level[i].terminal == false) 						//If this json level is not marked as "terminal"
+				{
+					console.log("-" + level[i].name + " is not terminating.");
+					renderLevel(currentObj, level[i].tabs); 			//Recursively call this function to process the next array level
+				}
+				else 													//If this json level is terminal, it is an "input"
+				{
+					console.log("-" + level[i].name + " is terminating.");
+					for (var j = 0; j < level[i].inputs.length; j++)	//For each "input" in this level
+					{
+						renderInput(currentObj, level[i].inputs[j]);	//Call render input, which will append "html input elements" (sorta) onto the "currentObj" element
+					}
+				}
+				//---------------------------------------------------------------------------BUTTON CREATION
+				if (level[i].submittable == true) 						//After rendering all subinputs, create a button if this level is submittable.
+				{
+					//---												//When the button is pressed, the data from all the subelements with be collected
+					var buttonObj = document.createElement("button");	//Create BUTTON html object
+					currentObj.appendChild(buttonObj);					//Add the BUTTON as a subelement of whatever DIV we currently edit
+					buttonObj.innerHTML = "Submit " + level[i].name;	//Give the BUTTON a name based on json
+					buttonObj.className = "form-submit";				//Mark the BUTTON for proper css
+					buttonObj.onclick = function()						//Executes on click
+					{
+						var parentName = this.parentElement.id.slice(this.parentElement.id.lastIndexOf("."), this.parentElement.id.length); //The directly-parent level name. See below for explanation
+						//parentElement.id = ".Match.Main" (as example)
+						//.lastIndexOf - grabs the index of the last occurence of "." = 13
+						//.length = 17
+						//.slice(13, 17) = "Main"
+						//"Main" is the id of the element that DIRECTLY contains this one
+						console.log("Button pressed! Containing element is " + parentName);														//TEMP
+						writeData(parentName); 																							  		//On click, gather all data inside this section
+						console.log("Current state of the json inputs: " + JSON.stringify(inputList)); 										    //TEMP
+					}
+				}
+			}
+		}
+		
+		//Converts a given number to it's ASCII letter
+		function toASCII(number)
+		{
+			switch (number)
+			{
+				case 192:
+					return "`";
+				break;
+				case 16:
+					return "SHIFT"
+				break;
+				case 189:
+					return "-";
+				break;
+				case 187:
+					return "+";
+				break;
+				case 18:
+					return "[";
+				case 17:
+					return "CONTROL"
+				break;
+				case 186:
+					return ";";
+				break;
+				case 222:
+					return "\"";
+				break;
+				case 188:
+					return ",";
+				break;
+				case 190:
+					return ".";
+				break;
+				case 191:
+					return "/";
+				break;
+				case 220:
+					return "\\";
+				break;
+				default:
+					return String.fromCharCode(number);					    				//Returns ascii character	
+				break;
+			}
+		}
+		var configFile =[
+			{
+				"name":"Match",
+				"submittable":true,
+				"terminal":false,
+				"tabs":
+				[
+					{
+						"name":"Main",
+						"submittable":false,
+						"terminal":true,
+						"inputs":
+						[
+							{
+								"name":"Match Number",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"`",
+								"details":
+								{
+									"paragraph":false
+								}
+							},
+							{
+								"name":"Team Number",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"1",
+								"details":
+								{
+									"min":1,
+									"max":9999,
+									"step":1,
+									"slider":false,
+									"fraction":false
+								}
+							},
+							{
+								"name":"Team Name",
+								"type":"text",
+								"value":"",
+								"required":true,
+								"hotkey":"2",
+								"details":
+								{
+									"paragraph":false
+								}
+							}
+						]
+					},
+					{
+						"name":"Auto",
+						"submittable":false,
+						"terminal":true,
+						"inputs":
+						[
+							{
+								"name":"Crosses Baseline Successfully",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"4",
+								"details":
+								{
+									"options":[""]
+								}
+							},
+							{
+								"name":"Cubes Put In Switch",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"5",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Cubes Put In Scale",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"Q",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Cubes Put In Vault/Exchange Zone",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"W",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Comments/Overview",
+								"type":"text",
+								"value":"",
+								"required":true,
+								"hotkey":"E",
+								"details":
+								{
+									"paragraph":true
+								}
+							}
+						]
+					},
+					{
+						"name":"Teleop",
+						"submittable":false,
+						"terminal":true,
+						"inputs":
+						[
+							{
+								"name":"Cubes Put In Switch",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"R",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Cubes Put In Scale",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"A",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Cubes Put In Vault/Exchange Zone",
+								"type":"number",
+								"value":"",
+								"required":true,
+								"hotkey":"5",
+								"details":
+								{
+									"min":0,
+									"max":999,
+									"step":1,
+									"slider":false,
+									"fraction":true
+								}
+							},
+							{
+								"name":"Primary Source of Cubes",
+								"type":"radio",
+								"value":"",
+								"required":true,
+								"hotkey":"D",
+								"details":
+								{
+									"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+								}
+							},
+							{
+								"name":"Attempts to Block Enemy Scoring",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"F",
+								"details":
+								{
+									"options":[""]
+								}
+							},
+							{
+								"name":"Lifts Successfully",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"Z",
+								"details":
+								{
+									"options":[""]
+								}
+							},
+							{
+								"name":"Another Robot Hangs Off of This One",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"X",
+								"details":
+								{
+									"options":[""]
+								}
+							},
+							{
+								"name":"Main Strategy",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"C",
+								"details":
+								{
+									"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
+								}
+							},
+							{
+								"name":"Comments/Overview",
+								"type":"text",
+								"value":"",
+								"required":true,
+								"hotkey":"L-Shift",
+								"details":
+								{
+									"paragraph":true
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"name":"Pit",
+				"terminal":true,
+				"submittable":true,
+				"inputs":
+				[
+					{
+						"name":"Robot Image",
+						"type":"file",
+						"value":"",
+						"required":"false",
+						"hotkey":"",
+						"details":
+						{
+							"formats":[".png",".jpg"]
+						}
+					},
+					{
+						"name":"Team Number",
+						"type":"number",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"min":1,
+							"max":9999,
+							"step":1,
+							"slider":false,
+							"fraction":false
+						}
+					},
+					{
+						"name":"Team Name",
+						"type":"text",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"paragraph":false
+						}
+					},
+					{
+						"name":"Type of Motors on Drivetrain",
+						"type":"text",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"paragraph":false
+						}
+					},
+					{
+						"name":"Number of Motors on Drive",
+						"type":"text",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"paragraph":false
+						}
+					},
+					{
+						"name":"Drivetrain Overview/Comments",
+						"type":"text",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"paragraph":false
+						}
+					},
+					{
+						"name":"Can Lift",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Lift Clearance from Ground",
+						"type":"number",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"min":1,
+							"max":120,
+							"step":0.5,
+							"slider":false,
+							"fraction":false
+						}
+					},
+					{
+						"name":"Weight",
+						"type":"number",
+						"value":120,
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"min":1,
+							"max":120,
+							"step":0.5,
+							"slider":true,
+							"fraction":false
+						}
+					},
+					{
+						"name":"Automatically Adjusts Side on Autonomous",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Puts Cube on Switch in Autonomous",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Puts Cube on Scale in Autonomous",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Main Strategy",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{
+							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
+						}
+					},
+					{
+						"name":"Primary Source of Cubes",
+						"type":"radio",
+						"value":"",
+						"required":true,
+						"hotkey":"",
+						"details":
+						{
+							"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+						}
+					}
+				]
+			}	
+		]
+
+		//---ONLOAD FUNCTION CALLS---
+		document.addEventListener("keydown", hotkeyManager, false); //Registers hotkeyManager as an event listener
+		renderLevel(document.body, configFile);
 	</script>
 <html>
