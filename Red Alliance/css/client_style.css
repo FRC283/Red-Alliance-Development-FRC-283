@@ -65,10 +65,12 @@ header
 
 .tabContainer
 {
+	font-weight: bold;
 }
 
 .tabContent
 {
+	font-weight: bold;
   text-align: center;
   padding: 10px;
   background: white;
