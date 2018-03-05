@@ -78,7 +78,8 @@
 					};
 					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
 					{
-						
+						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
+						this.children[0].focus();								//Focus on the only child element
 					};
 					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
 					inputObj.max = input.details.max; 							//Create a maximum value property based on the json data
