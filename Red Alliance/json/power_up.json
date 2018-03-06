@@ -221,14 +221,47 @@
 						}
 					},
 					{
-						"name":"Main Strategy",
+						"name":"Attempts to Put Cubes on Switch",
 						"type":"checkbox",
 						"value":"",
 						"required":false,
 						"hotkey":"C",
 						"details":
 						{
-							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
+							"options":[""]
+						}
+					},
+					{
+						"name":"Attempts to Put Cubes on Scale",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"C",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Attempts to Provide Cubes to Vault",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"C",
+						"details":
+						{
+							"options":[""]
+						}
+					},
+					{
+						"name":"Attempts to Lift",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"C",
+						"details":
+						{
+							"options":[""]
 						}
 					},
 					{
