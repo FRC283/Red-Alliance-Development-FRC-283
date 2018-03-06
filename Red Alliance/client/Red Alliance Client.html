@@ -10,14 +10,16 @@
 	</body>
 	<script>
 		//---TODO---
+		//Put a nice outline around fieldsets
 		//*Data validation function
 		//Mobile formatting
-		//Making hotkeys swap to correct tab - stop using accesskey
-			//Alt + Hotkey
 		//Make sure that collected data gets put on the correct copy of the config
 		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
 		//Checkboxes/radio should have the ability to have a text input field associated with it for additional comments - in case the scenario isnt listed
-
+		//Required fields
+		
+		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
+		
 		//---FUNCTION DEFINITIONS---
 
 		//This functions reads inputs from the given tab, and stores the data in the json file
@@ -115,7 +117,8 @@
 					};
 					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
 					{
-						
+						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
+						this.children[0].focus();								//Focus on the only child element
 					};
 					if (input.details.paragraph != true) //If the input was defined as a paragraph, the text INPUT is made very large (i.e. textarea type)
 					{
@@ -163,7 +166,12 @@
 					};
 					fieldsetObj.hotSelect = function()									   //Calls when the respective hotkey is pushed
 					{
-						
+						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
+						this.children[0].focus();										//Focus on the only child element
+						if (this.children.length == 3)									//If there's only one checkbox in this checkbox
+						{
+							this.children[0].checked = !this.children[0].checked;		//Toggle the checkbox
+						}
 					};
 					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS**
 					{																//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
@@ -224,7 +232,8 @@
 					};
 					fieldsetObj.hotSelect = function()											//Calls when the respective hotkey is pushed
 					{
-						
+						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
+						this.children[0].focus();										//Focus on the only child element
 					};
 					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS**
 					{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
@@ -281,7 +290,9 @@
 					};
 					fieldsetObj.hotSelect = function()					//Calls when the respective hotkey is pushed
 					{
-						
+						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
+						this.children[0].focus();										//Focus on the only child element
+						this.children[0].click();										//Opens the file submit dialog
 					};
 				break;
 			}
@@ -432,18 +443,40 @@
 		//Triggers on hotkey presses. Calls the proper switch function for the press
 		function hotkeyManager(e)
 		{
-			for (var y = 0; y < inputList.length; y++)							 			//Iterate through all json inputs
+			e.preventDefault();																	//Stops all chrome hotkeys
+			if (e.keyCode == 18)																//If alt was pressed
 			{
-				if (inputList[y].hotkey.toUpperCase() == toASCII(e.keyCode).toUpperCase())	//If the hotkey matches the pressed key
+				altPressed = true;																//Turn on altPressed until release event
+			}
+			else																				//If we didn't press alt (Alt isnt allowed as a hotkey)
+			{
+				for (var y = 0; y < inputList.length; y++)							 			//Iterate through all json inputs
 				{
-					document.getElementById(inputList[y].id).hotSelect();					//Activate the function for it's corresponding fieldset that brings that fieldset into view
-				}
+					if (inputList[y].hotkey.toUpperCase() == toASCII(e.keyCode).toUpperCase())	//If the hotkey matches the pressed key
+					{
+						if (altPressed == true)													//Alt must be held
+						{
+							document.getElementById(inputList[y].id).hotSelect();				//Activate the function for it's corresponding fieldset that brings that fieldset into view		
+						}
+					}
+				}	
+			}
+		}
+		
+		//Triggers on alt-release
+		function altUpManager(e)
+		{
+			e.preventDefault();					//Stops all chrome hotkeys
+			if (e.keyCode == 18)				//If the released key was alt
+			{
+				altPressed = false;				//Set altPressed to false
 			}
 		}
 
 		//---GLOBAL VARIABLES---
 		var inputList = []; 	//Contains all inputs found within the configuration file
 		var fieldsetList = [];  //Contains all the fieldsets of inputs
+		var altPressed = false; //True when the ALT key is pressed
 
 		var configFile =[
 			{
@@ -683,7 +716,7 @@
 								"type":"text",
 								"value":"",
 								"required":true,
-								"hotkey":"L-Shift",
+								"hotkey":"T",
 								"details":
 								{
 									"paragraph":true
@@ -871,6 +904,7 @@
 
 		//---ONLOAD FUNCTION CALLS---
 		document.addEventListener("keydown", hotkeyManager, false); //Registers hotkeyManager as an event listener
-		renderLevel(document.body, configFile); //Renders the configuration object above, using the document body as the parent. Kicks off the program.
+		document.addEventListener("keyup", altUpManager, false);	//Registers altUpManager as a listener
+		renderLevel(document.body, configFile); 					//Renders the configuration object above, using the document body as the parent. Kicks off the program.
 	</script>
 </html>

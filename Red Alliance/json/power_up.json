@@ -166,7 +166,7 @@
 						"type":"number",
 						"value":"",
 						"required":true,
-						"hotkey":"5",
+						"hotkey":"G",
 						"details":
 						{
 							"min":0,
@@ -236,7 +236,7 @@
 						"type":"text",
 						"value":"",
 						"required":true,
-						"hotkey":"L-Shift",
+						"hotkey":"V",
 						"details":
 						{
 							"paragraph":true
