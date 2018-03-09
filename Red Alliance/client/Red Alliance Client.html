@@ -8,16 +8,15 @@
 			<div id="logo">FRC Team 283 - RED ALLIANCE</div>
 		</header>
 	</body>
+		<div class="information-panel">
+			Italic Text = Optional Field
+		</div>
 	<script>
 		//---TODO---
 		//Put a nice outline around fieldsets
-		//*Data validation function
+		//Method of visually grouping inputs
 		//Mobile formatting
 		//Make sure that collected data gets put on the correct copy of the config
-		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
-		//Checkboxes/radio should have the ability to have a text input field associated with it for additional comments - in case the scenario isnt listed
-		//Required fields
-		//Number inputs dont have min and max set correctly
 		//Make fractions work
 		//Make checkboxes and radios larger buttons to hit
 		
@@ -25,11 +24,13 @@
 		
 		//---FUNCTION DEFINITIONS---
 
-		//Inserts an error message above the given fieldset if the "show" parameter is true. Hides it if "show" if false
-		function renderError(fieldsetObj, show)
+		//Inserts an error message above the given fieldset if the "goodData" parameter is true. Hides it if "goodData" if false
+		function renderError(fieldsetObj, goodData)
 		{
-			if (show == true)
+			if (goodData == false)
 			{
+				console.log("	Rendering the error for " + fieldsetObj.id);
+				fieldsetObj.hotSelect();
 				var errorObj = document.createElement("div");
 				errorObj.className = "error";
 				errorObj.id = fieldsetObj.id + ".ValidationError!"
@@ -38,7 +39,11 @@
 			}
 			else
 			{
-				delete document.getElementById(fieldsetObj.id + ".ValidationError!");
+				console.log("	Removing the error for " + fieldsetObj.id);
+				if (document.getElementById(fieldsetObj.id + ".ValidationError!") != null)
+				{
+					fieldsetObj.parentElement.removeChild(document.getElementById(fieldsetObj.id + ".ValidationError!"));
+				}
 			}
 		}
 		
@@ -67,6 +72,7 @@
 							{
 								console.log("	The data was not ready. See error message.");				//Alert the dev that the form isnt filled out right
 								j = inputList.length;														//Breaks the loop, killing the function
+								n = inputList.length;														//Breaks the loop, killing the function
 							}
 						}
 						else																				//For any inputs not in this section
@@ -96,6 +102,10 @@
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
 			fieldsetObj.id = htmlParent.id + "." + input.name;	  //The FIELDSET becomes named based on parent
 			input.id = fieldsetObj.id;							  //Allows the json input to be easily correlated to it's FIELDSET counterpart by the json .id attribute
+			if (input.required == false)						  //Change the rendering class if this fieldset isnt required
+			{
+				labelObj.className = "optional-field";		  	  //Allows special styling to be applied
+			}
 			
 			switch (input.type)
 			{
@@ -446,9 +456,8 @@
 						//.length = 17
 						//.slice(13, 17) = "Main"
 						//"Main" is the id of the element that DIRECTLY contains this one
-						console.log("Button pressed! Containing element is " + parentName);														//TEMP
 						writeData(parentName); 																							  		//On click, gather all data inside this section
-						console.log("Current state of the json inputs: " + JSON.stringify(inputList)); 										    //TEMP
+						//console.log("Current state of the json inputs: " + JSON.stringify(inputList)); 										    //TEMP
 					}
 				}
 			}
