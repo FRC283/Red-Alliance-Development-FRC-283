@@ -19,7 +19,11 @@
 						"hotkey":"`",
 						"details":
 						{
-							"paragraph":false
+							"min":1,
+							"max":9999,
+							"step":1,
+							"slider":false,
+							"fraction":false
 						}
 					},
 					{
@@ -63,9 +67,7 @@
 						"required":false,
 						"hotkey":"4",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Cubes Put In Switch",
@@ -194,9 +196,7 @@
 						"required":false,
 						"hotkey":"F",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Lifts Successfully",
@@ -205,9 +205,7 @@
 						"required":false,
 						"hotkey":"Z",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Another Robot Hangs Off of This One",
@@ -216,9 +214,7 @@
 						"required":false,
 						"hotkey":"X",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Attempts to Put Cubes on Switch",
@@ -227,42 +223,34 @@
 						"required":false,
 						"hotkey":"C",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Attempts to Put Cubes on Scale",
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"C",
+						"hotkey":"B",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Attempts to Provide Cubes to Vault",
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"C",
+						"hotkey":"H",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Attempts to Lift",
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"C",
+						"hotkey":"N",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Comments/Overview",
@@ -290,7 +278,7 @@
 				"type":"file",
 				"value":"",
 				"required":"false",
-				"hotkey":"",
+				"hotkey":"U",
 				"details":
 				{
 					"formats":[".png",".jpg"]
@@ -362,9 +350,7 @@
 				"required":false,
 				"hotkey":"",
 				"details":
-				{
-					"options":[""]
-				}
+				{}
 			},
 			{
 				"name":"Lift Clearance from Ground",
@@ -403,9 +389,7 @@
 				"required":false,
 				"hotkey":"",
 				"details":
-				{
-					"options":[""]
-				}
+				{}
 			},
 			{
 				"name":"Puts Cube on Switch in Autonomous",
@@ -414,9 +398,7 @@
 				"required":false,
 				"hotkey":"",
 				"details":
-				{
-					"options":[""]
-				}
+				{}
 			},
 			{
 				"name":"Puts Cube on Scale in Autonomous",
@@ -425,20 +407,43 @@
 				"required":false,
 				"hotkey":"",
 				"details":
-				{
-					"options":[""]
-				}
+				{}
 			},
 			{
-				"name":"Main Strategy",
+				"name":"Main Strategy: Put Cubes on Switch?",
 				"type":"checkbox",
 				"value":"",
 				"required":false,
 				"hotkey":"",
 				"details":
-				{
-					"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
-				}
+				{}
+			},
+			{
+				"name":"Main Strategy: Put Cubes on Scale?",
+				"type":"checkbox",
+				"value":"",
+				"required":false,
+				"hotkey":"",
+				"details":
+				{}
+			},
+			{
+				"name":"Main Strategy: Provide Cubes to Vault?",
+				"type":"checkbox",
+				"value":"",
+				"required":false,
+				"hotkey":"",
+				"details":
+				{}
+			},
+			{
+				"name":"Main Strategy: Lift Reliably?",
+				"type":"checkbox",
+				"value":"",
+				"required":false,
+				"hotkey":"",
+				"details":
+				{}
 			},
 			{
 				"name":"Primary Source of Cubes",

@@ -17,15 +17,35 @@
 		//Eliminate categorical checkboxes, make it so only True/False checkboxes are a thing.
 		//Checkboxes/radio should have the ability to have a text input field associated with it for additional comments - in case the scenario isnt listed
 		//Required fields
+		//Number inputs dont have min and max set correctly
+		//Make fractions work
+		//Make checkboxes and radios larger buttons to hit
 		
 		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
 		
 		//---FUNCTION DEFINITIONS---
 
+		//Inserts an error message above the given fieldset if the "show" parameter is true. Hides it if "show" if false
+		function renderError(fieldsetObj, show)
+		{
+			if (show == true)
+			{
+				var errorObj = document.createElement("div");
+				errorObj.className = "error";
+				errorObj.id = fieldsetObj.id + ".ValidationError!"
+				errorObj.innerHTML = "Please fill out this input correctly.";
+				fieldsetObj.parentElement.insertBefore(errorObj, fieldsetObj);		
+			}
+			else
+			{
+				delete document.getElementById(fieldsetObj.id + ".ValidationError!");
+			}
+		}
+		
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
-			console.log("Collecting data with an id including " + tabName);									//TEMP
+			console.log("Collecting data with an id including " + tabName);
 			for (var j = 0; j < inputList.length; j++) 		   			//Iterate through accumulated list of json inputs
 			{
 				for (var n = 0; n < fieldsetList.length; n++)  			//Iterate through list of accumulated html fieldsets
@@ -35,20 +55,29 @@
 						if (inputList[j].id.includes(tabName) == true)	//this input is part of the tab we're aggregating from. Note: We could also check the fieldset ID instead of the json input ID
 						{
 							console.log("	Collecting the data from " + fieldsetList[n].id);  				//Print the name of the question being collected
-							console.log("		Function String: " + String(fieldsetList[n].collect));		//Print the contents of the collection function
-							var data = fieldsetList[n].collect();		 	 								//Collect all the data in this fieldset as a string															//TEMP
-							console.log("		Returned value: " + data);									//Print the value returned by the collection function
-							inputList[j].value = data;		 												//Store the filled-out value of the fieldset in the json input
+							console.log("   Validating the data...");										//Print the contents of the collection function
+							renderError(fieldsetList[n], fieldsetList[n].check());							//Add/Remove all error messages based on the validation function
+							if (fieldsetList[n].check() == true)											//If the data is good
+							{
+								var data = fieldsetList[n].collect();		 	 							//Collect all the data in this fieldset as a string															//TEMP
+								console.log("		Returned value: " + data);								//Print the value returned by the collection function
+								inputList[j].value = data;		 											//Store the filled-out value of the fieldset in the json input
+							}
+							else
+							{
+								console.log("	The data was not ready. See error message.");				//Alert the dev that the form isnt filled out right
+								j = inputList.length;														//Breaks the loop, killing the function
+							}
 						}
 						else																				//For any inputs not in this section
 						{
-							inputList[j].value = null;														//Set the value to null
+							inputList[j].value = null;														//Set the value to null if the data is not part of the section of the form being submitted
 						}
 					}
 				}
 			}
 		}
-
+		
 		//Inserts the json input object (input) as html as a child to (htmlParent)
 		function renderInput(htmlParent, input)
 		{
@@ -74,16 +103,30 @@
 					var inputObj = document.createElement("input"); 			//Creating a new INPUT html object
 					fieldsetObj.appendChild(inputObj); 							//Add this number INPUT to the PARENT
 					inputObj.className = "form";								//Configures CSS to display this input correctly.
+					inputObj.required = input.required;							//Set this INPUT to required only if it's json data says so
 					fieldsetObj.collect = function() 							//Defines the data collection function for number
 					{
 						return this.children[0].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
 					};
-					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
+					fieldsetObj.hotSelect = function()																//Calls when the respective hotkey is pushed
 					{
-						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
-						this.children[0].focus();								//Focus on the only child element
+						document.getElementById(this.parentNode.id + ".Button").click();							//Simulates clicking on it's tab
+						this.children[0].focus();																	//Focus on the only child element
+						console.log(this.id + " valid?: " + this.check());				//DELETE ME
+					};
+					fieldsetObj.check = function()																	//Returns true if the associated fieldset is properly filled out
+					{
+						if (this.children[0].required == true)														//If this field MUST be filled out
+						{
+							return (this.children[0].value != "");													//The data must be not blank
+						}
+						else
+						{
+							return true; 																			//Otherwise, return all clear (true)
+						}
 					};
 					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
+					console.log("data min: " + inputObj.min); //DELETE ME
 					inputObj.max = input.details.max; 							//Create a maximum value property based on the json data
 					inputObj.step = input.details.step; 						//Create a step property based on the json data
 					inputObj.value = input.value; 								//Create a starting value property based on the json data
@@ -115,10 +158,22 @@
 					{
 						return this.children[0].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
 					};
-					fieldsetObj.hotSelect = function()							//Calls when the respective hotkey is pushed
+					fieldsetObj.hotSelect = function()										//Calls when the respective hotkey is pushed
 					{
-						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
-						this.children[0].focus();								//Focus on the only child element
+						document.getElementById(this.parentNode.id + ".Button").click();	//Simulates clicking on it's tab
+						this.children[0].focus();											//Focus on the only child element
+						console.log(this.id + " valid?: " + this.check());	//DELETE ME
+					};
+					fieldsetObj.check = function()																	//Returns true if the associated fieldset is properly filled out
+					{
+						if (this.children[0].required == true)														//If this field MUST be filled out
+						{
+							return (this.children[0].value != "");													//The data must be not blank
+						}
+						else
+						{
+							return true; 																			//Otherwise, return all clear (true)
+						}
 					};
 					if (input.details.paragraph != true) //If the input was defined as a paragraph, the text INPUT is made very large (i.e. textarea type)
 					{
@@ -126,85 +181,47 @@
 						inputObj.type = "text";							   //If non-paragraph, type must be explicitly defined
 						inputObj.value = input.value; 					   //Assign default value to INPUT/TEXTAREA
 						inputObj.placeholder = input.value; 			   //Assign default placeholder to INPUT/TEXTAREA
+						inputObj.required = input.required;					//Set this INPUT to required only if it's json data says so
 					}
 					else												   //If it IS a paragraph type
 					{
 						var inputObj = document.createElement("textarea"); //Create the input as a TEXTAREA if it is a paragraph
 						inputObj.value = input.value; 					   //Assign default value to INPUT/TEXTAREA
 						inputObj.placeholder = input.value; 			   //Assign default placeholder to INPUT/TEXTAREA
+						inputObj.required = input.required;				   //Set this INPUT to required only if it's json data says so	
 					}
 					fieldsetObj.appendChild(inputObj); 					   //Add the INPUT/TEXTAREA to the FIELDSET
 					inputObj.className = "form";						   //Configures CSS to display this input correctly.
-					if (input.hotkey != null && input.hotkey != "")							   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
+					if (input.hotkey != null && input.hotkey != "")		   //Now, regardless of being an INPUT or TEXTAREA, a hotkey element needs to be created
 					{
-						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
-						fieldsetObj.appendChild(hotkeyObj);				//Add the new SPAN onto the PARENT
-						hotkeyObj.className = "hotkey";					//Set the class for CSS
-						hotkeyObj.innerHTML = input.hotkey;				//Display the json-defined hotkey inside of this SPAN
+						var hotkeyObj = document.createElement("span"); 	//The new SPAN object contains the hotkey assigned to this INPUT/TEXTAREA
+						fieldsetObj.appendChild(hotkeyObj);					//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";						//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;					//Display the json-defined hotkey inside of this SPAN
 					}
 				break;
 				case "checkbox": //---------------------------------------------------------------------------CHECKBOX TYPE
-					fieldsetObj.collect = function()									   //Defines the data collection function for a checkbox
+					fieldsetObj.collect = function()									   	//Defines the data collection function for a checkbox
 					{
-						//---															   //A checkbox's (json) FIELDSET contains multiple checkbox INPUTS
-						var collectedValue = ""; 										   //This string will accumulate the names of all the checked INPUTS
-						for (var i = 0; i < this.children.length; i++)  				   //Iterate through the FIELDSET children (a series of INPUTS)**
-						{																   //**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
-							if(this.children[i].type == "checkbox") 					   //Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area checkbox INPUTS
-							{
-								if(this.children[i].checked)		 					   //Check if the checkbox INPUT is checked
-								{
-									collectedValue = collectedValue + this.children[i].value + ", "; //If it is, add its value (not what is on the label, check code) to the accumulated value
-								}
-								else
-								{
-									collectedValue = collectedValue + "~, ";							//Placeholder character for false checkboxes. Keep this until more permanent solution
-								}
-							}
-						}
-						return collectedValue.substring(0, collectedValue.length - 2); 	   //Eliminates the ", " from the very end of the accumulation variable
+						return this.children[0].checked.toString();							//Return the boolean checked/not value of the checkbox
 					};
-					fieldsetObj.hotSelect = function()									   //Calls when the respective hotkey is pushed
+					fieldsetObj.hotSelect = function()									   	//Calls when the respective hotkey is pushed
 					{
-						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
-						this.children[0].focus();										//Focus on the only child element
-						if (this.children.length == 3)									//If there's only one checkbox in this checkbox
-						{
-							this.children[0].checked = !this.children[0].checked;		//Toggle the checkbox
-						}
+						document.getElementById(this.parentNode.id + ".Button").click();	//Simulates clicking on it's tab
+						this.children[0].focus();
+						this.children[0].checked = !this.children[0].checked;				//Toggle the checkbox
+						console.log(this.id + " valid?: " + this.check());	//DELETE ME
 					};
-					for (var h = 0; h < input.details.options.length; h++)			//A checkbox FIELDSET is composed of multiple checkbox-type INPUTS**
-					{																//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
-						//---														//For each checkbox defined in the details.options array:
-						var tempInputObj = document.createElement("input"); 		//Create new INPUT
-						fieldsetObj.appendChild(tempInputObj); 						//Add INPUT to the FIELDSET
-						tempInputObj.type = "checkbox"; 							//Make the INPUT type checkbox
-						tempInputObj.className = "form";						   	//Configures CSS to display this input correctly.
-						if (input.details.options[h] != "") 						//If the json options for this INPUT is NOT blank:
-						{
-							tempInputObj.value = input.details.options[h]; 			//The INPUT name/value is supposed to be the checkbox json name
-						}
-						else														//If the json options for this INPUT is blank:
-						{
-							tempInputObj.value = "Yes";		 						//The name of the json input is the name of this html INPUT
-						}
-						if (input.value == "") 										//Should this checkbox INPUT be rendered as checked?
-						{
-							tempInputObj.checked = false; 							//If the given json input value is empty, it is unchecked
-						}
-						else 														//If the given json input value is NOT empty:
-						{
-							//The checkbox INPUT becomes checked only if the json input value contains the options value currently being rendered
-							tempInputObj.checked = input.value.includes(input.details.options[h]);
-							//E.G.:
-								//"value":"Blue"
-								//"options":["Red","Yellow","Blue"]
-								//If we are rendering "Blue", then "Blue" is checked because "Blue" is a substring of the json "value"
-						}
-						var tempSpanObj = document.createElement("span");			//Create a SPAN element to contain labels for each checkbox
-						fieldsetObj.appendChild(tempSpanObj);						//Add the SPAN to the FIELDSET
-						tempSpanObj.innerHTML = input.details.options[h]; 			//The content of the SPAN is the current index-value of the options array
-					}
+					fieldsetObj.check = function()											//Returns true if the associated fieldset is properly filled out
+					{
+						return true;														//Checkboxes are always true or false. There is no way to tell if people have left it off or chosen false
+					};
+					var inputObj = document.createElement("input"); 						//Create new INPUT
+					fieldsetObj.appendChild(inputObj); 										//Add INPUT to the FIELDSET
+					inputObj.type = "checkbox"; 											//Make the INPUT type checkbox
+					inputObj.className = "form";						   					//Configures CSS to display this input correctly.
+					inputObj.checked = input.value;											//If the input json value field is true, then the box is checked by default
+					inputObj.required = input.required;										//Required if json says it is
 					if (input.hotkey != null && input.hotkey != "")							//Now a hotkey element needs to be created
 					{
 						var hotkeyObj = document.createElement("span"); //The new SPAN object contains the hotkey assigned to this set of INPUTS
@@ -220,9 +237,9 @@
 						var collectedValue = ""; 										   		//This string will accumulate the names of all the checked INPUTS
 						for (var i = 0; i < this.children.length; i++)  				   		//Iterate through the FIELDSET children (a series of INPUTS)**
 						{																   		//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
-							if(this.children[i].type == "radio") 					   	   		//Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
+							if (this.children[i].type == "radio") 					   	   		//Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
 							{
-								if(this.children[i].checked == true) 					   		//Check if the radio INPUT is checked
+								if (this.children[i].checked == true) 					   		//Check if the radio INPUT is checked
 								{
 									collectedValue = collectedValue + this.children[i].value + ", "; //If it is, add its value (name) to the accumulated value
 								}
@@ -232,8 +249,31 @@
 					};
 					fieldsetObj.hotSelect = function()											//Calls when the respective hotkey is pushed
 					{
-						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
-						this.children[0].focus();										//Focus on the only child element
+						document.getElementById(this.parentNode.id + ".Button").click();		//Simulates clicking on it's tab
+						this.children[0].focus();												//Focus on the only child element
+						console.log(this.id + " valid?: " + this.check());	//DELETE ME
+					};
+					fieldsetObj.check = function()												//Returns true if the associated fieldset is properly filled out
+					{
+						var atLeastOne = false;													//This is TRUE if at least one of the radios is checked
+						if (this.children[0].required == true)									//If this field MUST be filled out
+						{
+							for (var i = 0; i < this.children.length; i++)  				   	//Iterate through the FIELDSET children (a series of INPUTS)**
+							{																   		
+								if (this.children[i].type == "radio") 					   	   	//Not every element in this FIELDSET is an INPUT. We much make sure we are only examining elements that area radio INPUTS
+								{
+									if (this.children[i].checked == true) 					   	//Check if the radio INPUT is checked
+									{
+										atLeastOne = true; 										//If it is, add its value (name) to the accumulated value
+									}
+								}
+							}
+							return atLeastOne;													//This radio field is valid if at least one of the radios was checked
+						}
+						else
+						{
+							return true; 															//Otherwise, return all clear (true)
+						}
 					};
 					for (var h = 0; h < input.details.options.length; h++)		//A radio FIELDSET is composed of multiple checkbox-type INPUTS**
 					{															//**Since the length is one indexed while the array is zero indexed THE VARIABLE IS COMPARED TO LESS THAN, NOT EQUAL TO**
@@ -243,6 +283,7 @@
 						tempInputObj.type = "radio"; 							//Set INPUT to type radio
 						tempInputObj.name = input.name; 						//All radio INPUTS in this FIELDSET must have the same name to work properly
 						tempInputObj.className = "form";						//Configures CSS to display this input correctly
+						tempInputObj.required = input.required;					//Each input is "required" if the json says this radio set is
 						if (input.value == "") 									//If no default value is given:
 						{
 							tempInputObj.checked = false;  						//Then this radio INPUT is unchecked
@@ -268,6 +309,7 @@
 					fieldsetObj.append(inputObj);						//Add INPUT object to FIELDSET
 					inputObj.type = "file";								//Set INPUT type to file
 					inputObj.name = input.name;							//Set INPUT name to the json input
+					inputObj.required = input.required;					//Required if the json says it should be
 					fieldsetObj.collect = function()					//Defines data collection function for a file
 					{
 						var fr = new FileReader();						//Used to convert the submitted image into text
@@ -284,16 +326,34 @@
 						}
 						else
 						{
-							result = "No Image";						//Otherwise, simply put 'no image' where the image string would go
+							result = "No Image";										//Otherwise, simply put 'no image' where the image string would go
 						}
-						return result; 									//Then, return the image
+						return result; 													//Then, return the image
 					};
-					fieldsetObj.hotSelect = function()					//Calls when the respective hotkey is pushed
+					fieldsetObj.hotSelect = function()									//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
 						this.children[0].focus();										//Focus on the only child element
 						this.children[0].click();										//Opens the file submit dialog
 					};
+					fieldsetObj.check = function()										//Returns true if the associated fieldset is properly filled out
+					{
+						if (this.children[0].required == true)							//If this field MUST be filled out
+						{
+							return (this.children[0].files[0] != null);					//The data must be not blank
+						}
+						else
+						{
+							return true; 												//Otherwise, return all clear (true)
+						}
+					};
+					if (input.hotkey != null && input.hotkey != "")						//Now a hotkey element needs to be created
+					{
+						var hotkeyObj = document.createElement("span"); 				//The new SPAN object contains the hotkey assigned to this set of INPUTS
+						fieldsetObj.appendChild(hotkeyObj);								//Add the new SPAN onto the PARENT
+						hotkeyObj.className = "hotkey";									//Set the class for CSS
+						hotkeyObj.innerHTML = input.hotkey;								//Display the json-defined hotkey inside of this SPAN
+					}
 				break;
 			}
 			//----------------------------ALL INPUT TYPES (AGAIN)
@@ -443,9 +503,9 @@
 		//Triggers on hotkey presses. Calls the proper switch function for the press
 		function hotkeyManager(e)
 		{
-			e.preventDefault();																	//Stops all chrome hotkeys
 			if (e.keyCode == 18)																//If alt was pressed
 			{
+				e.preventDefault();																//Stops all chrome hotkeys
 				altPressed = true;																//Turn on altPressed until release event
 			}
 			else																				//If we didn't press alt (Alt isnt allowed as a hotkey)
@@ -456,6 +516,7 @@
 					{
 						if (altPressed == true)													//Alt must be held
 						{
+							e.preventDefault();
 							document.getElementById(inputList[y].id).hotSelect();				//Activate the function for it's corresponding fieldset that brings that fieldset into view		
 						}
 					}
@@ -478,7 +539,7 @@
 		var fieldsetList = [];  //Contains all the fieldsets of inputs
 		var altPressed = false; //True when the ALT key is pressed
 
-		var configFile =[
+		var configFile = [
 			{
 				"name":"Match",
 				"submittable":true,
@@ -499,7 +560,11 @@
 								"hotkey":"`",
 								"details":
 								{
-									"paragraph":false
+									"min":1,
+									"max":9999,
+									"step":1,
+									"slider":false,
+									"fraction":false
 								}
 							},
 							{
@@ -543,9 +608,7 @@
 								"required":false,
 								"hotkey":"4",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Cubes Put In Switch",
@@ -674,9 +737,7 @@
 								"required":false,
 								"hotkey":"F",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Lifts Successfully",
@@ -685,9 +746,7 @@
 								"required":false,
 								"hotkey":"Z",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Another Robot Hangs Off of This One",
@@ -696,9 +755,7 @@
 								"required":false,
 								"hotkey":"X",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Attempts to Put Cubes on Switch",
@@ -707,42 +764,34 @@
 								"required":false,
 								"hotkey":"C",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Attempts to Put Cubes on Scale",
 								"type":"checkbox",
 								"value":"",
 								"required":false,
-								"hotkey":"C",
+								"hotkey":"B",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Attempts to Provide Cubes to Vault",
 								"type":"checkbox",
 								"value":"",
 								"required":false,
-								"hotkey":"C",
+								"hotkey":"H",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Attempts to Lift",
 								"type":"checkbox",
 								"value":"",
 								"required":false,
-								"hotkey":"C",
+								"hotkey":"N",
 								"details":
-								{
-									"options":[""]
-								}
+								{}
 							},
 							{
 								"name":"Comments/Overview",
@@ -770,7 +819,7 @@
 						"type":"file",
 						"value":"",
 						"required":"false",
-						"hotkey":"",
+						"hotkey":"U",
 						"details":
 						{
 							"formats":[".png",".jpg"]
@@ -842,9 +891,7 @@
 						"required":false,
 						"hotkey":"",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Lift Clearance from Ground",
@@ -883,9 +930,7 @@
 						"required":false,
 						"hotkey":"",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Puts Cube on Switch in Autonomous",
@@ -894,9 +939,7 @@
 						"required":false,
 						"hotkey":"",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
 						"name":"Puts Cube on Scale in Autonomous",
@@ -905,20 +948,43 @@
 						"required":false,
 						"hotkey":"",
 						"details":
-						{
-							"options":[""]
-						}
+						{}
 					},
 					{
-						"name":"Main Strategy",
+						"name":"Main Strategy: Put Cubes on Switch?",
 						"type":"checkbox",
 						"value":"",
 						"required":false,
 						"hotkey":"",
 						"details":
-						{
-							"options":["Put Cubes on Switch", "Put Cubes on Scale", "Provide Cubes to Vault", "Lift Reliably"]
-						}
+						{}
+					},
+					{
+						"name":"Main Strategy: Put Cubes on Scale?",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{}
+					},
+					{
+						"name":"Main Strategy: Provide Cubes to Vault?",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{}
+					},
+					{
+						"name":"Main Strategy: Lift Reliably?",
+						"type":"checkbox",
+						"value":"",
+						"required":false,
+						"hotkey":"",
+						"details":
+						{}
 					},
 					{
 						"name":"Primary Source of Cubes",
