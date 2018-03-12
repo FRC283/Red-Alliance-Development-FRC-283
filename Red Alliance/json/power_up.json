@@ -45,7 +45,7 @@
 						"name":"Team Name",
 						"type":"text",
 						"value":"",
-						"required":true,
+						"required":false,
 						"hotkey":"2",
 						"details":
 						{
@@ -277,8 +277,8 @@
 				"name":"Robot Image",
 				"type":"file",
 				"value":"",
-				"required":"false",
-				"hotkey":"U",
+				"required":false,
+				"hotkey":"",
 				"details":
 				{
 					"formats":[".png",".jpg"]
@@ -303,7 +303,7 @@
 				"name":"Team Name",
 				"type":"text",
 				"value":"",
-				"required":true,
+				"required":false,
 				"hotkey":"",
 				"details":
 				{
