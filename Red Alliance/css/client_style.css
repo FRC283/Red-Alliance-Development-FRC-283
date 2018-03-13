@@ -140,11 +140,11 @@ input
 	margin-bottom: 15px;
 }
 
-/*input[type=radio], input[type=checkbox]
+input[type=radio], input[type=checkbox]
 {
-	margin-bottom: 15px;
-	margin: 0 auto;
-}*/
+	-moz-transform: scale(2);
+  -webkit-transform: scale(2);
+}
 
 span
 {

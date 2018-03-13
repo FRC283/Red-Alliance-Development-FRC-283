@@ -18,10 +18,8 @@
 		//Mobile formatting
 		//Make sure that collected data gets put on the correct copy of the config
 		//Make fractions work
-		//Make checkboxes and radios larger buttons to hit
 		//Error message rendering
-		//Weight slider being weird
-		//Clear values on submit
+		//Weight slider being weird (Changed steps of 1 to fix issue)
 		//plz comment renderError
 		
 		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
@@ -317,7 +315,7 @@
 						}
 						var tempSpanObj = document.createElement("span");		//Create a SPAN to label this checkbox INPUT
 						fieldsetObj.appendChild(tempSpanObj);					//Add that SPAN to the fieldset
-						tempSpanObj.innerHTML = input.details.options[h];		//Set the SPAN to contain the proper label for this INPUT
+						tempSpanObj.innerHTML = "  " + input.details.options[h] + "  ";		//Set the SPAN to contain the proper label for this INPUT
 					}
 					if (input.hotkey != null && input.hotkey != "")		//Now a hotkey element needs to be created
 					{
@@ -805,6 +803,15 @@
 								{}
 							},
 							{
+								"name":"Can Finish on Platform",
+								"type":"checkbox",
+								"value":"",
+								"required":false,
+								"hotkey":"H",
+								"details":
+								{}
+							},
+							{
 								"name":"Attempts to Lift",
 								"type":"checkbox",
 								"value":"",
@@ -938,7 +945,7 @@
 						{
 							"min":1,
 							"max":120,
-							"step":0.5,
+							"step":1,
 							"slider":true,
 							"fraction":false
 						}
