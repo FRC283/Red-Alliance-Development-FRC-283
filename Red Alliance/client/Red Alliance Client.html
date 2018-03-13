@@ -57,6 +57,7 @@
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
+			var dataSubmitted = true;
 			console.log("Collecting data with an id including " + tabName);
 			for (var j = 0; j < inputList.length; j++) 		   			//Iterate through accumulated list of json inputs
 			{
@@ -80,6 +81,7 @@
 								console.log("	The data was not ready. See error message.");				//Alert the dev that the form isnt filled out right
 								j = inputList.length;														//Breaks the loop, killing the function
 								n = inputList.length;														//Breaks the loop, killing the function
+								dataSubmitted = false;
 							}
 						}
 						else																				//For any inputs not in this section
@@ -88,6 +90,10 @@
 						}
 					}
 				}
+			}
+			if(dataSubmitted == true)
+			{
+				location.reload();
 			}
 		}
 		
