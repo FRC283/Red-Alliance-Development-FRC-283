@@ -22,6 +22,7 @@
 		//Error message rendering
 		//Weight slider being weird
 		//Clear values on submit
+		//plz comment renderError
 		
 		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
 		
@@ -34,18 +35,21 @@
 			{
 				console.log("	Rendering the error for " + fieldsetObj.id);
 				fieldsetObj.hotSelect();
-				var errorObj = document.createElement("div");
-				errorObj.className = "error";
-				errorObj.id = fieldsetObj.id + ".ValidationError!"
-				errorObj.innerHTML = "Please fill out this input correctly.";
-				fieldsetObj.parentElement.insertBefore(errorObj, fieldsetObj);		
+				if (document.getElementById(fieldsetObj.id + ".ValidationError!") == null)
+				{
+					var errorObj = document.createElement("div");
+					errorObj.className = "error";
+					errorObj.id = fieldsetObj.id + ".ValidationError!"
+					errorObj.innerHTML = "Please fill out this input correctly.";
+					fieldsetObj.parentElement.insertBefore(errorObj, fieldsetObj);		
+				}
 			}
 			else
 			{
 				console.log("	Removing the error for " + fieldsetObj.id);
-				if (document.getElementById(fieldsetObj.id + ".ValidationError!") != null)
+				while (document.getElementById(fieldsetObj.id + ".ValidationError!") != null)
 				{
-					fieldsetObj.parentElement.removeChild(document.getElementById(fieldsetObj.id + ".ValidationError!"));
+					console.log("Removing Error Message for: " + fieldsetObj.parentElement.removeChild(document.getElementById(fieldsetObj.id + ".ValidationError!")));
 				}
 			}
 		}
@@ -392,20 +396,18 @@
 				tabButtonObj.innerHTML = level[i].name + " Form";		//BUTTON text is the tab name
 				tabButtonObj.onclick = function()						//When you click on a tab's selection button
 				{
-					var siblingTabs = this.parentNode.parentNode.children;
-					for (var g = 0; g < siblingTabs.length; g++)													 //For each element on this level (sibling)
+					var siblingTabs = this.parentNode.parentNode.children;				//
+					for (var g = 0; g < siblingTabs.length; g++)						//For each element on this level (sibling)
 					{
 						if (siblingTabs[g].nodeName.toLowerCase() == "div" && siblingTabs[g].classList.contains("tabContent")) //If that element is a DIV and classContent (not a button container)
 						{
 							if (siblingTabs[g].id == this.id.replace(/.Button/, ""))	//For every fellow DIV on this level... (but not the current element) - works by taking the button ID and chopping the ".Button" part off to find it's respective tab
 							{
 								siblingTabs[g].style.display = "block";					//Show DIV
-								siblingTabs[g].classList.add("tab-selected");			//
 							}
 							else
 							{
 								siblingTabs[g].style.display = "none";					//Hide that DIV
-								siblingTabs[g].classList.remove("tab-selected");		//
 							}
 						}
 					}
