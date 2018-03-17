@@ -21,6 +21,9 @@
 		//Error message rendering
 		//Weight slider being weird (Changed steps of 1 to fix issue)
 		//plz comment renderError
+		//Hotkey toggle checkbox
+		//Multiple inputs use H
+		//Make comments not required
 		
 		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
 		
@@ -128,7 +131,15 @@
 					inputObj.required = input.required;							//Set this INPUT to required only if it's json data says so
 					fieldsetObj.collect = function() 							//Defines the data collection function for number
 					{
-						return this.children[1].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
+						if (this.children[1].name == "fraction")				//If the input is a fraction
+						{
+							console.log("Fraction value: " + ((Math.round((this.children[1].value/this.children[2].value)*1000))/1000))
+							return ((Math.round((this.children[1].value/this.children[2].value)*1000))/1000) //return the next number divided by the number after that one
+						}
+						else
+						{
+							return this.children[1].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
+						}
 					};
 					fieldsetObj.hotSelect = function()																//Calls when the respective hotkey is pushed
 					{
@@ -138,13 +149,20 @@
 					};
 					fieldsetObj.check = function()																	//Returns true if the associated fieldset is properly filled out
 					{
-						if (this.children[1].required == true)														//If this field MUST be filled out
+						if (this.children[1].required == true || this.children[1].name == "fraction")														//If this field MUST be filled out
 						{
-							return (this.children[1].value != "");													//The data must be not blank
+							if (this.children[1].name == "fraction")
+							{
+								return (this.children[2].value != 0);
+							}
+							else
+							{
+								return (this.children[1].value != "");													//The data must be not blank
+							}
 						}
 						else
 						{
-							return true; 																			//Otherwise, return all clear (true)
+							return true;
 						}
 					};
 					inputObj.min = input.details.min; 							//Create a minimum value property based on the json data
@@ -155,6 +173,7 @@
 					if (input.details.slider == true) 							//If the number INPUT is supposed to be a slider:
 					{
 						inputObj.type = "range"; 							 //Change the INPUT type to range
+						inputObj.name = "range";
 						var sliderValueObj = document.createElement("span"); //This new SPAN object will display the current value of the slider in it
 						fieldsetObj.appendChild(sliderValueObj); 			 //Add the new SPAN to the PARENT
 						sliderValueObj.innerHTML = input.value; 			 //The initial SPAN interior number is the json input default value
@@ -163,9 +182,19 @@
 							this.nextElementSibling.innerHTML = this.value;  //The value of the SPAN text becomes equal to the value of the SLIDER whenever the SLIDER becomes updated
 						}
 					}
+					else if (input.details.fraction == true)
+					{
+						inputObj.type = "number";							 //Since fraction will be returned as a decimal type is still a number
+						inputObj.name = "fraction";							 //Set fractions and ranges separate from numbers for number collection
+						var denomInputObj = document.createElement("input"); //Create a second input field for the denominator of the fraction
+						var fractionSymbol = document.createTextNode(" / "); //Create a variable containing the divisor symbol
+						fieldsetObj.appendChild(fractionSymbol);			 //Insert divisor symbol into the html body
+						fieldsetObj.appendChild(denomInputObj);				 //Add second input to the fieldset Object
+					}
 					else							//If the number INPUT is not slated to be a slider:
 					{
 						inputObj.type = "number";	//Explicitly defined the INPUT type as number
+						inputObj.name = "number";
 					}
 					if (input.hotkey != null && input.hotkey != "")		//Now, regardless of the number INPUT type, a hotkey element needs to be created
 					{
@@ -605,7 +634,7 @@
 								"name":"Team Name",
 								"type":"text",
 								"value":"",
-								"required":true,
+								"required":false,
 								"hotkey":"2",
 								"details":
 								{
@@ -630,7 +659,7 @@
 								{}
 							},
 							{
-								"name":"Cubes Put In Switch",
+								"name":"Cubes Put In Switch (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -645,7 +674,7 @@
 								}
 							},
 							{
-								"name":"Cubes Put In Scale",
+								"name":"Cubes Put In Scale (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -660,7 +689,7 @@
 								}
 							},
 							{
-								"name":"Cubes Put In Vault/Exchange Zone",
+								"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -678,7 +707,7 @@
 								"name":"Comments/Overview",
 								"type":"text",
 								"value":"",
-								"required":true,
+								"required":false,
 								"hotkey":"E",
 								"details":
 								{
@@ -694,7 +723,7 @@
 						"inputs":
 						[
 							{
-								"name":"Cubes Put In Switch",
+								"name":"Cubes Put In Switch (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -709,7 +738,7 @@
 								}
 							},
 							{
-								"name":"Cubes Put In Scale",
+								"name":"Cubes Put In Scale (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -724,7 +753,7 @@
 								}
 							},
 							{
-								"name":"Cubes Put In Vault/Exchange Zone",
+								"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
 								"type":"number",
 								"value":"",
 								"required":true,
@@ -810,7 +839,7 @@
 								"required":false,
 								"hotkey":"H",
 								"details":
-								{}
+									{}
 							},
 							{
 								"name":"Attempts to Lift",
@@ -825,7 +854,7 @@
 								"name":"Comments/Overview",
 								"type":"text",
 								"value":"",
-								"required":true,
+								"required":false,
 								"hotkey":"V",
 								"details":
 								{
@@ -846,8 +875,8 @@
 						"name":"Robot Image",
 						"type":"file",
 						"value":"",
-						"required":"false",
-						"hotkey":"U",
+						"required":false,
+						"hotkey":"",
 						"details":
 						{
 							"formats":[".png",".jpg"]
@@ -872,7 +901,7 @@
 						"name":"Team Name",
 						"type":"text",
 						"value":"",
-						"required":true,
+						"required":false,
 						"hotkey":"",
 						"details":
 						{
@@ -905,7 +934,7 @@
 						"name":"Drivetrain Overview/Comments",
 						"type":"text",
 						"value":"",
-						"required":true,
+						"required":false,
 						"hotkey":"",
 						"details":
 						{

@@ -70,7 +70,7 @@
 						{}
 					},
 					{
-						"name":"Cubes Put In Switch",
+						"name":"Cubes Put In Switch (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -85,7 +85,7 @@
 						}
 					},
 					{
-						"name":"Cubes Put In Scale",
+						"name":"Cubes Put In Scale (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -100,7 +100,7 @@
 						}
 					},
 					{
-						"name":"Cubes Put In Vault/Exchange Zone",
+						"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -118,7 +118,7 @@
 						"name":"Comments/Overview",
 						"type":"text",
 						"value":"",
-						"required":true,
+						"required":false,
 						"hotkey":"E",
 						"details":
 						{
@@ -134,7 +134,7 @@
 				"inputs":
 				[
 					{
-						"name":"Cubes Put In Switch",
+						"name":"Cubes Put In Switch (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -149,7 +149,7 @@
 						}
 					},
 					{
-						"name":"Cubes Put In Scale",
+						"name":"Cubes Put In Scale (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -164,7 +164,7 @@
 						}
 					},
 					{
-						"name":"Cubes Put In Vault/Exchange Zone",
+						"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
 						"type":"number",
 						"value":"",
 						"required":true,
@@ -265,7 +265,7 @@
 						"name":"Comments/Overview",
 						"type":"text",
 						"value":"",
-						"required":true,
+						"required":false,
 						"hotkey":"V",
 						"details":
 						{
@@ -345,7 +345,7 @@
 				"name":"Drivetrain Overview/Comments",
 				"type":"text",
 				"value":"",
-				"required":true,
+				"required":false,
 				"hotkey":"",
 				"details":
 				{
