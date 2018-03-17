@@ -108,8 +108,9 @@
 			input.parents = htmlParent.id;						  //Each json object gets a string list of its parents
 			var labelObj = document.createElement("label"); 	  //The LABEL is what actually names each input field
 			labelObj.innerHTML = input.name + ":"; 				  //Set LABEL name to be based on the provided json name
-			htmlParent.appendChild(labelObj); 					  //Add LABEL to given parent
+			//htmlParent.appendChild(labelObj); 					  //Add LABEL to given parent
 			var fieldsetObj = document.createElement("fieldset"); //This FIELDSET contains all the parts of the html INPUTS associated with this json input
+			fieldsetObj.append(labelObj);
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
 			fieldsetObj.id = htmlParent.id + "." + input.name;	  //The FIELDSET becomes named based on parent
 			input.id = fieldsetObj.id;							  //Allows the json input to be easily correlated to it's FIELDSET counterpart by the json .id attribute
@@ -127,19 +128,19 @@
 					inputObj.required = input.required;							//Set this INPUT to required only if it's json data says so
 					fieldsetObj.collect = function() 							//Defines the data collection function for number
 					{
-						return this.children[0].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
+						return this.children[1].value; 							//Returns the sole input. Number FIELDSETS have only one INPUT, a number INPUT
 					};
 					fieldsetObj.hotSelect = function()																//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();							//Simulates clicking on it's tab
-						this.children[0].focus();																	//Focus on the only child element
+						this.children[1].focus();																	//Focus on the only child element
 						console.log(this.id + " valid?: " + this.check());				//DELETE ME
 					};
 					fieldsetObj.check = function()																	//Returns true if the associated fieldset is properly filled out
 					{
-						if (this.children[0].required == true)														//If this field MUST be filled out
+						if (this.children[1].required == true)														//If this field MUST be filled out
 						{
-							return (this.children[0].value != "");													//The data must be not blank
+							return (this.children[1].value != "");													//The data must be not blank
 						}
 						else
 						{
@@ -177,19 +178,19 @@
 				case "text": //--------------------------------------------------------TEXT TYPE
 					fieldsetObj.collect = function()	 //Defines the data collection function for text
 					{
-						return this.children[0].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
+						return this.children[1].value;   //Returns the sole input. Text FIELDSETS have only one INPUT, a text INPUT
 					};
 					fieldsetObj.hotSelect = function()										//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();	//Simulates clicking on it's tab
-						this.children[0].focus();											//Focus on the only child element
+						this.children[1].focus();											//Focus on the only child element
 						console.log(this.id + " valid?: " + this.check());	//DELETE ME
 					};
 					fieldsetObj.check = function()																	//Returns true if the associated fieldset is properly filled out
 					{
-						if (this.children[0].required == true)														//If this field MUST be filled out
+						if (this.children[1].required == true)														//If this field MUST be filled out
 						{
-							return (this.children[0].value != "");													//The data must be not blank
+							return (this.children[1].value != "");													//The data must be not blank
 						}
 						else
 						{
@@ -224,13 +225,13 @@
 				case "checkbox": //---------------------------------------------------------------------------CHECKBOX TYPE
 					fieldsetObj.collect = function()									   	//Defines the data collection function for a checkbox
 					{
-						return this.children[0].checked.toString();							//Return the boolean checked/not value of the checkbox
+						return this.children[1].checked.toString();							//Return the boolean checked/not value of the checkbox
 					};
 					fieldsetObj.hotSelect = function()									   	//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();	//Simulates clicking on it's tab
-						this.children[0].focus();
-						this.children[0].checked = !this.children[0].checked;				//Toggle the checkbox
+						this.children[1].focus();
+						this.children[1].checked = !this.children[0].checked;				//Toggle the checkbox
 						console.log(this.id + " valid?: " + this.check());	//DELETE ME
 					};
 					fieldsetObj.check = function()											//Returns true if the associated fieldset is properly filled out
@@ -271,13 +272,13 @@
 					fieldsetObj.hotSelect = function()											//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();		//Simulates clicking on it's tab
-						this.children[0].focus();												//Focus on the only child element
+						this.children[1].focus();												//Focus on the only child element
 						console.log(this.id + " valid?: " + this.check());	//DELETE ME
 					};
 					fieldsetObj.check = function()												//Returns true if the associated fieldset is properly filled out
 					{
 						var atLeastOne = false;													//This is TRUE if at least one of the radios is checked
-						if (this.children[0].required == true)									//If this field MUST be filled out
+						if (this.children[1].required == true)									//If this field MUST be filled out
 						{
 							for (var i = 0; i < this.children.length; i++)  				   	//Iterate through the FIELDSET children (a series of INPUTS)**
 							{																   		
@@ -341,9 +342,9 @@
 							result = fr.result;							//Assign the successful reading to the return value
 							console.log(result);						//Return read value
 						}
-						if (this.children[0].value != null) 			//If a file was actually submitted:
+						if (this.children[1].value != null) 			//If a file was actually submitted:
 						{
-							fr.readAsDataURL(this.children[0].files[0]);//Read that file as a image
+							fr.readAsDataURL(this.children[1].files[0]);//Read that file as a image
 						}
 						else
 						{
@@ -354,14 +355,14 @@
 					fieldsetObj.hotSelect = function()									//Calls when the respective hotkey is pushed
 					{
 						document.getElementById(this.parentNode.id + ".Button").click();//Simulates clicking on it's tab
-						this.children[0].focus();										//Focus on the only child element
-						this.children[0].click();										//Opens the file submit dialog
+						this.children[1].focus();										//Focus on the only child element
+						this.children[1].click();										//Opens the file submit dialog
 					};
 					fieldsetObj.check = function()										//Returns true if the associated fieldset is properly filled out
 					{
-						if (this.children[0].required == true)							//If this field MUST be filled out
+						if (this.children[1].required == true)							//If this field MUST be filled out
 						{
-							return (this.children[0].files[0] != null);					//The data must be not blank
+							return (this.children[1].files[0] != null);					//The data must be not blank
 						}
 						else
 						{
