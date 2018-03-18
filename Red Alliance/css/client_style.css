@@ -187,7 +187,8 @@ textarea
 
 fieldset
 {
-    border: 1;
+    border: 0;
+    border-style: groove;
     margin: 0;
     padding: 10;
     display: inline-block;

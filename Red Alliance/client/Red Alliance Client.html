@@ -13,14 +13,16 @@
 		</div>
 	<script>
 		//---TODO---
+		//NOT PRIORITY
 		//Put a nice outline around fieldsets
 		//Method of visually grouping inputs
-		//Mobile formatting
-		//Make sure that collected data gets put on the correct copy of the config
-		//Make fractions work
-		//Error message rendering
-		//Weight slider being weird (Changed steps of 1 to fix issue)
 		//plz comment renderError
+		
+		//PRIORITY
+		//Make sure that collected data gets put on the correct copy of the config
+		//Weight slider being weird (Changed steps of 1 to fix issue)
+		//FIX IMAGE SUBMIT
+		//GENERATE HEADER CSV
 		
 		//NOTE NOTE NOTE: BE VERY CAREFUL CHANGING THE RENDERING FUNCTIONS. MANY READING FUNCTIONS MAKE ASSUMPTIONS ABOUT THE STRUCTURES OF THE ELEMENTS THEY READ AND WILL NEED CHANGES AS WELL.
 		
@@ -52,10 +54,36 @@
 			}
 		}
 		
+		//takes the input list and creates a .csv file
+		function createCSV()
+		{
+			var rowString = "";
+			for (var u = 0; u < inputList.length; u++) 
+			{
+				console.log(inputList[u].value);
+				if (inputList[u].value != null)
+				{
+					rowString = rowString + inputList[u].value  + ",";	//adds the values to a temporary table to create a csv file
+					console.log(":D" + rowString);
+				}
+			}
+			console.log(":D" + rowString);
+			var file = new Blob([rowString],
+ 			{
+ 				type : "text/plain"
+ 			});
+			var link = document.createElement("a");
+			link.style.display = "none";
+			link.href = 	window.URL.createObjectURL(file);
+			link.download = "match.csv";;
+			document.body.appendChild(link);
+			link.click();
+		}
+		
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
-			var dataSubmitted = true;
+			var goodForm = true;									//submit dat
 			console.log("Collecting data with an id including " + tabName);
 			for (var j = 0; j < inputList.length; j++) 		   			//Iterate through accumulated list of json inputs
 			{
@@ -79,7 +107,7 @@
 								console.log("	The data was not ready. See error message.");				//Alert the dev that the form isnt filled out right
 								j = inputList.length;														//Breaks the loop, killing the function
 								n = inputList.length;														//Breaks the loop, killing the function
-								dataSubmitted = false;
+								goodForm = false;
 							}
 						}
 						else																				//For any inputs not in this section
@@ -89,9 +117,11 @@
 					}
 				}
 			}
-			if(dataSubmitted == true)
+			if (goodForm == true)
 			{
-				location.reload();
+				createCSV();								//automatic download of the CSV file returned  
+				window.setTimeout(function () {location.reload();},1000);
+
 			}
 		}
 		
