@@ -248,7 +248,7 @@
 						"type":"checkbox",
 						"value":"",
 						"required":false,
-						"hotkey":"H",
+						"hotkey":"J",
 						"details":
 							{}
 					},

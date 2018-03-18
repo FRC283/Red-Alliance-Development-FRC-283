@@ -212,6 +212,14 @@ fieldset
     cursor: pointer;
 }
 
+#funforEVERYONE
+{
+    background: transparent;
+    border: none !important;
+    font-size:0;
+    padding: 10% 10%;
+}
+
 /* Voodoo Magic (Removes the arrows for number inputs)
 ==============================================================================*/
 
