@@ -136,7 +136,7 @@ header
 
 input
 {
-	margin: 15 px auto;
+	margin: 15px auto;
 	margin-bottom: 15px;
 }
 
@@ -213,14 +213,6 @@ fieldset
     cursor: pointer;
 }
 
-#funforEVERYONE
-{
-    background: transparent;
-    border: none !important;
-    font-size:0;
-    padding: 10% 10%;
-}
-
 /* Voodoo Magic (Removes the arrows for number inputs)
 ==============================================================================*/
 
@@ -261,4 +253,27 @@ input[type=number] {
 	border: 1px solid rgba(0, 0, 0, 0.25);
 	width: 30%;
 	border-radius: 5px;
+}
+
+#funforEVERYONE
+{
+    border: none !important;
+    font-size:0;
+    padding: 1% 1%;
+    float: right;
+}
+
+input[type=checkbox]
+{
+	margin: 15px;
+}
+
+input[type=number]
+{
+	margin: 7px;
+}
+
+input[type=radio]
+{
+	margin: 7px;
 }
