@@ -9,8 +9,8 @@
 			<div id="logo">FRC Team 283 - RED ALLIANCE</div>
 		</header>
 	</body>
-		<div class="information-panel">
-			Italic Text = Optional Field
+		<div id="information-panel" class="information-panel">
+			<!-- Automatically Filled with data from the config file -->
 		</div>
 	<script>
 		//---TODO---
@@ -18,10 +18,11 @@
 		//Put a nice outline around fieldsets
 		//Method of visually grouping inputs
 		//plz comment renderError
+		//Weird pit button rendering
+		//Change how notes and metadata is display at top or bottom of file
 		
 		//PRIORITY
 		//Make sure that collected data gets put on the correct copy of the config
-
 		//FIX IMAGE SUBMIT
 		//GENERATE HEADER CSV
 		//Make fun button not increase header size
@@ -35,59 +36,32 @@
 		//Inserts an error message above the given fieldset if the "goodData" parameter is true. Hides it if "goodData" if false
 		function renderError(fieldsetObj, goodData)
 		{
-			if (goodData == false)
+			if (goodData == false)															//If the input was filled out poorly
 			{
-				console.log("	Rendering the error for " + fieldsetObj.id);
-				fieldsetObj.hotSelect();
-				if (document.getElementById(fieldsetObj.id + ".ValidationError!") == null)
+				fieldsetObj.hotSelect();													//Select the field in question
+				if (document.getElementById(fieldsetObj.id + ".ValidationError!") == null)  //If the error for this field doesnt exist
 				{
-					var errorObj = document.createElement("div");
-					errorObj.className = "error";
-					errorObj.id = fieldsetObj.id + ".ValidationError!"
-					errorObj.innerHTML = "Please fill out this input correctly.";
-					fieldsetObj.parentElement.insertBefore(errorObj, fieldsetObj);		
+					var errorObj = document.createElement("div");							//Create a div for the error
+					errorObj.className = "error";											//Set its class for CSS
+					errorObj.id = fieldsetObj.id + ".ValidationError!"						//Set id
+					errorObj.innerHTML = "Please fill out this input correctly.";			//Put an appropriate warning in
+					fieldsetObj.parentElement.insertBefore(errorObj, fieldsetObj);			//Insert the warning before the document
 				}
 			}
-			else
+			else																			//If the input was filed out well
 			{
-				console.log("	Removing the error for " + fieldsetObj.id);
-				while (document.getElementById(fieldsetObj.id + ".ValidationError!") != null)
+				while (document.getElementById(fieldsetObj.id + ".ValidationError!") != null) //Remove all of it's errors
 				{
+					//DO NOT DELETE THE FOLLOWING LINE! Remove all other errors that exist
 					console.log("Removing Error Message for: " + fieldsetObj.parentElement.removeChild(document.getElementById(fieldsetObj.id + ".ValidationError!")));
 				}
 			}
 		}
 		
-		//takes the input list and creates a .csv file
-		function createCSV()
-		{
-			var rowString = "";
-			for (var u = 0; u < inputList.length; u++) 
-			{
-				console.log(inputList[u].value);
-				if (inputList[u].value != null)
-				{
-					rowString = rowString + inputList[u].value  + ",";	//adds the values to a temporary table to create a csv file
-					console.log(":D" + rowString);
-				}
-			}
-			console.log(":D" + rowString);
-			var file = new Blob([rowString],
- 			{
- 				type : "text/plain"
- 			});
-			var link = document.createElement("a");
-			link.style.display = "none";
-			link.href = 	window.URL.createObjectURL(file);
-			link.download = "match.csv";;
-			document.body.appendChild(link);
-			link.click();
-		}
-		
 		//This functions reads inputs from the given tab, and stores the data in the json file
 		function writeData(tabName)
 		{
-			var goodForm = true;									//submit dat
+			var goodForm = true;										//Remains true if all fields are filled out well
 			console.log("Collecting data with an id including " + tabName);
 			for (var j = 0; j < inputList.length; j++) 		   			//Iterate through accumulated list of json inputs
 			{
@@ -102,9 +76,19 @@
 							renderError(fieldsetList[n], fieldsetList[n].check());							//Add/Remove all error messages based on the validation function
 							if (fieldsetList[n].check() == true)											//If the data is good
 							{
-								var data = fieldsetList[n].collect();		 	 							//Collect all the data in this fieldset as a string															//TEMP
-								console.log("		Returned value: " + data);								//Print the value returned by the collection function
-								inputList[j].value = data;		 											//Store the filled-out value of the fieldset in the json input
+								if (inputList[j].type == "file")											//If the input is file
+								{
+									if (inputList[j].collect())
+									{
+										
+									}
+								}
+								else
+								{
+									var data = fieldsetList[n].collect();		 	 							//Collect all the data in this fieldset as a string															//TEMP
+									console.log("		Returned value: " + data);								//Print the value returned by the collection function
+									inputList[j].value = data;		 											//Store the filled-out value of the fieldset in the json input				
+								}
 							}
 							else
 							{
@@ -121,10 +105,27 @@
 					}
 				}
 			}
-			if (goodForm == true)
+			if (goodForm == true)											//If the entire form was filled out correctly
 			{
-				createCSV();								//automatic download of the CSV file returned  
-				window.setTimeout(function () {location.reload();},1000);
+				var rowString = "";											//The row in the CSV file
+				for (var u = 0; u < inputList.length; u++) 					//For each input
+				{
+					if (inputList[u].value != null)							//Provided that that input is part of this submission
+					{
+						rowString = rowString + inputList[u].value  + ",";	//Adds the values to a temporary table to create a csv file
+					}
+				}
+				var file = new Blob([rowString],							//Create a new file
+	 			{
+	 				type : "text/plain"
+	 			});
+				var link = document.createElement("a");						//Create a download link
+				link.style.display = "none";								//Hide the link
+				link.href = window.URL.createObjectURL(file);				//Set the download to the file
+				link.download = "match.csv";								//Set the download name
+				document.body.appendChild(link);							//Add the link to the document
+				link.click();												//Click the link, setting off the download
+				window.setTimeout(function () {location.reload();},1000);   //After 1 second, reload the page, resetting all fields
 
 			}
 		}
@@ -142,7 +143,6 @@
 			input.parents = htmlParent.id;						  //Each json object gets a string list of its parents
 			var labelObj = document.createElement("label"); 	  //The LABEL is what actually names each input field
 			labelObj.innerHTML = input.name + ":"; 				  //Set LABEL name to be based on the provided json name
-			//htmlParent.appendChild(labelObj); 					  //Add LABEL to given parent
 			var fieldsetObj = document.createElement("fieldset"); //This FIELDSET contains all the parts of the html INPUTS associated with this json input
 			fieldsetObj.append(labelObj);
 			htmlParent.appendChild(fieldsetObj); 				  //Add FIELDSET to PARENT
@@ -394,25 +394,34 @@
 					inputObj.type = "file";								//Set INPUT type to file
 					inputObj.name = input.name;							//Set INPUT name to the json input
 					inputObj.required = input.required;					//Required if the json says it should be
-					fieldsetObj.collect = function()					//Defines data collection function for a file
+					fieldsetObj.fr = new FileReader();					//Define the fileReader that will read the submitted file
+					fieldsetObj.collect()										//Call this function repeatedly. Returns not null when the file is finished reading
 					{
-						var fr = new FileReader();						//Used to convert the submitted image into text
-						var result;										//Will be assigned to the result of conversion to text
-						var isLoaded = false;							//This variable becomes true when our dreams do
-						fr.onload = function()							//This function will execute once the image has successfully been converted
+						//---													//Returns true when ready to collect, false when not ready
+						if (this.fr.readyState == 0)							//If reader is currently inactive					
 						{
-							result = fr.result;							//Assign the successful reading to the return value
-							console.log(result);						//Return read value
+							fr.onload = function()								//This function will execute once the image has successfully been converted
+							{
+								fieldsetObj.result = fr.result;					//Assign the successful reading to the return value
+							};
+							if (this.children[1].value != null) 				//If a file was actually submitted:
+							{
+								fr.readAsDataURL(this.children[1].files[0]);	//Read that file as a image
+							}
+							else												//If there is no file
+							{
+								result = "No Image";							//Simply put 'no image' where the image string would go
+							}
+							return null;
 						}
-						if (this.children[1].value != null) 			//If a file was actually submitted:
+						else if (this.fr.readyState == 1)						//If the reader is currently reading
 						{
-							fr.readAsDataURL(this.children[1].files[0]);//Read that file as a image
+							return null;
 						}
-						else
+						else if (this.fr.readyState == 2)						//If the reader is finished
 						{
-							result = "No Image";										//Otherwise, simply put 'no image' where the image string would go
+							return fr.result;										//Indicate that the data is ready to be collected
 						}
-						return result; 													//Then, return the image
 					};
 					fieldsetObj.hotSelect = function()									//Calls when the respective hotkey is pushed
 					{
@@ -1111,6 +1120,7 @@
 		document.addEventListener("keydown", hotkeyManager, false); //Registers hotkeyManager as an event listener
 		document.addEventListener("keyup", altUpManager, false);	//Registers altUpManager as a listener
 		renderLevel(document.body, configFile.form); 				//Renders the configuration object above, using the document body as the parent. Kicks off the program.
+		document.getElementById("information-panel").innerHTML = configFile.game + " : " + configFile.year + "<br>Italic Text = Optional Field<br>" + configFile.notes; //Display metadata in file
 		</script>
 		
 		<!-- Secret Sound Element -->
