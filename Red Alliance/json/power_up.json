@@ -1,470 +1,476 @@
-[
-	{
-		"name":"Match",
-		"submittable":true,
-		"terminal":false,
-		"tabs":
-		[
-			{
-				"name":"Main",
-				"submittable":false,
-				"terminal":true,
-				"inputs":
-				[
-					{
-						"name":"Match Number",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"`",
-						"details":
+{
+	"game":"Power Up",
+	"year":2018,
+	"notes":"Have fun!",
+	"form":
+	[
+		{
+			"name":"Match",
+			"submittable":true,
+			"terminal":false,
+			"tabs":
+			[
+				{
+					"name":"Main",
+					"submittable":false,
+					"terminal":true,
+					"inputs":
+					[
 						{
-							"min":1,
-							"max":9999,
-							"step":1,
-							"slider":false,
-							"fraction":false
-						}
-					},
-					{
-						"name":"Team Number",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"1",
-						"details":
+							"name":"Match Number",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"`",
+							"details":
+							{
+								"min":1,
+								"max":9999,
+								"step":1,
+								"slider":false,
+								"fraction":false
+							}
+						},
 						{
-							"min":1,
-							"max":9999,
-							"step":1,
-							"slider":false,
-							"fraction":false
-						}
-					},
-					{
-						"name":"Team Name",
-						"type":"text",
-						"value":"",
-						"required":false,
-						"hotkey":"2",
-						"details":
+							"name":"Team Number",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"1",
+							"details":
+							{
+								"min":1,
+								"max":9999,
+								"step":1,
+								"slider":false,
+								"fraction":false
+							}
+						},
 						{
-							"paragraph":false
+							"name":"Team Name",
+							"type":"text",
+							"value":"",
+							"required":false,
+							"hotkey":"2",
+							"details":
+							{
+								"paragraph":false
+							}
 						}
-					}
-				]
-			},
-			{
-				"name":"Auto",
-				"submittable":false,
-				"terminal":true,
-				"inputs":
-				[
-					{
-						"name":"Crosses Baseline Successfully",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"4",
-						"details":
-						{}
-					},
-					{
-						"name":"Cubes Put In Switch (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"5",
-						"details":
+					]
+				},
+				{
+					"name":"Auto",
+					"submittable":false,
+					"terminal":true,
+					"inputs":
+					[
 						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Cubes Put In Scale (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"Q",
-						"details":
-						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"W",
-						"details":
-						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Comments/Overview",
-						"type":"text",
-						"value":"",
-						"required":false,
-						"hotkey":"E",
-						"details":
-						{
-							"paragraph":true
-						}
-					}
-				]
-			},
-			{
-				"name":"Teleop",
-				"submittable":false,
-				"terminal":true,
-				"inputs":
-				[
-					{
-						"name":"Cubes Put In Switch (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"R",
-						"details":
-						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Cubes Put In Scale (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"A",
-						"details":
-						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
-						"type":"number",
-						"value":"",
-						"required":true,
-						"hotkey":"G",
-						"details":
-						{
-							"min":0,
-							"max":999,
-							"step":1,
-							"slider":false,
-							"fraction":true
-						}
-					},
-					{
-						"name":"Primary Source of Cubes",
-						"type":"radio",
-						"value":"",
-						"required":true,
-						"hotkey":"D",
-						"details":
-						{
-							"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
-						}
-					},
-					{
-						"name":"Attempts to Block Enemy Scoring",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"F",
-						"details":
-						{}
-					},
-					{
-						"name":"Lifts Successfully",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"Z",
-						"details":
-						{}
-					},
-					{
-						"name":"Another Robot Hangs Off of This One",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"X",
-						"details":
-						{}
-					},
-					{
-						"name":"Attempts to Put Cubes on Switch",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"C",
-						"details":
-						{}
-					},
-					{
-						"name":"Attempts to Put Cubes on Scale",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"B",
-						"details":
-						{}
-					},
-					{
-						"name":"Attempts to Provide Cubes to Vault",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"H",
-						"details":
-						{}
-					},
-					{
-						"name":"Can Finish on Platform",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"J",
-						"details":
+							"name":"Crosses Baseline Successfully",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"4",
+							"details":
 							{}
-					},
-					{
-						"name":"Attempts to Lift",
-						"type":"checkbox",
-						"value":"",
-						"required":false,
-						"hotkey":"N",
-						"details":
-						{}
-					},
-					{
-						"name":"Comments/Overview",
-						"type":"text",
-						"value":"",
-						"required":false,
-						"hotkey":"V",
-						"details":
+						},
 						{
-							"paragraph":true
+							"name":"Cubes Put In Switch (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"5",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Cubes Put In Scale (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"Q",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"W",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Comments/Overview",
+							"type":"text",
+							"value":"",
+							"required":false,
+							"hotkey":"E",
+							"details":
+							{
+								"paragraph":true
+							}
 						}
+					]
+				},
+				{
+					"name":"Teleop",
+					"submittable":false,
+					"terminal":true,
+					"inputs":
+					[
+						{
+							"name":"Cubes Put In Switch (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"R",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Cubes Put In Scale (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"A",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Cubes Put In Vault/Exchange Zone (Successes/Attempts)",
+							"type":"number",
+							"value":"",
+							"required":true,
+							"hotkey":"G",
+							"details":
+							{
+								"min":0,
+								"max":999,
+								"step":1,
+								"slider":false,
+								"fraction":true
+							}
+						},
+						{
+							"name":"Primary Source of Cubes",
+							"type":"radio",
+							"value":"",
+							"required":true,
+							"hotkey":"D",
+							"details":
+							{
+								"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+							}
+						},
+						{
+							"name":"Attempts to Block Enemy Scoring",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"F",
+							"details":
+							{}
+						},
+						{
+							"name":"Lifts Successfully",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"Z",
+							"details":
+							{}
+						},
+						{
+							"name":"Another Robot Hangs Off of This One",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"X",
+							"details":
+							{}
+						},
+						{
+							"name":"Attempts to Put Cubes on Switch",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"C",
+							"details":
+							{}
+						},
+						{
+							"name":"Attempts to Put Cubes on Scale",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"B",
+							"details":
+							{}
+						},
+						{
+							"name":"Attempts to Provide Cubes to Vault",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"H",
+							"details":
+							{}
+						},
+						{
+							"name":"Can Finish on Platform",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"J",
+							"details":
+								{}
+						},
+						{
+							"name":"Attempts to Lift",
+							"type":"checkbox",
+							"value":"",
+							"required":false,
+							"hotkey":"N",
+							"details":
+							{}
+						},
+						{
+							"name":"Comments/Overview",
+							"type":"text",
+							"value":"",
+							"required":false,
+							"hotkey":"V",
+							"details":
+							{
+								"paragraph":true
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name":"Pit",
+			"terminal":true,
+			"submittable":true,
+			"inputs":
+			[
+				{
+					"name":"Robot Image",
+					"type":"file",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{
+						"formats":[".png",".jpg"]
 					}
-				]
-			}
-		]
-	},
-	{
-		"name":"Pit",
-		"terminal":true,
-		"submittable":true,
-		"inputs":
-		[
-			{
-				"name":"Robot Image",
-				"type":"file",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
+				},
 				{
-					"formats":[".png",".jpg"]
-				}
-			},
-			{
-				"name":"Team Number",
-				"type":"number",
-				"value":"",
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Team Number",
+					"type":"number",
+					"value":"",
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"min":1,
+						"max":9999,
+						"step":1,
+						"slider":false,
+						"fraction":false
+					}
+				},
 				{
-					"min":1,
-					"max":9999,
-					"step":1,
-					"slider":false,
-					"fraction":false
-				}
-			},
-			{
-				"name":"Team Name",
-				"type":"text",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
+					"name":"Team Name",
+					"type":"text",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{
+						"paragraph":false
+					}
+				},
 				{
-					"paragraph":false
-				}
-			},
-			{
-				"name":"Type of Motors on Drivetrain",
-				"type":"text",
-				"value":"",
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Type of Motors on Drivetrain",
+					"type":"text",
+					"value":"",
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"paragraph":false
+					}
+				},
 				{
-					"paragraph":false
-				}
-			},
-			{
-				"name":"Number of Motors on Drive",
-				"type":"text",
-				"value":"",
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Number of Motors on Drive",
+					"type":"text",
+					"value":"",
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"paragraph":false
+					}
+				},
 				{
-					"paragraph":false
-				}
-			},
-			{
-				"name":"Drivetrain Overview/Comments",
-				"type":"text",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
+					"name":"Drivetrain Overview/Comments",
+					"type":"text",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{
+						"paragraph":false
+					}
+				},
 				{
-					"paragraph":false
-				}
-			},
-			{
-				"name":"Can Lift",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Lift Clearance from Ground",
-				"type":"number",
-				"value":"",
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Can Lift",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
 				{
-					"min":1,
-					"max":120,
-					"step":0.5,
-					"slider":false,
-					"fraction":false
-				}
-			},
-			{
-				"name":"Weight",
-				"type":"number",
-				"value":120,
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Lift Clearance from Ground",
+					"type":"number",
+					"value":"",
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"min":1,
+						"max":120,
+						"step":0.5,
+						"slider":false,
+						"fraction":false
+					}
+				},
 				{
-					"min":1,
-					"max":120,
-					"step":1,
-					"slider":true,
-					"fraction":false
-				}
-			},
-			{
-				"name":"Automatically Adjusts Side on Autonomous",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Puts Cube on Switch in Autonomous",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Puts Cube on Scale in Autonomous",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Main Strategy: Put Cubes on Switch?",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Main Strategy: Put Cubes on Scale?",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Main Strategy: Provide Cubes to Vault?",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Main Strategy: Lift Reliably?",
-				"type":"checkbox",
-				"value":"",
-				"required":false,
-				"hotkey":"",
-				"details":
-				{}
-			},
-			{
-				"name":"Primary Source of Cubes",
-				"type":"radio",
-				"value":"",
-				"required":true,
-				"hotkey":"",
-				"details":
+					"name":"Weight",
+					"type":"number",
+					"value":120,
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"min":1,
+						"max":120,
+						"step":1,
+						"slider":true,
+						"fraction":false
+					}
+				},
 				{
-					"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+					"name":"Automatically Adjusts Side on Autonomous",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Puts Cube on Switch in Autonomous",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Puts Cube on Scale in Autonomous",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Main Strategy: Put Cubes on Switch?",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Main Strategy: Put Cubes on Scale?",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Main Strategy: Provide Cubes to Vault?",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Main Strategy: Lift Reliably?",
+					"type":"checkbox",
+					"value":"",
+					"required":false,
+					"hotkey":"",
+					"details":
+					{}
+				},
+				{
+					"name":"Primary Source of Cubes",
+					"type":"radio",
+					"value":"",
+					"required":true,
+					"hotkey":"",
+					"details":
+					{
+						"options":["Allied Platform", "Enemy Platform", "Portal", "Power Cube Zone"]
+					}
 				}
-			}
-		]
-	}	
-]
+			]
+		}	
+	]
+}
